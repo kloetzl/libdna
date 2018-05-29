@@ -5,7 +5,8 @@
 
 #include "dna.h"
 #include <ctype.h>
-#include <emmintrin.h>
+// #include <emmintrin.h>
+#include <assert.h>
 
 // __attribute__((target_clones("avx", "sse2", "default")))
 char *dnax_to_dna4(const char *begin, const char *end, char *dest)
@@ -14,7 +15,7 @@ char *dnax_to_dna4(const char *begin, const char *end, char *dest)
 	assert(end != NULL);
 	assert(dest != NULL);
 	assert(begin <= end);
-
+	// dest == begin is allowed
 
 	for (; begin < end; begin++) {
 		char c = toupper(*begin);

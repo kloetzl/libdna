@@ -15,7 +15,6 @@ void dnax_count(size_t *restrict table, const char *begin, const char *end)
 	assert(begin != NULL);
 	assert(end != NULL);
 	assert(begin <= end);
-	assert(table != begin);
 
 	memset(table, 0, sizeof(*table) * 128);
 
