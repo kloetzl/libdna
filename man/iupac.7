@@ -1,0 +1,71 @@
+.TH IUPAC 7 2018-05-15 "LIBDNA" "LIBDNA"
+.SH NAME
+iupac \- IUPAC codes for amino acids and nucleotide bases
+.SH DESCRIPTION
+The International Union of Pure and Applied Chemistry (IUPAC) specifies a code for abbreviation of amino acids and nucleotide bases. The following tables show the code with the addition of Uracil. The given triplet codes are taken from the standard genetic code.
+
+.SS Nucleotides
+.TS
+l c l l.
+Mnemonic	Symbol	Meaning	Complement
+_
+\fIA\fRdenine	A		T
+\fIC\fRytosine	C		G
+\fIG\fRuanine	G		C
+\fIT\fRhymine	T		A
+\fIU\fRracil	U		A
+\fIW\fReak	W	A, T	W
+\fIS\fRtrong	S	C, G	S
+A\fIm\fRino	M	A, C	K
+\fIK\fReto	K	G, T	M
+Pu\fIr\fRine	R	A, G	Y
+P\fIy\fRrimidine	Y	C, T	R
+not A	B	C, G, T	V
+not C	D	A, G, T	H
+not G	H	A, C, T	D
+not T	V	A, C, G	B
+a\fIn\fRy	N	A, C, G, T	N
+.\" Z	Zero
+.\" X	Masked
+.\" -	Gap
+.TE
+
+.SS Amino Acids
+.TS
+l c l.
+Amino Acid	Symbol	Triplet
+_
+Alanine	A	GCN
+Arginine	R	CGN and AGR
+Asparagine	N	AAY
+Aspartic acid	D	GAY
+Aspartic acid or aspraragine	B	RAY
+Cysteine	C	TGY
+Glutamic acid	D	GAR
+Glutamic acid or glutamine	Z	SAR
+Glutamine	Q	CAR
+Glycine	G	GGN
+Histidine	H	CAY
+Isoleucine	I	ATH
+Leucine	L	CTN and TTR
+Lysine	K	AAR
+Methionine	M	ATG
+Phenylalanine	F	TTY
+Proline	P	CCN
+Serine	S	TCN and AGY
+Threonine	T	ACN
+Tryptophan	W	TGG
+Tyrosine	Y	TAY
+Valine	V	GTN
+Terminator	*	TAR and TGA
+Unknown	X	NNN
+.TE
+
+.SH NOTES
+.SS History
+The code given here was specified in \fINomenclature for incomplete specified bases in nucleic acid sequences\fR Nomenclature Committee of the International Union of Biochemistry (1985). Common but non-standard extensions to the code include \fBX\fR for masked nucleotides, \fB-\fR for gaps of indeterminate lengths, \fBZ\fR for zero nucleotides and lower case letters to convey further information.
+
+.SH SEE ALSO
+.BR ascii (7),
+.BR charsets (7),
+.BR geneticcode (7)
