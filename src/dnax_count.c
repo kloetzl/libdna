@@ -4,8 +4,8 @@
  */
 
 #include "dna.h"
-#include <string.h>
 #include <assert.h>
+#include <string.h>
 
 // CHAR_BIT
 
