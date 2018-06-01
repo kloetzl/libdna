@@ -99,5 +99,22 @@ static void revcomp_table4(benchmark::State &state)
 }
 BENCHMARK(revcomp_table4);
 
+static void libdnax_replace(benchmark::State &state)
+{
+	char *forward = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+
+	while (state.KeepRunning()) {
+		dnax_replace(dnax_revcomp_table, forward, forward + LENGTH, reverse);
+		escape(reverse);
+	}
+
+	free(forward);
+	free(reverse);
+}
+BENCHMARK(libdnax_replace);
+
+
 BENCHMARK_MAIN();
 

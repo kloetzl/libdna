@@ -1,7 +1,7 @@
 SHELL=zsh
 
 CPPFLAGS+=-Wall -Wextra -I../include -std=c++14
-CFLAGS+=-ggdb -O3 -march=native
+CXXFLAGS+=-ggdb -O3 #-march=native -ftree-vectorize
 LIBS+=-lbenchmark
 
 all: dna4_revcomp hash
@@ -18,4 +18,4 @@ hash: hash.o ../libdna.a
 
 clean:
 	setopt null_glob; $(RM) -rf *.o
-	$(RM) -f dna4_revcomp
+	$(RM) -f dna4_revcomp hash

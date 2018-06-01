@@ -30,13 +30,13 @@ void escape(void *p)
 
 
 
-static size_t hash_simple(const char *kmer, size_t k)
+static uint64_t hash_simple(const char *kmer, uint64_t k)
 {
-	size_t return_value = 0;
+	uint64_t return_value = 0;
 
 	while (k--) {
 		char c = *kmer++;
-		size_t val = 0;
+		uint64_t val = 0;
 		switch (c) {
 			case 'A': val = 0; break;
 			case 'C': val = 1; break;
@@ -199,6 +199,34 @@ static void hash_table(benchmark::State &state)
 	free(forward);
 }
 BENCHMARK(hash_table);
+
+uint64_t derp(const char *begin, size_t k)
+{
+	uint64_t res = 0;
+	for (size_t i = 0; i < k; i++) {
+		res <<= 2;
+		char c = (begin[i] & 6) >> 1;
+		res |= c ^ (c >> 1);
+	}
+	return res;
+}
+
+static void derp(benchmark::State &state)
+{
+	char *forward = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+
+	while (state.KeepRunning()) {
+		for (char *kmer = forward; kmer < forward + LENGTH - K; kmer++) {
+			size_t hash = derp(kmer, K);
+			escape(&hash);
+		}
+	}
+
+	free(forward);
+}
+BENCHMARK(derp);
+
 
 static void libdna4_hash(benchmark::State &state)
 {
