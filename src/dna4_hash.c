@@ -6,8 +6,8 @@
 #include "dna.h"
 
 /**
- * Somewhat surprisingly, using a table is faster than twiddling. I am guassing
- * because of the smaller number of instructions.
+ * Somewhat surprisingly, using a table is faster than twiddling. I am guessing
+ * this is because of the smaller number of instructions.
  */
 
 uint64_t dna4_hash(const char *begin, size_t k)
