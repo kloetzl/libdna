@@ -31,10 +31,7 @@ char *dna4_revcomp(const char *begin, const char *end, char *dest);
 
 /// dnax - Any ASCII char or UTF8 byte
 // -1 == skip
-char *dnax_to_dna4(const char *begin, const char *end, char *dest);
-
 uint64_t dnax_hash(const char *table, const char *begin, size_t k);
-uint64_t dnax_hash_4bit(const char *table, const char *begin, size_t k);
 char *dnax_revcomp(const char *table, const char *begin, const char *end,
 				   char *dest);
 void dnax_count(size_t *table, const char *begin, const char *end);
@@ -49,6 +46,7 @@ char *dnax_find_first_not_of(const char *table, const char *begin,
 
 extern const char dnax_revcomp_table[];
 extern const char dnax_hash_table[];
+extern const char dnax_to_dna4_table[];
 
 #ifdef __cplusplus
 }
