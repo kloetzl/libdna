@@ -20,7 +20,6 @@ OBJECTS=\
 	dnax_mismatch.o \
 	dnax_replace.o \
 	dnax_revcomp.o \
-	dnax_to_dna4.o \
 	utils.o
 
 .PHONY: clean format all install
