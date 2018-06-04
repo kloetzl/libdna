@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+#include <assert.h>
 
 /*
 
@@ -66,6 +67,13 @@ const char dnax_revcomp_table[] = {
 char *dnax_revcomp(const char *restrict table, const char *begin,
 				   const char *end, char *dest)
 {
+	assert(table != NULL);
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+	assert(begin != dest);
+
 	const unsigned char *ubegin = (const unsigned char *)begin;
 	const unsigned char *uend = (const unsigned char *)end;
 	size_t length = uend - ubegin;

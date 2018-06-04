@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+#include <assert.h>
 
 /*
 
@@ -49,6 +50,10 @@ const char dnax_hash_table[] = {
 
 uint64_t dnax_hash(const char *restrict table, const char *begin, size_t k)
 {
+	assert(table != NULL);
+	assert(begin != NULL);
+	assert(k <= 32);
+
 	uint64_t result = 0;
 	size_t readpos = 0;
 

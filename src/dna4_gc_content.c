@@ -4,10 +4,15 @@
  */
 
 #include "dna.h"
+#include <assert.h>
 
 __attribute__((target_clones("avx", "sse2", "default"))) double
 dna4_gc_content(const char *begin, const char *end)
 {
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(begin <= end);
+
 	size_t gc_count = 0;
 	size_t i = 0;
 	size_t length = end - begin;

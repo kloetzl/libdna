@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+#include <assert.h>
 
 /**
  * Somewhat surprisingly, using a table is faster than twiddling. I am guessing
@@ -12,6 +13,8 @@
 
 uint64_t dna4_hash(const char *begin, size_t k)
 {
+	assert(begin != NULL);
+
 	const unsigned char *ubegin = (const unsigned char *)begin;
 
 	uint64_t res = 0;
