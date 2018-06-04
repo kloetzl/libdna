@@ -14,6 +14,7 @@
 uint64_t dna4_hash(const char *begin, size_t k)
 {
 	assert(begin != NULL);
+	assert(k <= 32);
 
 	const unsigned char *ubegin = (const unsigned char *)begin;
 

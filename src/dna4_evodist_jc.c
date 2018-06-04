@@ -11,6 +11,9 @@ __attribute__((target_clones("avx", "sse2", "default"))) double
 dna4_evodist_jc(const char *begin, const char *end, const char *other,
 				size_t *substitutions_ptr)
 {
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(other != NULL);
 	assert(begin <= end);
 
 	size_t substitutions = 0;
