@@ -17,7 +17,7 @@ void gen(char *str, size_t length)
 	auto base_dist = std::uniform_int_distribution<int>{0, 3};
 	auto base_acgt = [&] { return ACGT[base_dist(base_rand)]; };
 
-	while (length--) {
+	for ( size_t i = 0; i < length; i++) {
 		*str++ = base_acgt();
 	}
 
@@ -98,6 +98,40 @@ static void revcomp_table4(benchmark::State &state)
 	free(reverse);
 }
 BENCHMARK(revcomp_table4);
+
+static __attribute__((target_clones("avx2", "avx", "sse2", "default"))) char *
+twiddle(const char *begin, const char *end, char * __restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	for (size_t i = 0; i < length; i++) {
+		char c = begin[length - 1 - i];
+
+		dest[i] = c ^= c & 2 ? 4 : 21;
+	}
+
+	return dest + length;
+}
+
+static void twiddle(benchmark::State &state)
+{
+	char *forward = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+
+	while (state.KeepRunning()) {
+		twiddle(forward, forward + LENGTH, reverse);
+		escape(reverse);
+	}
+
+	free(forward);
+	free(reverse);
+}
+BENCHMARK(twiddle);
 
 static void libdnax_replace(benchmark::State &state)
 {

@@ -26,7 +26,6 @@ double dna4_evodist_k80(const char *begin, const char *end, const char *other,
 						size_t *transitions, size_t *transversions);
 double dna4_gc_content(const char *begin, const char *end);
 uint64_t dna4_hash(const char *begin, size_t k);
-uint64_t dna4_hash_unordered(const char *begin, size_t k);
 char *dna4_revcomp(const char *begin, const char *end, char *dest);
 
 /// dnax - Any ASCII char or UTF8 byte

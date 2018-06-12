@@ -7,7 +7,7 @@
 #include <assert.h>
 
 __attribute__((target_clones("avx", "sse2", "default"))) char *
-dna4_revcomp(const char *begin, const char *end, char *dest)
+dna4_revcomp(const char *begin, const char *end, char *restrict dest)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
