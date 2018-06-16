@@ -6,7 +6,7 @@
 #include "dna.h"
 #include <assert.h>
 
-__attribute__((target_clones("avx", "sse2", "default"))) double
+__attribute__((target_clones("avx2", "avx", "sse2", "default"))) double
 dna4_gc_content(const char *begin, const char *end)
 {
 	assert(begin != NULL);
