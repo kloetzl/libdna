@@ -1,10 +1,10 @@
 SHELL=zsh
 
 CPPFLAGS+=-Wall -Wextra -I../include -std=c++14
-CXXFLAGS+=-ggdb -O3 #-march=native -ftree-vectorize
+CXXFLAGS+=-ggdb -O3 -march=native -ftree-vectorize
 LIBS+=-lbenchmark
 
-BINS=revcomp hash count replace
+BINS=revcomp hash count replace compare
 
 all: $(BINS)
 
@@ -17,6 +17,7 @@ revcomp: revcomp.o ../libdna.a
 hash: hash.o ../libdna.a
 count: count.o ../libdna.a
 replace: replace.o ../libdna.a
+compare: compare.o ../libdna.a
 
 $(BINS):
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS)

@@ -7,7 +7,7 @@
 #include "utils.h"
 #include <assert.h>
 
-__attribute__((target_clones("avx", "sse2", "default"))) double
+__attribute__((target_clones("avx2", "avx", "sse2", "default"))) double
 dna4_evodist_jc(const char *begin, const char *end, const char *other,
 				size_t *substitutions_ptr)
 {
@@ -21,7 +21,7 @@ dna4_evodist_jc(const char *begin, const char *end, const char *other,
 	size_t length = end - begin;
 
 	for (; i < length; i++) {
-		if (begin[i] != other[i]) {
+		if (UNLIKELY(begin[i] != other[i])) {
 			substitutions++;
 		}
 	}

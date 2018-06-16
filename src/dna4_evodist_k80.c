@@ -5,19 +5,25 @@
 
 #include "dna.h"
 #include "utils.h"
+#include <assert.h>
 
-/*__attribute__((target_clones("avx", "sse2", "default"))) */
+__attribute__((target_clones("avx2", "avx", "sse2", "default")))
 double dna4_evodist_k80(const char *begin, const char *end, const char *other,
 						size_t *transitions_ptr, size_t *transversions_ptr)
 {
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(other != NULL);
+	assert(begin <= end);
+
 	size_t transitions = 0, transversions = 0;
 	size_t i = 0;
 	size_t length = end - begin;
 
 	for (; i < length; i++) {
-		if (begin[i] != other[i]) {
-			if ((begin[i] == 'G' || begin[i] == 'C') ^
-				(other[i] == 'G' || other[i] == 'C')) {
+		if (UNLIKELY(begin[i] != other[i])) {
+			if ((begin[i] == 'T' || begin[i] == 'C') ^
+				(other[i] == 'T' || other[i] == 'C')) {
 				transversions++;
 			} else {
 				transitions++;
