@@ -3,5 +3,13 @@
 *.a
 *.so
 
+# benchmarks
+compare
+count
+hash
+replace
+revcomp
+
+
 # perf
 perf.data*
