@@ -3,7 +3,7 @@ SHELL=zsh
 VPATH+=src
 
 CPPFLAGS+=-Wall -Wextra -Iinclude -Isrc
-CFLAGS+=-ggdb -O3 -std=gnu11 -fPIC
+CFLAGS+=-ggdb -O2 -ftree-loop-vectorize -std=gnu11 -fPIC
 LIBS+=
 
 OBJECTS=\
@@ -20,6 +20,7 @@ OBJECTS=\
 	dnax_mismatch.o \
 	dnax_replace.o \
 	dnax_revcomp.o \
+	dnax_translate.o \
 	utils.o
 
 .PHONY: clean format all install

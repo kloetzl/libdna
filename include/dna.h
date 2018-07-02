@@ -33,9 +33,11 @@ char *dna4_revcomp(const char *begin, const char *end, char *dest);
 uint64_t dnax_hash(const char *table, const char *begin, size_t k);
 char *dnax_revcomp(const char *table, const char *begin, const char *end,
 				   char *dest);
-void dnax_count(size_t *table, const char *begin, const char *end);
 
-// generic
+char *dnax_translate_quirks(const char *begin, const char *end, char *dest);
+#define dnax_translate dnax_translate_quirks
+
+void dnax_count(size_t *table, const char *begin, const char *end);
 char *dnax_replace(const char *table, const char *begin, const char *end,
 				   char *dest);
 char *dnax_mismatch(const char *begin, const char *end, const char *other);
