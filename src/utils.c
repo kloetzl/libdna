@@ -4,14 +4,18 @@
  */
 
 #include "utils.h"
+
 #include <math.h>
 #include <stdlib.h>
 
-extern double log(double x) __attribute__((weak));
+extern double
+log(double x) __attribute__((weak));
 
-static float dna_utils_logf(float x);
+static float
+dna_utils_logf(float x);
 
-double dna_utils_log(double x)
+double
+dna_utils_log(double x)
 {
 	// https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPFrameworks/Concepts/WeakLinking.html
 	// https://leondong1993.github.io/2017/04/15/strong-weak-symbol/
@@ -23,7 +27,8 @@ double dna_utils_log(double x)
 
 // https://www.ebayinc.com/stories/blogs/tech/fast-approximate-logarithms-part-i-the-basics/
 
-static float dna_utils_logf(float x)
+static float
+dna_utils_logf(float x)
 {
 	// static const float a = -0.4326728;
 	// static const float b = 2.276597;

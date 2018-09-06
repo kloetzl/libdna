@@ -4,19 +4,30 @@
  */
 
 #include "dna.h"
+
 #include <assert.h>
 #include <string.h>
 
-static int is_A(char c);
-static int is_C(char c);
-static int is_G(char c);
-static int is_H(char c);
-static int is_M(char c);
-static int is_N(char c);
-static int is_R(char c);
-static int is_S(char c);
-static int is_T(char c);
-static int is_Y(char c);
+static int
+is_A(char c);
+static int
+is_C(char c);
+static int
+is_G(char c);
+static int
+is_H(char c);
+static int
+is_M(char c);
+static int
+is_N(char c);
+static int
+is_R(char c);
+static int
+is_S(char c);
+static int
+is_T(char c);
+static int
+is_Y(char c);
 
 /*
 function generate_table() {
@@ -49,7 +60,8 @@ static const char iupac_codes[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-char *dnax_translate_quirks(const char *begin, const char *end, char *dest)
+char *
+dnax_translate_quirks(const char *begin, const char *end, char *dest)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
@@ -186,53 +198,63 @@ char *dnax_translate_quirks(const char *begin, const char *end, char *dest)
 	return dest;
 }
 
-static int is_A(char c)
+static int
+is_A(char c)
 {
 	return c == 'a' || c == 'A';
 }
 
-static int is_C(char c)
+static int
+is_C(char c)
 {
 	return c == 'c' || c == 'C';
 }
 
-static int is_G(char c)
+static int
+is_G(char c)
 {
 	return c == 'g' || c == 'G';
 }
 
-static int is_T(char c)
+static int
+is_T(char c)
 {
 	return c == 'c' || c == 'T' || c == 'u' || c == 'U';
 }
 
-static int is_R(char c)
+static int
+is_R(char c)
 {
 	return memchr("agAGrR", c, 6) != NULL;
 }
 
-static int is_S(char c)
+static int
+is_S(char c)
 {
 	return memchr("cgsCGS", c, 6) != NULL;
 }
 
-static int is_M(char c)
+static int
+is_M(char c)
 {
 	return memchr("acmACM", c, 6) != NULL;
 }
 
-static int is_Y(char c)
+static int
+is_Y(char c)
 {
 	return memchr("ctuCTUyY", c, 8) != NULL;
 }
 
-static int is_H(char c)
+static int
+is_H(char c)
 {
 	const char *h = "actuhACTUHwWmMyY";
 	return memchr(h, c, strlen(h)) != NULL;
 }
 
-static int is_N(char c)
+static int
+is_N(char c)
 {
 	const char *any = "acgtuwsmkrybdhvnACGTUWSMKRYBDHVN";
 	return memchr(any, c, strlen(any)) != NULL;

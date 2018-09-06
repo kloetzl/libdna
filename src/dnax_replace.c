@@ -4,6 +4,8 @@
  */
 
 #include "dna.h"
+#include "utils.h"
+
 #include <assert.h>
 
 /*
@@ -47,8 +49,9 @@ const char dnax_to_dna4_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-char *dnax_replace(const char *restrict table, const char *begin,
-				   const char *end, char *dest)
+char *
+dnax_replace(
+	const char *restrict table, const char *begin, const char *end, char *dest)
 {
 	assert(table != NULL);
 	assert(begin != NULL);
@@ -65,7 +68,7 @@ char *dnax_replace(const char *restrict table, const char *begin,
 	for (; from < length; from++) {
 		unsigned char c = ubegin[from];
 		signed char d = table[c];
-		if (d == -1) continue;
+		if (UNLIKELY(d == -1)) continue;
 
 		dest[to++] = d;
 	}

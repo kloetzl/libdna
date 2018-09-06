@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+
 #include <assert.h>
 
 __attribute__((target_clones("avx2", "avx", "sse2", "default"))) uint64_t

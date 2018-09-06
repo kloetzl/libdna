@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+
 #include <assert.h>
 
 /*
@@ -64,8 +65,9 @@ const char dnax_revcomp_table[] = {
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1};
 
-char *dnax_revcomp(const char *restrict table, const char *begin,
-				   const char *end, char *dest)
+char *
+dnax_revcomp(
+	const char *restrict table, const char *begin, const char *end, char *dest)
 {
 	assert(table != NULL);
 	assert(begin != NULL);

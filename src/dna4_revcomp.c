@@ -4,9 +4,10 @@
  */
 
 #include "dna.h"
+
 #include <assert.h>
 
-__attribute__((target_clones("avx", "sse2", "default"))) char *
+__attribute__((target_clones("avx2", "avx", "sse2", "default"))) char *
 dna4_revcomp(const char *begin, const char *end, char *restrict dest)
 {
 	assert(begin != NULL);

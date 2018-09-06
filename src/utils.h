@@ -5,7 +5,8 @@
 
 #pragma once
 
-double dna_utils_log(double);
+double
+dna_utils_log(double);
 
 #define UNLIKELY(X) __builtin_expect((X), 0)
 #define LIKELY(X) __builtin_expect((X), 1)

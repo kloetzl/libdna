@@ -4,12 +4,14 @@
  */
 
 #include "dna.h"
+
 #include <assert.h>
 #include <string.h>
 
 // CHAR_BIT
 
-void dnax_count(size_t *restrict table, const char *begin, const char *end)
+void
+dnax_count(size_t *restrict table, const char *begin, const char *end)
 {
 	assert(table != NULL);
 	assert(begin != NULL);

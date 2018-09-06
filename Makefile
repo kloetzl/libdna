@@ -3,25 +3,9 @@ SHELL=zsh
 VPATH+=src
 
 CPPFLAGS+=-Wall -Wextra -Iinclude -Isrc
-CFLAGS+=-ggdb -O2 -ftree-loop-vectorize -std=gnu11 -fPIC
+CFLAGS+=-ggdb -O2 -std=gnu11 -fPIC
 LIBS+=
 
-OBJECTS=\
-	dna4_evodist_jc.o \
-	dna4_evodist_k80.o \
-	dna4_gc_content.o \
-	dna4_hash.o \
-	dna4_revcomp.o \
-	dna_version.o \
-	dnax_count.o \
-	dnax_find_first_not_of.o \
-	dnax_find_first_of.o \
-	dnax_hash.o \
-	dnax_mismatch.o \
-	dnax_replace.o \
-	dnax_revcomp.o \
-	dnax_translate.o \
-	utils.o
 
 .PHONY: clean format all install
 

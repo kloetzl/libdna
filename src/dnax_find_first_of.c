@@ -5,8 +5,9 @@
 
 #include "dna.h"
 
-char *dnax_find_first_of(const char *restrict table, const char *begin,
-						 const char *end)
+char *
+dnax_find_first_of(
+	const char *restrict table, const char *begin, const char *end)
 {
 	const unsigned char *ubegin = (const unsigned char *)begin;
 

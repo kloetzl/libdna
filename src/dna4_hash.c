@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+
 #include <assert.h>
 
 /**
@@ -11,7 +12,8 @@
  * this is because of the smaller number of instructions.
  */
 
-uint64_t dna4_hash(const char *begin, size_t k)
+uint64_t
+dna4_hash(const char *begin, size_t k)
 {
 	assert(begin != NULL);
 	assert(k <= 32);

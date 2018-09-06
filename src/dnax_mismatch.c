@@ -5,7 +5,8 @@
 
 #include "dna.h"
 
-char *dnax_mismatch(const char *begin, const char *end, const char *other)
+char *
+dnax_mismatch(const char *begin, const char *end, const char *other)
 {
 	size_t length = end - begin;
 

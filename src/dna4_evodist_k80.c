@@ -5,11 +5,16 @@
 
 #include "dna.h"
 #include "utils.h"
+
 #include <assert.h>
 
-__attribute__((target_clones("avx2", "avx", "sse2", "default"))) double
-dna4_evodist_k80(const char *begin, const char *end, const char *other,
-				 size_t *transitions_ptr, size_t *transversions_ptr)
+__attribute__((target_clones(/*"avx2",*/ "avx", "sse2", "default"))) double
+dna4_evodist_k80(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *transitions_ptr,
+	size_t *transversions_ptr)
 {
 	assert(begin != NULL);
 	assert(end != NULL);

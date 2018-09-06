@@ -5,7 +5,8 @@
 
 #include "dna.h"
 
-int dna_version(void)
+int
+dna_version(void)
 {
 	return DNA_VERSION;
 }

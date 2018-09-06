@@ -5,11 +5,15 @@
 
 #include "dna.h"
 #include "utils.h"
+
 #include <assert.h>
 
-__attribute__((target_clones("avx2", "avx", "sse2", "default"))) double
-dna4_evodist_jc(const char *begin, const char *end, const char *other,
-				size_t *substitutions_ptr)
+double
+dna4_evodist_jc_generic(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions_ptr)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
@@ -34,3 +38,25 @@ dna4_evodist_jc(const char *begin, const char *end, const char *other,
 
 	return dist;
 }
+
+dna4_evodist_jc_fn *
+dna4_evodist_jc_select(void)
+{
+	if (__builtin_cpu_supports("avx512bw") &&
+		__builtin_cpu_supports("avx512vl")) {
+		return dna4_evodist_jc_avx512;
+	} else if (__builtin_cpu_supports("avx2")) {
+		return dna4_evodist_jc_avx2;
+	} else if (__builtin_cpu_supports("sse2")) {
+		return dna4_evodist_jc_sse2;
+	} else {
+		return dna4_evodist_jc_generic;
+	}
+}
+
+double
+dna4_evodist_jc(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions_ptr) __attribute__((ifunc("dna4_evodist_jc_select")));
