@@ -1,16 +1,16 @@
 #include <algorithm>
 #include <benchmark/benchmark.h>
 #include <cstdlib>
+#include <cstring>
 #include <dna.h>
 #include <random>
-#include <cstring>
 
 static const size_t LENGTH = 1000000;
 
-
 static const size_t seed = 1729;
 
-void gen(char *str, size_t length)
+void
+gen(char *str, size_t length)
 {
 	static const char *ACGT = "ACGT";
 
@@ -27,13 +27,14 @@ void gen(char *str, size_t length)
 
 /** Fake the compiler into thinking *p is being read. Thus it cannot remove *p
  * as unused. */
-void escape(void *p)
+void
+escape(void *p)
 {
 	asm volatile("" : : "g"(p) : "memory");
 }
 
-
-static void libdnax_replace(benchmark::State &state)
+static void
+libdnax_replace(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -47,8 +48,8 @@ static void libdnax_replace(benchmark::State &state)
 }
 BENCHMARK(libdnax_replace);
 
-__attribute__((target_clones("avx", "sse2", "default")))
-char *xto4(const char *begin, const char *end, char *dest)
+__attribute__((target_clones("avx", "sse2", "default"))) char *
+xto4(const char *begin, const char *end, char *dest)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
@@ -67,8 +68,8 @@ char *xto4(const char *begin, const char *end, char *dest)
 	return dest;
 }
 
-
-static void xto4(benchmark::State &state)
+static void
+xto4(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -82,7 +83,8 @@ static void xto4(benchmark::State &state)
 }
 BENCHMARK(xto4);
 
-static void memcpy(benchmark::State &state)
+static void
+memcpy(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *dest = (char *)malloc(LENGTH + 1);
@@ -97,6 +99,4 @@ static void memcpy(benchmark::State &state)
 }
 BENCHMARK(memcpy);
 
-
 BENCHMARK_MAIN();
-

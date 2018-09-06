@@ -6,10 +6,10 @@
 
 static const size_t LENGTH = 1000000;
 
-
 static const size_t seed = 1729;
 
-void gen(char *str, size_t length)
+void
+gen(char *str, size_t length)
 {
 	static const char *ACGT = "ACGT";
 
@@ -17,7 +17,7 @@ void gen(char *str, size_t length)
 	auto base_dist = std::uniform_int_distribution<int>{0, 3};
 	auto base_acgt = [&] { return ACGT[base_dist(base_rand)]; };
 
-	for ( size_t i = 0; i < length; i++) {
+	for (size_t i = 0; i < length; i++) {
 		*str++ = base_acgt();
 	}
 
@@ -26,13 +26,14 @@ void gen(char *str, size_t length)
 
 /** Fake the compiler into thinking *p is being read. Thus it cannot remove *p
  * as unused. */
-void escape(void *p)
+void
+escape(void *p)
 {
 	asm volatile("" : : "g"(p) : "memory");
 }
 
-
-static void libdna4(benchmark::State &state)
+static void
+libdna4(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *reverse = (char *)malloc(LENGTH + 1);
@@ -48,7 +49,8 @@ static void libdna4(benchmark::State &state)
 }
 BENCHMARK(libdna4);
 
-static void libdnax(benchmark::State &state)
+static void
+libdnax(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *reverse = (char *)malloc(LENGTH + 1);
@@ -64,7 +66,8 @@ static void libdnax(benchmark::State &state)
 }
 BENCHMARK(libdnax);
 
-static char *revcomp_table4(const char *forward, const char *end, char *reverse)
+static char *
+revcomp_table4(const char *forward, const char *end, char *reverse)
 {
 	static /*constexpr*/ char table[127];
 	table['A'] = 'T';
@@ -83,7 +86,8 @@ static char *revcomp_table4(const char *forward, const char *end, char *reverse)
 	return reverse;
 }
 
-static void revcomp_table4(benchmark::State &state)
+static void
+revcomp_table4(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *reverse = (char *)malloc(LENGTH + 1);
@@ -100,7 +104,7 @@ static void revcomp_table4(benchmark::State &state)
 BENCHMARK(revcomp_table4);
 
 static __attribute__((target_clones("avx2", "avx", "sse2", "default"))) char *
-twiddle(const char *begin, const char *end, char * __restrict dest)
+twiddle(const char *begin, const char *end, char *__restrict dest)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
@@ -117,7 +121,8 @@ twiddle(const char *begin, const char *end, char * __restrict dest)
 	return dest + length;
 }
 
-static void twiddle(benchmark::State &state)
+static void
+twiddle(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *reverse = (char *)malloc(LENGTH + 1);
@@ -133,7 +138,8 @@ static void twiddle(benchmark::State &state)
 }
 BENCHMARK(twiddle);
 
-static void libdnax_replace(benchmark::State &state)
+static void
+libdnax_replace(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *reverse = (char *)malloc(LENGTH + 1);
@@ -149,6 +155,4 @@ static void libdnax_replace(benchmark::State &state)
 }
 BENCHMARK(libdnax_replace);
 
-
 BENCHMARK_MAIN();
-

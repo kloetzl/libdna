@@ -8,7 +8,8 @@ static const size_t LENGTH = 100000;
 static const size_t K = 32;
 static const size_t seed = 1729;
 
-void gen(char *str, size_t length)
+void
+gen(char *str, size_t length)
 {
 	static const char *ACGT = "ACGT";
 
@@ -23,14 +24,14 @@ void gen(char *str, size_t length)
 	*str = '\0';
 }
 
-void escape(void *p)
+void
+escape(void *p)
 {
 	asm volatile("" : : "g"(p) : "memory");
 }
 
-
-
-static uint64_t hash_simple(const char *kmer, uint64_t k)
+static uint64_t
+hash_simple(const char *kmer, uint64_t k)
 {
 	uint64_t return_value = 0;
 
@@ -51,7 +52,8 @@ static uint64_t hash_simple(const char *kmer, uint64_t k)
 	return return_value;
 }
 
-static size_t hash_twiddle(const char *kmer, size_t k)
+static size_t
+hash_twiddle(const char *kmer, size_t k)
 {
 	size_t return_value = 0;
 
@@ -67,7 +69,8 @@ static size_t hash_twiddle(const char *kmer, size_t k)
 	return return_value;
 }
 
-static size_t hash_twiddle_length(const char *kmer, size_t K)
+static size_t
+hash_twiddle_length(const char *kmer, size_t K)
 {
 	size_t return_value = 0;
 	size_t k = 0;
@@ -84,7 +87,8 @@ static size_t hash_twiddle_length(const char *kmer, size_t K)
 	return return_value;
 }
 
-static size_t hash_twiddle_length_unordered(const char *kmer, size_t K)
+static size_t
+hash_twiddle_length_unordered(const char *kmer, size_t K)
 {
 	size_t return_value = 0;
 	size_t k = 0;
@@ -100,7 +104,8 @@ static size_t hash_twiddle_length_unordered(const char *kmer, size_t K)
 	return return_value;
 }
 
-static size_t hash_table(const char *kmer, size_t K)
+static size_t
+hash_table(const char *kmer, size_t K)
 {
 	static char table[127];
 	table['A'] = 0;
@@ -119,8 +124,8 @@ static size_t hash_table(const char *kmer, size_t K)
 	return return_value;
 }
 
-
-static void hash_simple(benchmark::State &state)
+static void
+hash_simple(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -136,7 +141,8 @@ static void hash_simple(benchmark::State &state)
 }
 BENCHMARK(hash_simple);
 
-static void hash_twiddle(benchmark::State &state)
+static void
+hash_twiddle(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -152,7 +158,8 @@ static void hash_twiddle(benchmark::State &state)
 }
 BENCHMARK(hash_twiddle);
 
-static void hash_twiddle_length(benchmark::State &state)
+static void
+hash_twiddle_length(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -168,7 +175,8 @@ static void hash_twiddle_length(benchmark::State &state)
 }
 BENCHMARK(hash_twiddle_length);
 
-static void hash_twiddle_length_unordered(benchmark::State &state)
+static void
+hash_twiddle_length_unordered(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -184,7 +192,8 @@ static void hash_twiddle_length_unordered(benchmark::State &state)
 }
 BENCHMARK(hash_twiddle_length_unordered);
 
-static void hash_table(benchmark::State &state)
+static void
+hash_table(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -200,7 +209,8 @@ static void hash_table(benchmark::State &state)
 }
 BENCHMARK(hash_table);
 
-uint64_t derp(const char *begin, size_t k)
+uint64_t
+derp(const char *begin, size_t k)
 {
 	uint64_t res = 0;
 	for (size_t i = 0; i < k; i++) {
@@ -211,7 +221,8 @@ uint64_t derp(const char *begin, size_t k)
 	return res;
 }
 
-static void derp(benchmark::State &state)
+static void
+derp(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -227,8 +238,8 @@ static void derp(benchmark::State &state)
 }
 BENCHMARK(derp);
 
-
-static void libdna4_hash(benchmark::State &state)
+static void
+libdna4_hash(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -244,8 +255,8 @@ static void libdna4_hash(benchmark::State &state)
 }
 BENCHMARK(libdna4_hash);
 
-
-static void libdnax_hash(benchmark::State &state)
+static void
+libdnax_hash(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -260,7 +271,5 @@ static void libdnax_hash(benchmark::State &state)
 	free(forward);
 }
 BENCHMARK(libdnax_hash);
-
-
 
 BENCHMARK_MAIN();
