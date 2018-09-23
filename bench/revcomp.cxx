@@ -32,39 +32,34 @@ escape(void *p)
 	asm volatile("" : : "g"(p) : "memory");
 }
 
-static void
-libdna4(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	char *reverse = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
+#define BENCHME(functionname)                                                  \
+                                                                               \
+	static void functionname(benchmark::State &state)                          \
+	{                                                                          \
+		char *forward = (char *)malloc(LENGTH + 1);                            \
+		char *reverse = (char *)malloc(LENGTH + 1);                            \
+		gen(forward, LENGTH);                                                  \
+                                                                               \
+		while (state.KeepRunning()) {                                          \
+			functionname(forward, forward + LENGTH, reverse);                  \
+			escape(reverse);                                                   \
+		}                                                                      \
+                                                                               \
+		free(forward);                                                         \
+		free(reverse);                                                         \
+	}                                                                          \
+	BENCHMARK(functionname);
 
-	while (state.KeepRunning()) {
-		dna4_revcomp(forward, forward + LENGTH, reverse);
-		escape(reverse);
-	}
-
-	free(forward);
-	free(reverse);
+extern "C" {
+extern char *
+dna4_revcomp_ssse3(const char *begin, const char *end, char * dest);
+	
 }
-BENCHMARK(libdna4);
 
-static void
-libdnax(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	char *reverse = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
 
-	while (state.KeepRunning()) {
-		dnax_revcomp(dnax_revcomp_table, forward, forward + LENGTH, reverse);
-		escape(reverse);
-	}
-
-	free(forward);
-	free(reverse);
-}
-BENCHMARK(libdnax);
+BENCHME(dna4_revcomp);
+BENCHME(dna4_revcomp_ssse3);
+// BENCHME(libdnax);
 
 static char *
 revcomp_table4(const char *forward, const char *end, char *reverse)
@@ -86,24 +81,9 @@ revcomp_table4(const char *forward, const char *end, char *reverse)
 	return reverse;
 }
 
-static void
-revcomp_table4(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	char *reverse = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
+BENCHME(revcomp_table4);
 
-	while (state.KeepRunning()) {
-		revcomp_table4(forward, forward + LENGTH, reverse);
-		escape(reverse);
-	}
-
-	free(forward);
-	free(reverse);
-}
-BENCHMARK(revcomp_table4);
-
-static __attribute__((target_clones("avx2", "avx", "sse2", "default"))) char *
+static __attribute__((target_clones("avx2", "sse2", "default"))) char *
 twiddle(const char *begin, const char *end, char *__restrict dest)
 {
 	assert(begin != NULL);
@@ -121,22 +101,25 @@ twiddle(const char *begin, const char *end, char *__restrict dest)
 	return dest + length;
 }
 
+BENCHME(twiddle);
+
 static void
-twiddle(benchmark::State &state)
+dnax_revcomp(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *reverse = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
 
 	while (state.KeepRunning()) {
-		twiddle(forward, forward + LENGTH, reverse);
+		dnax_revcomp(dnax_revcomp_table, forward, forward + LENGTH, reverse);
 		escape(reverse);
 	}
 
 	free(forward);
 	free(reverse);
 }
-BENCHMARK(twiddle);
+BENCHMARK(dnax_revcomp);
+
 
 static void
 libdnax_replace(benchmark::State &state)
