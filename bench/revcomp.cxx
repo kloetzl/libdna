@@ -62,6 +62,29 @@ BENCHME(dna4_revcomp_ssse3);
 // BENCHME(libdnax);
 
 static char *
+revcomp_switch(const char *forward, const char *end, char *reverse)
+{
+	size_t len = end - forward;
+
+	reverse[len] = '\0';
+
+	for (size_t k = 0; k < len; k++) {
+		char c = forward[k], d;
+		switch (c) {
+			case 'A': d = 'T'; break;
+			case 'C': d = 'G'; break;
+			case 'G': d = 'C'; break;
+			case 'T': d = 'A'; break;
+		}
+		reverse[len - k - 1] = d;
+	}
+
+	return reverse;
+}
+
+BENCHME(revcomp_switch);
+
+static char *
 revcomp_table4(const char *forward, const char *end, char *reverse)
 {
 	static /*constexpr*/ char table[127];
