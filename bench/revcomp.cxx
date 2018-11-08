@@ -126,6 +126,27 @@ twiddle(const char *begin, const char *end, char *__restrict dest)
 
 BENCHME(twiddle);
 
+char *
+subtract(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	for (size_t i = 0; i < length; i++) {
+		char c = begin[length - 1 - i];
+		int sum = c & 2 ? 'C' + 'G' : 'A' + 'T';
+
+		dest[i] = sum - c;
+	}
+
+	return dest + length;
+}
+
+BENCHME(subtract);
+
 static void
 dnax_revcomp(benchmark::State &state)
 {
