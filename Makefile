@@ -1,7 +1,5 @@
 SHELL=zsh
 
-VPATH+=src
-
 CPPFLAGS+=-Wall -Wextra -Iinclude -Isrc
 CFLAGS+=-ggdb -O2 -std=gnu11 -fPIC
 LIBS+=
@@ -14,11 +12,18 @@ all: libdna.a libdna.so
 RELEASE: CPPFLAGS+=-DNDEBUG
 RELEASE: libdna.a libdna.so
 
-libdna.a: $(OBJECTS)
-	$(AR) -qs $@ $^
+src/libdna.a:
+	$(MAKE) -C src libdna.a
 
-libdna.so: $(OBJECTS)
-	$(CC) -shared -o $@ $^
+src/libdna.so:
+	$(MAKE) -C src libdna.so
+
+
+libdna.a: src/libdna.a
+	cp $^ $@
+
+libdna.so: src/libdna.so
+	cp $^ $@
 
 install: libdna.so
 	# not sure if this works
@@ -30,4 +35,5 @@ format:
 	clang-format -i src/*.h src/*.c include/*.h
 
 clean:
+	$(MAKE) -C src clean
 	setopt null_glob; $(RM) -rf *.o dna_test *.a *.so
