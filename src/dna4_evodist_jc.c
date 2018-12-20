@@ -42,6 +42,11 @@ dna4_evodist_jc_generic(
 dna4_evodist_jc_fn *
 dna4_evodist_jc_select(void)
 {
+	// As ifunc resolvers are called before any constructors run, we explicitly
+	// have to initialize the cpu model detector.
+	// https://gcc.gnu.org/onlinedocs/gcc/x86-Built-in-Functions.html
+	__builtin_cpu_init();
+
 	if (__builtin_cpu_supports("avx512bw") &&
 		__builtin_cpu_supports("avx512vl")) {
 		return dna4_evodist_jc_avx512;
