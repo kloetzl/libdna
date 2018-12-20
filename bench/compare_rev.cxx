@@ -62,33 +62,8 @@ escape(void *p)
 	asm volatile("" : : "g"(p) : "memory");
 }
 
-double
-base(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
-{
-	size_t substitutions = 0;
-	size_t i = 0;
-	size_t length = end - begin;
-
-	for (; i < length; i++) {
-		if (begin[i] != other[i]) {
-			substitutions++;
-		}
-	}
-
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
-}
-
 static void
-base(benchmark::State &state)
+dna4_evodist_jc(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
@@ -99,7 +74,7 @@ base(benchmark::State &state)
 	size_t subst = 0;
 
 	while (state.KeepRunning()) {
-		auto d = base(forward, forward + LENGTH, other, &subst);
+		auto d = dna4_evodist_jc(forward, forward + LENGTH, other, &subst);
 		escape(&d);
 	}
 
@@ -108,7 +83,7 @@ base(benchmark::State &state)
 	free(forward);
 	free(other);
 }
-BENCHMARK(base);
+BENCHMARK(dna4_evodist_jc);
 
 constexpr bool
 is_complement(char c, char d)
