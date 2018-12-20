@@ -3,9 +3,12 @@
 #include <cstdlib>
 #include <dna.h>
 #include <random>
+#include <cstring>
+#include <emmintrin.h>
+#include <tmmintrin.h>
 
 static const size_t LENGTH = 100000;
-static const size_t K = 32;
+static const size_t K = 16;
 static const size_t seed = 1729;
 
 void
@@ -104,6 +107,91 @@ hash_twiddle_length_unordered(const char *kmer, size_t K)
 	return return_value;
 }
 
+static void printadj(const char *addr, size_t nbytes)
+{
+	static char buf[129] = {0};
+	for (size_t i = 0; i < nbytes; i += 2) {
+		sprintf(buf + (i/2) * 5, " %c %c ", addr[i], addr[i + 1]);
+	}
+
+	fprintf(stderr, "%s\n", buf);
+}
+
+
+static void printhex(const char *addr, size_t nbytes)
+{
+	static char buf[129] = {0};
+	for (size_t i = 0; i < nbytes; i++) {
+		sprintf(buf + i * 3, "%02hhx ", (unsigned int)addr[i]);
+	}
+
+	fprintf(stderr, "%s", buf);
+}
+
+static void printhexshort(const char *addr, size_t nbytes)
+{
+	static char buf[129] = {0};
+	for (size_t i = 0; i < nbytes; i += 2) {
+		short z;
+		// memcpy(&z, addr + i, sizeof(short));
+		memcpy(&z, addr + i + 1, 1);
+		memcpy(((char*)&z) + 1, addr + i, 1);
+		sprintf(buf + (i/2) * 5, "%04hx ", z);
+	}
+
+	fprintf(stderr, "%s", buf);
+}
+
+
+
+static void printshort(const char *addr, size_t nbytes)
+{
+	static char buf[129] = {0};
+	for (size_t i = 0; i < nbytes; i += 2) {
+		short z;
+		memcpy(&z, addr + i, sizeof(short));
+		sprintf(buf + (i/2) * 5, "%04hu ", z);
+	}
+
+	fprintf(stderr, "%s", buf);
+}
+
+static size_t
+hash_twiddle_simd(const char *kmer, size_t K)
+{
+	size_t return_value = 0;
+	// printadj(kmer, K);
+
+	__m128i a;
+	memcpy(&a, kmer, K);
+	__m128i all6 = _mm_set1_epi8(6);
+	__m128i b = _mm_and_si128(a, all6);
+
+	// printhexshort((char*)&b, sizeof(b)); fprintf(stderr, "\n");
+
+	__m128i shift1 = _mm_set1_epi64x (1);
+	__m128i aligned = _mm_sra_epi16(b, shift1);
+	// printhexshort((char*)&aligned, sizeof(aligned)); fprintf(stderr, ">\n");
+
+	__m128i multmask =  _mm_set_epi16(64, 16, 4, 1, 64, 16, 4, 1);
+	// printhex((char*)&multmask, sizeof(multmask)); fprintf(stderr, "\n");
+	__m128i shifted = _mm_mullo_epi16(aligned, multmask);
+	// printhexshort((char*)&shifted, sizeof(shifted)); fprintf(stderr, "*\n");
+
+	__m128i allzero = _mm_set1_epi8(0);
+	// __m128i sum = _mm_sad_epu8(shifted, allzero); // sum first 8 bytes
+	__m128i sum = _mm_hadd_epi16(shifted, allzero); // sum two 16b into one
+	// printhexshort((char*)&sum, sizeof(sum)); fprintf(stderr, "+\n");
+	__m128i sum2 = _mm_hadd_epi16(sum, allzero); // sum two 16b into one
+	// printhexshort((char*)&sum2, sizeof(sum2)); fprintf(stderr, "+\n");
+
+	memcpy(&return_value, &sum2, sizeof(return_value));
+
+	// fprintf(stderr, "%lx\n\n", return_value);
+	return return_value;
+}
+
+
 static size_t
 hash_table(const char *kmer, size_t K)
 {
@@ -191,6 +279,26 @@ hash_twiddle_length_unordered(benchmark::State &state)
 	free(forward);
 }
 BENCHMARK(hash_twiddle_length_unordered);
+
+
+static void
+hash_twiddle_simd(benchmark::State &state)
+{
+	char *forward = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+
+	// size_t K = 8;
+
+	while (state.KeepRunning()) {
+		for (char *kmer = forward; kmer < forward + LENGTH - K; kmer++) {
+			size_t hash = hash_twiddle_simd(kmer, K);
+			escape(&hash);
+		}
+	}
+
+	free(forward);
+}
+BENCHMARK(hash_twiddle_simd);
 
 static void
 hash_table(benchmark::State &state)
