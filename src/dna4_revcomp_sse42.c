@@ -6,10 +6,10 @@
 #include "dna.h"
 
 #include <assert.h>
-#include <tmmintrin.h>
 #include <emmintrin.h>
 #include <smmintrin.h>
 #include <string.h>
+#include <tmmintrin.h>
 
 typedef __m128i vec_type;
 
@@ -52,10 +52,12 @@ dna4_revcomp_ssse3(const char *begin, const char *end, char *restrict dest)
 		// vec_type is_AorT = _mm_and_si128(all_bytes_4, iszero);
 		// vec_type is_CorG = _mm_andnot_si128(iszero, all_bytes_21);
 		// vec_type xor_mask = _mm_or_si128(is_AorT, is_CorG);
-		
+
 		vec_type comp = _mm_xor_si128(xor_mask, reversed);
 
-		memcpy(dest + length - vec_offset * vec_bytes - vec_bytes, &comp, vec_bytes);
+		memcpy(
+			dest + length - vec_offset * vec_bytes - vec_bytes, &comp,
+			vec_bytes);
 	}
 
 	for (size_t i = vec_offset * vec_bytes; i < length; i++) {

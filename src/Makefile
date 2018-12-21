@@ -8,13 +8,13 @@ OBJECTS=\
 	dna4_evodist_jc.o \
 	dna4_evodist_k80.o \
 	dna4_gc_content.o \
-	dna4_hash.o \
+	dna4_pack.o \
 	dna4_revcomp.o \
 	dna_version.o \
 	dnax_count.o \
 	dnax_find_first_not_of.o \
 	dnax_find_first_of.o \
-	dnax_hash.o \
+	dnax_pack.o \
 	dnax_mismatch.o \
 	dnax_replace.o \
 	dnax_revcomp.o \

@@ -13,7 +13,7 @@
  */
 
 uint64_t
-dna4_hash(const char *begin, size_t k)
+dna4_pack(const char *begin, size_t k)
 {
 	assert(begin != NULL);
 	assert(k <= 32);
@@ -22,7 +22,7 @@ dna4_hash(const char *begin, size_t k)
 
 	uint64_t res = 0;
 	for (size_t i = 0; i < k; i++) {
-		char c = dnax_hash_table[ubegin[i]];
+		char c = dnax_pack_table[ubegin[i]];
 		res <<= 2;
 		res |= c;
 	}
@@ -30,7 +30,7 @@ dna4_hash(const char *begin, size_t k)
 	return res;
 }
 
-// uint64_t dna4_hash_direct(const char *begin, size_t k)
+// uint64_t dna4_pack_direct(const char *begin, size_t k)
 // {
 // 	uint64_t res = 0;
 // 	for (size_t i = 0; i < k; i++) {

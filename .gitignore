@@ -6,7 +6,7 @@
 # benchmarks
 compare
 count
-hash
+pack
 replace
 revcomp
 

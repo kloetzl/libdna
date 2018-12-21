@@ -32,7 +32,7 @@ function generate_table() {
 
 */
 
-const char dnax_hash_table[] = {
+const char dnax_pack_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -49,7 +49,7 @@ const char dnax_hash_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1};
 
 uint64_t
-dnax_hash(const char *restrict table, const char *begin, size_t k)
+dnax_pack(const char *restrict table, const char *begin, size_t k)
 {
 	assert(table != NULL);
 	assert(begin != NULL);

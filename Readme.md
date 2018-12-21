@@ -31,7 +31,7 @@ This function returns the relative amount of `C` and `G` in the given string.
 
 
 ```C
-uint64_t dna4_hash(const char *begin, size_t k);
+uint64_t dna4_pack(const char *begin, size_t k);
 ```
 
 A very common routine is to reduce a k-mer to a simple number where each nucleotide is represented by just two bits. This function does that for a k up to 32.
@@ -43,10 +43,10 @@ char *dna4_revcomp(const char *begin, const char *end, char *dest);
 `dna4_revcomp` implements a very fast way to compute the reverse complement. `dest` is required to hold `end-begin` many characters. The end of the reverse complement is returned.
 
 ```C
-uint64_t dnax_hash(const char *table, const char *begin, size_t k);
+uint64_t dnax_pack(const char *table, const char *begin, size_t k);
 ```
 
-Compute the hash of a k-mer. Each entry in the table should contribute two bits to the resulting value (eg. `table['T'] = 3`). A value of -1 can be used to indicate that this letter should be skipped; Note this required `begin` to be followed by more than `k` characters. A naive hash function applicable to DNA and RNA is available as `dnax_hash_table`.
+Compute a packed representation of a k-mer. Each entry in the table should contribute two bits to the resulting value (eg. `table['T'] = 3`). A value of -1 can be used to indicate that this letter should be skipped; Note, this required `begin` to be followed by more than `k` characters. A naive table applicable to DNA and RNA is available as `dnax_pack_table`.
 
 ```C
 char *dnax_revcomp(const char *table, const char *begin, const char *end, char *dest);

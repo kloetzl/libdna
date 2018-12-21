@@ -8,7 +8,7 @@
 #include <assert.h>
 
 __attribute__((target_clones("avx2", "avx", "sse2", "default"))) uint64_t
-dna4_hash_unordered(const char *begin, size_t k)
+dna4_pack_unordered(const char *begin, size_t k)
 {
 	assert(begin != NULL);
 	assert(k <= 32);
