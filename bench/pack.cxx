@@ -38,7 +38,7 @@ bench_template(benchmark::State &state, Pack_fn fn)
 	for (auto _ : state) {
 		for (char *kmer = forward; kmer < forward + LENGTH - K; kmer++) {
 			size_t pack = fn(kmer, K);
-			benchmark::DoNotOptimize(&pack);
+			benchmark::DoNotOptimize(pack);
 		}
 	}
 
@@ -349,7 +349,7 @@ libdnax_pack(benchmark::State &state)
 	while (state.KeepRunning()) {
 		for (char *kmer = forward; kmer < forward + LENGTH - K; kmer++) {
 			size_t pack = dnax_pack(dnax_pack_table, kmer, K);
-			benchmark::DoNotOptimize(&pack);
+			benchmark::DoNotOptimize(pack);
 		}
 	}
 
