@@ -10,23 +10,11 @@
 
 static const size_t LENGTH = 100000;
 static const size_t K = 20;
-static const size_t seed = 1729;
+size_t seed = 61;
+size_t invrate;
 
-void
-gen(char *str, size_t length)
-{
-	static const char *ACGT = "ACGT";
-
-	auto base_rand = std::default_random_engine{seed};
-	auto base_dist = std::uniform_int_distribution<int>{0, 3};
-	auto base_acgt = [&] { return ACGT[base_dist(base_rand)]; };
-
-	while (length--) {
-		*str++ = base_acgt();
-	}
-
-	*str = '\0';
-}
+extern void
+gen(char *str, size_t length);
 
 template <class Pack_fn>
 void

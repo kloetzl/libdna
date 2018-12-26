@@ -21,16 +21,7 @@ all: $(BINS)
 %.o: %.cxx
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $^
 
-
-compare: compare.o ../src/libdna.a
-compare_rev: compare_rev.o ../src/libdna.a
-count: count.o ../src/libdna.a
-mismatch: mismatch.o ../src/libdna.a
-pack: pack.o ../src/libdna.a
-replace: replace.o ../src/libdna.a
-revcomp: revcomp.o ../src/libdna.a
-
-$(BINS):
+$(BINS): %: %.o common.o ../src/libdna.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
 format:
@@ -38,4 +29,4 @@ format:
 
 clean:
 	setopt null_glob; $(RM) -rf *.o perf.data*
-	$(RM) -f $(BINS)
+	$(RM) -f $(BINS) common
