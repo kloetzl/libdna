@@ -79,7 +79,7 @@ dna4_revcomp(const char *begin, const char *end, char *dest);
 /// dnax - Any ASCII char or UTF8 byte
 // -1 == skip
 uint64_t
-dnax_pack(const char *table, const char *begin, size_t k);
+dnax_pack(const char *table, const char *begin, const char *end, size_t k);
 char *
 dnax_revcomp(const char *table, const char *begin, const char *end, char *dest);
 
