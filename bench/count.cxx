@@ -16,14 +16,6 @@ size_t invrate;
 extern void
 gen(char *str, size_t length);
 
-/** Fake the compiler into thinking *p is being read. Thus it cannot remove *p
- * as unused. */
-void
-escape(void *p)
-{
-	asm volatile("" : : "g"(p) : "memory");
-}
-
 static void
 libdnax_count(benchmark::State &state)
 {
@@ -34,7 +26,7 @@ libdnax_count(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		dnax_count(table, forward, forward + LENGTH);
-		escape(table);
+		benchmark::DoNotOptimize(table);
 	}
 
 	free(forward);
@@ -49,11 +41,10 @@ libdna4_gc_content(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		double d = dna4_gc_content(forward, forward + LENGTH);
-		escape(&d);
+		benchmark::DoNotOptimize(d);
 	}
 
 	double d = dna4_gc_content(forward, forward + LENGTH);
-	std::cerr << d << std::endl;
 
 	free(forward);
 }
@@ -91,7 +82,6 @@ popcnt(const char *begin, const char *end)
 
 	size_t table[128];
 	dnax_count(table, begin + offset, end);
-	count += table['C'] + table['G'];
 
 	return (double)count / length;
 }
@@ -104,11 +94,10 @@ popcnt(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		double d = popcnt(forward, forward + LENGTH);
-		escape(&d);
+		benchmark::DoNotOptimize(d);
 	}
 
 	double d = popcnt(forward, forward + LENGTH);
-	std::cerr << d << std::endl;
 
 	free(forward);
 }
