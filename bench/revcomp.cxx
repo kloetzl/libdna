@@ -24,42 +24,27 @@ gen(char *str, size_t length)
 	*str = '\0';
 }
 
-/** Fake the compiler into thinking *p is being read. Thus it cannot remove *p
- * as unused. */
+template <class Pack_fn>
 void
-escape(void *p)
+bench(benchmark::State &state, Pack_fn fn)
 {
-	asm volatile("" : : "g"(p) : "memory");
-}
+	char *forward = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
 
-#define BENCHME(functionname)                                                  \
-                                                                               \
-	static void functionname(benchmark::State &state)                          \
-	{                                                                          \
-		char *forward = (char *)malloc(LENGTH + 1);                            \
-		char *reverse = (char *)malloc(LENGTH + 1);                            \
-		gen(forward, LENGTH);                                                  \
-                                                                               \
-		while (state.KeepRunning()) {                                          \
-			functionname(forward, forward + LENGTH, reverse);                  \
-			escape(reverse);                                                   \
-		}                                                                      \
-                                                                               \
-		free(forward);                                                         \
-		free(reverse);                                                         \
-	}                                                                          \
-	BENCHMARK(functionname);
+	for (auto _ : state) {
+		fn(forward, forward + LENGTH, reverse);
+		benchmark::DoNotOptimize(reverse);
+	}
+
+	free(reverse);
+	free(forward);
+}
 
 extern "C" {
 extern char *
-dna4_revcomp_ssse3(const char *begin, const char *end, char * dest);
-	
+dna4_revcomp_ssse3(const char *begin, const char *end, char *dest);
 }
-
-
-BENCHME(dna4_revcomp);
-BENCHME(dna4_revcomp_ssse3);
-// BENCHME(libdnax);
 
 static char *
 revcomp_switch(const char *forward, const char *end, char *reverse)
@@ -82,8 +67,6 @@ revcomp_switch(const char *forward, const char *end, char *reverse)
 	return reverse;
 }
 
-BENCHME(revcomp_switch);
-
 static char *
 revcomp_table4(const char *forward, const char *end, char *reverse)
 {
@@ -104,8 +87,6 @@ revcomp_table4(const char *forward, const char *end, char *reverse)
 	return reverse;
 }
 
-BENCHME(revcomp_table4);
-
 static __attribute__((target_clones("avx2", "sse2", "default"))) char *
 twiddle(const char *begin, const char *end, char *__restrict dest)
 {
@@ -123,8 +104,6 @@ twiddle(const char *begin, const char *end, char *__restrict dest)
 
 	return dest + length;
 }
-
-BENCHME(twiddle);
 
 char *
 subtract(const char *begin, const char *end, char *__restrict dest)
@@ -145,8 +124,6 @@ subtract(const char *begin, const char *end, char *__restrict dest)
 	return dest + length;
 }
 
-BENCHME(subtract);
-
 static void
 dnax_revcomp(benchmark::State &state)
 {
@@ -156,7 +133,7 @@ dnax_revcomp(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		dnax_revcomp(dnax_revcomp_table, forward, forward + LENGTH, reverse);
-		escape(reverse);
+		benchmark::DoNotOptimize(reverse);
 	}
 
 	free(forward);
@@ -164,9 +141,8 @@ dnax_revcomp(benchmark::State &state)
 }
 BENCHMARK(dnax_revcomp);
 
-
 static void
-libdnax_replace(benchmark::State &state)
+dnax_replace(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 	char *reverse = (char *)malloc(LENGTH + 1);
@@ -174,12 +150,19 @@ libdnax_replace(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		dnax_replace(dnax_revcomp_table, forward, forward + LENGTH, reverse);
-		escape(reverse);
+		benchmark::DoNotOptimize(reverse);
 	}
 
 	free(forward);
 	free(reverse);
 }
-BENCHMARK(libdnax_replace);
+BENCHMARK(dnax_replace);
+
+BENCHMARK_CAPTURE(bench, dna4_revcomp, dna4_revcomp);
+BENCHMARK_CAPTURE(bench, dna4_revcomp_ssse3, dna4_revcomp_ssse3);
+BENCHMARK_CAPTURE(bench, revcomp_switch, revcomp_switch);
+BENCHMARK_CAPTURE(bench, revcomp_table4, revcomp_table4);
+BENCHMARK_CAPTURE(bench, twiddle, twiddle);
+BENCHMARK_CAPTURE(bench, subtract, subtract);
 
 BENCHMARK_MAIN();
