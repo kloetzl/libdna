@@ -19,12 +19,27 @@ gen(char *str, size_t length);
 extern void
 mutate(char *str, size_t length);
 
-/** Fake the compiler into thinking *p is being read. Thus it cannot remove *p
- * as unused. */
+template <class Bench_fn>
 void
-escape(void *p)
+bench(benchmark::State &state, Bench_fn fn)
 {
-	asm volatile("" : : "g"(p) : "memory");
+	char *forward = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+	char *other = (char *)malloc(LENGTH + 1);
+	gen(other, LENGTH);
+	mutate(other, LENGTH);
+	std::reverse(other, other + LENGTH);
+
+	size_t subst = 0;
+
+	while (state.KeepRunning()) {
+		auto d = fn(forward, forward + LENGTH, other, &subst);
+		benchmark::DoNotOptimize(d);
+	}
+	benchmark::DoNotOptimize(subst);
+
+	free(forward);
+	free(other);
 }
 
 static void
@@ -40,10 +55,9 @@ dna4_evodist_jc(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		auto d = dna4_evodist_jc(forward, forward + LENGTH, other, &subst);
-		escape(&d);
+		benchmark::DoNotOptimize(d);
 	}
-
-	// std::cout << subst << std::endl;
+	benchmark::DoNotOptimize(subst);
 
 	free(forward);
 	free(other);
@@ -81,30 +95,6 @@ base_rev(
 
 	return rate;
 }
-
-static void
-base_rev(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
-	char *other = (char *)malloc(LENGTH + 1);
-	gen(other, LENGTH);
-	mutate(other, LENGTH);
-	std::reverse(other, other + LENGTH);
-
-	size_t subst = 0;
-
-	while (state.KeepRunning()) {
-		auto d = base_rev(forward, forward + LENGTH, other, &subst);
-		escape(&d);
-	}
-
-	std::cout << subst << std::endl;
-
-	free(forward);
-	free(other);
-}
-BENCHMARK(base_rev);
 
 double
 intr(
@@ -159,28 +149,7 @@ intr(
 	return rate;
 }
 
-static void
-intr(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
-	char *other = (char *)malloc(LENGTH + 1);
-	gen(other, LENGTH);
-	mutate(other, LENGTH);
-	std::reverse(other, other + LENGTH);
-
-	size_t subst = 0;
-
-	while (state.KeepRunning()) {
-		auto d = intr(forward, forward + LENGTH, other, &subst);
-		escape(&d);
-	}
-
-	std::cout << subst << std::endl;
-
-	free(forward);
-	free(other);
-}
-BENCHMARK(intr);
+BENCHMARK_CAPTURE(bench, intr, intr);
+BENCHMARK_CAPTURE(bench, base_rev, base_rev);
 
 BENCHMARK_MAIN();
