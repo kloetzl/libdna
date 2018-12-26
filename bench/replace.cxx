@@ -13,14 +13,6 @@ size_t invrate;
 extern void
 gen(char *str, size_t length);
 
-/** Fake the compiler into thinking *p is being read. Thus it cannot remove *p
- * as unused. */
-void
-escape(void *p)
-{
-	asm volatile("" : : "g"(p) : "memory");
-}
-
 static void
 libdnax_replace(benchmark::State &state)
 {
@@ -29,7 +21,7 @@ libdnax_replace(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		dnax_replace(dnax_to_dna4_table, forward, forward + LENGTH, forward);
-		escape(forward);
+		benchmark::DoNotOptimize(forward);
 	}
 
 	free(forward);
@@ -64,7 +56,7 @@ xto4(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		xto4(forward, forward + LENGTH, forward);
-		escape(forward);
+		benchmark::DoNotOptimize(forward);
 	}
 
 	free(forward);
@@ -80,7 +72,7 @@ memcpy(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		std::memcpy(dest, forward, LENGTH);
-		escape(dest);
+		benchmark::DoNotOptimize(dest);
 	}
 
 	free(forward);
