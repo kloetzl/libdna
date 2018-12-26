@@ -4,7 +4,14 @@ CPPFLAGS+=-Wall -Wextra -I../include -std=c++14
 CXXFLAGS+=-ggdb -Ofast -march=native -ftree-vectorize #-ftree-loop-vectorize
 LIBS+=-lbenchmark
 
-BINS=revcomp pack count replace compare compare_rev mismatch
+BINS= \
+	compare \
+	compare_rev \
+	count \
+	mismatch \
+	pack \
+	replace \
+	revcomp
 
 .PHONY: all format clean
 
