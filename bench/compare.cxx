@@ -14,42 +14,33 @@ static const size_t LENGTH = 1000000;
 size_t seed = 1729;
 size_t invrate = 100;
 
-#define BENCHME(functionname)                                                  \
-                                                                               \
-	static void functionname(benchmark::State &state)                          \
-	{                                                                          \
-		char *forward = (char *)malloc(LENGTH + 1);                            \
-		gen(forward, LENGTH);                                                  \
-		char *other = (char *)malloc(LENGTH + 1);                              \
-		gen(other, LENGTH);                                                    \
-		mutate(other, LENGTH);                                                 \
-                                                                               \
-		size_t subst = 0;                                                      \
-                                                                               \
-		while (state.KeepRunning()) {                                          \
-			auto d = functionname(forward, forward + LENGTH, other, &subst);   \
-			escape(&d);                                                        \
-		}                                                                      \
-                                                                               \
-		/*std::cout << subst << std::endl;*/                                   \
-                                                                               \
-		free(forward);                                                         \
-		free(other);                                                           \
-	}                                                                          \
-	BENCHMARK(functionname);
-
 extern void
 gen(char *str, size_t length);
 
 extern void
 mutate(char *str, size_t length);
 
-/** Fake the compiler into thinking *p is being read. Thus it cannot remove *p
- * as unused. */
+template <class Bench_fn>
 void
-escape(void *p)
+bench(benchmark::State &state, Bench_fn fn)
 {
-	asm volatile("" : : "g"(p) : "memory");
+	char *forward = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+	char *other = (char *)malloc(LENGTH + 1);
+	gen(other, LENGTH);
+	mutate(other, LENGTH);
+
+	size_t subst = 0;
+
+	for (auto _ : state) {
+		auto d = fn(forward, forward + LENGTH, other, &subst);
+		benchmark::DoNotOptimize(d);
+	}
+
+	benchmark::DoNotOptimize(subst);
+
+	free(other);
+	free(forward);
 }
 
 extern "C" double
@@ -58,26 +49,6 @@ dna4_evodist_jc_generic(
 	const char *end,
 	const char *other,
 	size_t *substitutions_ptr);
-
-static void
-libdna4_evodist_jc(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
-	char *other = (char *)malloc(LENGTH + 1);
-	gen(other, LENGTH);
-	mutate(other, LENGTH);
-
-	while (state.KeepRunning()) {
-		auto d =
-			dna4_evodist_jc_generic(forward, forward + LENGTH, other, NULL);
-		escape(&d);
-	}
-
-	free(forward);
-	free(other);
-}
-BENCHMARK(libdna4_evodist_jc);
 
 static void
 libdna4_evodist_k80(benchmark::State &state)
@@ -90,15 +61,13 @@ libdna4_evodist_k80(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		auto d = dna4_evodist_k80(forward, forward + LENGTH, other, NULL, NULL);
-		escape(&d);
+		benchmark::DoNotOptimize(d);
 	}
 
 	free(forward);
 	free(other);
 }
 BENCHMARK(libdna4_evodist_k80);
-
-BENCHME(dna4_evodist_jc);
 
 size_t
 noneq(const char *self, const char *other, size_t length)
@@ -135,8 +104,7 @@ base(
 	double rate = (double)substitutions / length;
 
 	return rate;
-}
-BENCHME(base);
+};
 
 #ifdef __SSE2__
 
@@ -184,8 +152,7 @@ intrinsics_sse2(
 	double rate = (double)substitutions / length;
 
 	return rate;
-}
-BENCHME(intrinsics_sse2);
+};
 
 double
 intrinsics_sse2_two(
@@ -240,8 +207,7 @@ intrinsics_sse2_two(
 	double rate = (double)substitutions / length;
 
 	return rate;
-}
-BENCHME(intrinsics_sse2_two);
+};
 
 #endif
 
@@ -291,8 +257,7 @@ intrinsics_avx2(
 	double rate = (double)substitutions / length;
 
 	return rate;
-}
-BENCHME(intrinsics_avx2);
+};
 
 double
 intrinsics_avx2_two(
@@ -347,8 +312,7 @@ intrinsics_avx2_two(
 	double rate = (double)substitutions / length;
 
 	return rate;
-}
-BENCHME(intrinsics_avx2_two);
+};
 
 #endif
 
@@ -407,8 +371,7 @@ intrinsics_mask_avx512(
 	double rate = (double)substitutions / length;
 
 	return rate;
-}
-BENCHME(intrinsics_mask_avx512);
+};
 
 double
 intrinsics_mask256_avx512(
@@ -455,7 +418,6 @@ intrinsics_mask256_avx512(
 
 	return rate;
 }
-BENCHME(intrinsics_mask256_avx512)
 
 double
 intrinsics_mask512_avx512(
@@ -500,7 +462,6 @@ intrinsics_mask512_avx512(
 
 	return rate;
 }
-BENCHME(intrinsics_mask512_avx512)
 
 #endif
 
@@ -558,7 +519,7 @@ k80_twiddle(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		auto d = k80_twiddle(forward, forward + LENGTH, other, NULL, NULL);
-		escape(&d);
+		benchmark::DoNotOptimize(d);
 	}
 
 	free(forward);
@@ -613,12 +574,26 @@ k80_twiddle2(benchmark::State &state)
 
 	while (state.KeepRunning()) {
 		auto d = k80_twiddle2(forward, forward + LENGTH, other, NULL, NULL);
-		escape(&d);
+		benchmark::DoNotOptimize(d);
 	}
 
 	free(forward);
 	free(other);
 }
 BENCHMARK(k80_twiddle2);
+
+BENCHMARK_CAPTURE(bench, dna4_evodist_jc, dna4_evodist_jc);
+BENCHMARK_CAPTURE(bench, dna4_evodist_jc_generic, dna4_evodist_jc_generic);
+BENCHMARK_CAPTURE(bench, base, base);
+BENCHMARK_CAPTURE(bench, intrinsics_sse2, intrinsics_sse2);
+BENCHMARK_CAPTURE(bench, intrinsics_sse2_two, intrinsics_sse2_two);
+BENCHMARK_CAPTURE(bench, intrinsics_avx2, intrinsics_avx2);
+BENCHMARK_CAPTURE(bench, intrinsics_avx2_two, intrinsics_avx2_two);
+
+#ifdef __AVX512BW__
+BENCHMARK_CAPTURE(bench, intrinsics_mask_avx512, intrinsics_mask_avx512);
+BENCHMARK_CAPTURE(bench, intrinsics_mask256_avx512, intrinsics_mask256_avx512);
+BENCHMARK_CAPTURE(bench, intrinsics_mask512_avx512, intrinsics_mask512_avx512);
+#endif
 
 BENCHMARK_MAIN();
