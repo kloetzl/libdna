@@ -4,7 +4,7 @@ CPPFLAGS+=-Wall -Wextra -I../include -std=c++14
 CXXFLAGS+=-ggdb -Ofast -march=native -ftree-vectorize #-ftree-loop-vectorize
 LIBS+=-lbenchmark
 
-BINS=revcomp pack count replace compare compare_rev
+BINS=revcomp pack count replace compare compare_rev mismatch
 
 .PHONY: all format clean
 
@@ -15,12 +15,13 @@ all: $(BINS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $^
 
 
-revcomp: revcomp.o ../src/libdna.a
-pack: pack.o ../src/libdna.a
-count: count.o ../src/libdna.a
-replace: replace.o ../src/libdna.a
 compare: compare.o ../src/libdna.a
 compare_rev: compare_rev.o ../src/libdna.a
+count: count.o ../src/libdna.a
+mismatch: mismatch.o ../src/libdna.a
+pack: pack.o ../src/libdna.a
+replace: replace.o ../src/libdna.a
+revcomp: revcomp.o ../src/libdna.a
 
 $(BINS):
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS)

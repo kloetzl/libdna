@@ -5,7 +5,9 @@
 
 # benchmarks
 compare
+compare_rev
 count
+mismatch
 pack
 replace
 revcomp
