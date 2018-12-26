@@ -21,47 +21,54 @@ dna_version(void);
 
 /// dna4 - only ACGT
 
-typedef double(dna4_evodist_jc_fn)(const char *begin,
-								   const char *end,
-								   const char *other,
-								   size_t *substitutions);
+typedef double(dna4_evodist_jc_fn)(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions);
 
 extern double
-dna4_evodist_jc(const char *begin,
-				const char *end,
-				const char *other,
-				size_t *substitutions);
+dna4_evodist_jc(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions);
 
 double
-dna4_evodist_jc_generic(const char *begin,
-						const char *end,
-						const char *other,
-						size_t *substitutions);
+dna4_evodist_jc_generic(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions);
 
 double
-dna4_evodist_jc_sse2(const char *begin,
-					 const char *end,
-					 const char *other,
-					 size_t *substitutions);
+dna4_evodist_jc_sse2(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions);
 
 double
-dna4_evodist_jc_avx2(const char *begin,
-					 const char *end,
-					 const char *other,
-					 size_t *substitutions);
+dna4_evodist_jc_avx2(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions);
 
 double
-dna4_evodist_jc_avx512(const char *begin,
-					   const char *end,
-					   const char *other,
-					   size_t *substitutions);
+dna4_evodist_jc_avx512(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions);
 
 double
-dna4_evodist_k80(const char *begin,
-				 const char *end,
-				 const char *other,
-				 size_t *transitions,
-				 size_t *transversions);
+dna4_evodist_k80(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *transitions,
+	size_t *transversions);
 double
 dna4_gc_content(const char *begin, const char *end);
 uint64_t
