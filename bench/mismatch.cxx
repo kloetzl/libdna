@@ -79,8 +79,32 @@ chunked(const char *begin, const char *end, const char *other)
 	return (char *)begin + i;
 }
 
-BENCHMARK_CAPTURE(bench, dnax_mismatch, dnax_mismatch);
+static char *
+direct_cmp(const char *begin, const char *end, const char *other)
+{
+	size_t length = end - begin;
+	size_t i = 0;
+
+	static const size_t chunk_size = 8;
+
+	size_t chunked_length = length - (length % chunk_size);
+	for (; i < chunked_length; i += chunk_size) {
+		int check = memcmp(begin + i, other + i, chunk_size);
+		if (check) {
+			break;
+		}
+	}
+
+	for (; i < length; i++) {
+		if (begin[i] != other[i]) break;
+	}
+
+	return (char *)begin + i;
+}
+
 BENCHMARK_CAPTURE(bench, chunked, chunked);
+BENCHMARK_CAPTURE(bench, direct_cmp, direct_cmp);
+BENCHMARK_CAPTURE(bench, dnax_mismatch, dnax_mismatch);
 BENCHMARK_CAPTURE(bench, simple, simple);
 
 BENCHMARK_MAIN();
