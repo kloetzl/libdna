@@ -24,7 +24,7 @@ libdnax_count(benchmark::State &state)
 
 	size_t table[128];
 
-	while (state.KeepRunning()) {
+	for (auto _ : state) {
 		dnax_count(table, forward, forward + LENGTH);
 		benchmark::DoNotOptimize(table);
 	}
@@ -39,12 +39,10 @@ libdna4_gc_content(benchmark::State &state)
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
 
-	while (state.KeepRunning()) {
+	for (auto _ : state) {
 		double d = dna4_gc_content(forward, forward + LENGTH);
 		benchmark::DoNotOptimize(d);
 	}
-
-	double d = dna4_gc_content(forward, forward + LENGTH);
 
 	free(forward);
 }
@@ -92,12 +90,10 @@ popcnt(benchmark::State &state)
 	char *forward = (char *)malloc(LENGTH + 1);
 	gen(forward, LENGTH);
 
-	while (state.KeepRunning()) {
+	for (auto _ : state) {
 		double d = popcnt(forward, forward + LENGTH);
 		benchmark::DoNotOptimize(d);
 	}
-
-	double d = popcnt(forward, forward + LENGTH);
 
 	free(forward);
 }
