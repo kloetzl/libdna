@@ -19,6 +19,9 @@ extern "C" {
 int
 dna_version(void);
 
+// Future versions of libdna should support _FOTIFY_SOURCE with
+// __builtin_object_size.
+
 /// dna4 - only ACGT
 
 typedef double(dna4_evodist_jc_fn)(
