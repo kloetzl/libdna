@@ -149,7 +149,25 @@ intr(
 	return rate;
 }
 
+double
+revcomp_evodist_jc(
+	const char *begin,
+	const char *end,
+	const char *other,
+	size_t *substitutions_ptr)
+{
+	char *buffer = (char *)malloc(LENGTH + 1);
+	dna4_revcomp(begin, end, buffer);
+	char *buffer_end = buffer + LENGTH;
+
+	double d = dna4_evodist_jc(buffer, buffer_end, other, substitutions_ptr);
+
+	free(buffer);
+	return d;
+}
+
 BENCHMARK_CAPTURE(bench, intr, intr);
 BENCHMARK_CAPTURE(bench, base_rev, base_rev);
+BENCHMARK_CAPTURE(bench, revcomp_evodist_jc, revcomp_evodist_jc);
 
 BENCHMARK_MAIN();
