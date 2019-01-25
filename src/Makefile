@@ -1,6 +1,6 @@
 SHELL=zsh
 
-CPPFLAGS+=-Wall -Wextra -I../include -Isrc
+CPPFLAGS+=-Wall -Wextra -I../include -Isrc -DNDEBUG
 CFLAGS+=-ggdb -O2 -std=gnu11 -fPIC -ftree-vectorize
 LIBS+=
 
