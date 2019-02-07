@@ -107,15 +107,15 @@ intr(
 	size_t offset = 0;
 	size_t length = end - begin;
 
-	size_t avx2_offset = 0;
-	size_t avx2_length = length / sizeof(__m128i);
+	size_t vec_offset = 0;
+	size_t vec_length = length / sizeof(__m128i);
 
-	substitutions += sizeof(__m128i) * avx2_length;
-	for (; avx2_offset < avx2_length; avx2_offset++) {
+	substitutions += sizeof(__m128i) * vec_length;
+	for (; vec_offset < vec_length; vec_offset++) {
 		__m128i b;
-		memcpy(&b, begin + avx2_offset * sizeof(__m128i), sizeof(b));
+		memcpy(&b, begin + vec_offset * sizeof(__m128i), sizeof(b));
 		__m128i o;
-		size_t pos = length - (avx2_offset + 1) * sizeof(__m128i);
+		size_t pos = length - (vec_offset + 1) * sizeof(__m128i);
 		memcpy(&o, other + pos, sizeof(o));
 
 		__m128i mask =
@@ -133,7 +133,7 @@ intr(
 		substitutions -= __builtin_popcount(vmask);
 	}
 
-	offset += avx2_offset * sizeof(__m128i);
+	offset += vec_offset * sizeof(__m128i);
 
 	for (; offset < length; offset++) {
 		if (!is_complement(begin[offset], other[length - 1 - offset])) {
