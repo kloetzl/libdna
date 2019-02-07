@@ -1,6 +1,6 @@
 SHELL=zsh
 
-CPPFLAGS+=-Wall -Wextra -I../include -std=c++14
+CPPFLAGS+=-Wall -Wextra -I../include -std=c++14 -DNDEBUG
 CXXFLAGS+=-ggdb -Ofast -march=native -ftree-vectorize #-ftree-loop-vectorize
 LIBS+=-lbenchmark
 
