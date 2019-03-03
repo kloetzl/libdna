@@ -1,0 +1,12 @@
+SHELL=zsh
+
+.PHONY: clean format
+
+format:
+	clang-format -i src/*.h src/*.c include/*.h
+	clang-format -i bench/*.cxx
+
+clean:
+	$(MAKE) -C src clean
+	$(MAKE) -C bench clean
+	setopt null_glob; $(RM) -rf *.o dna_test *.a *.so

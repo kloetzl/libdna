@@ -16,3 +16,5 @@ revcomp
 
 # perf
 perf.data*
+
+builddir
