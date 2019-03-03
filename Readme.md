@@ -67,6 +67,15 @@ char *dnax_replace(const char *table, const char *begin, const char *end, char *
 
 Copy a string from `begin` to `dest`, replace each character by the one defined in the table. A value of -1 indicates that a character should be skipped. Having the destination and the source string equal is allowed. To convert RNA to DNA and remove all incompletely specified nucleotides use `dnax_to_dna4_table`.
 
+# Installation
+
+Libdna requires the Meson buildsystem but no other dependencies.
+
+    meson builddir
+    cd builddir
+    ninja
+    ninja install
+
 # Bonus
 
 - libdna comes with man pages for IUPAC codes and the standard genetic code.
@@ -75,7 +84,7 @@ Copy a string from `begin` to `dest`, replace each character by the one defined 
 
 # License
 
-Copyright © 2018 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
+Copyright © 2018 - 2019 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
 License GPLv3+: GNU GPL version 3 or later.
 
 This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law. The full license text is available at http://gnu.org/licenses/gpl.html.
