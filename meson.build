@@ -43,7 +43,7 @@ genericfiles = [
     'src/dnax_replace.c',
     'src/dnax_revcomp.c',
     'src/dnax_translate.c',
-    'src/utils.c'
+    'src/utils.h'
 ]
 
 library('dna', ['include/dna.h', genericfiles],
