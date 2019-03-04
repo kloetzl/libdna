@@ -13,7 +13,7 @@
 typedef __m256i vec_type;
 
 double
-dna4_evodist_jc_avx2(
+dna4_count_mismatches_avx512(
 	const char *begin,
 	const char *end,
 	const char *other,
@@ -25,12 +25,11 @@ dna4_evodist_jc_avx2(
 	assert(begin <= end);
 
 	size_t substitutions = 0;
-	size_t offset = 0;
 	size_t length = end - begin;
 
 	const size_t vec_bytes = sizeof(vec_type);
 	size_t vec_offset = 0;
-	size_t vec_length = (length / vec_bytes) & ~(size_t)1; // round down
+	size_t vec_length = length / vec_bytes;
 
 	size_t equal = 0;
 	for (; vec_offset < vec_length; vec_offset++) {
@@ -39,26 +38,13 @@ dna4_evodist_jc_avx2(
 		memcpy(&begin_chunk, begin + vec_offset * vec_bytes, vec_bytes);
 		memcpy(&other_chunk, other + vec_offset * vec_bytes, vec_bytes);
 
-		vec_type comp = _mm256_cmpeq_epi8(begin_chunk, other_chunk);
-
-		unsigned int vmask = _mm256_movemask_epi8(comp);
-		equal += __builtin_popcount(vmask);
-
-		vec_offset++;
-		// second pass
-		memcpy(&begin_chunk, begin + vec_offset * vec_bytes, vec_bytes);
-		memcpy(&other_chunk, other + vec_offset * vec_bytes, vec_bytes);
-
-		comp = _mm256_cmpeq_epi8(begin_chunk, other_chunk);
-
-		vmask = _mm256_movemask_epi8(comp);
+		unsigned int vmask = _mm256_cmpeq_epi8_mask(begin_chunk, other_chunk);
 		equal += __builtin_popcount(vmask);
 	}
 
-	substitutions = vec_offset * vec_bytes - equal;
+	substitutions = vec_length * vec_bytes - equal;
 
-	offset += vec_offset * vec_bytes;
-
+	size_t offset = vec_offset * vec_bytes;
 	for (; offset < length; offset++) {
 		if (begin[offset] != other[offset]) {
 			substitutions++;

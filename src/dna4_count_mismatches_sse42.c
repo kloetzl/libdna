@@ -13,7 +13,7 @@
 typedef __m128i vec_type;
 
 double
-dna4_evodist_jc_sse2(
+dna4_count_mismatches_sse2(
 	const char *begin,
 	const char *end,
 	const char *other,
