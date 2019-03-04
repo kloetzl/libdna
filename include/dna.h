@@ -24,46 +24,40 @@ dna_version(void);
 
 /// dna4 - only ACGT
 
-typedef double(dna4_count_mismatches_fn)(
+typedef size_t(dna4_count_mismatches_fn)(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions);
+	const char *other);
 
-extern double
+extern size_t
 dna4_count_mismatches(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions);
+	const char *other);
 
-double
+size_t
 dna4_count_mismatches_generic(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions);
+	const char *other);
 
-double
+size_t
 dna4_count_mismatches_sse2(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions);
+	const char *other);
 
-double
+size_t
 dna4_count_mismatches_avx2(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions);
+	const char *other);
 
-double
+size_t
 dna4_count_mismatches_avx512(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions);
+	const char *other);
 
 double
 dna4_evodist_k80(

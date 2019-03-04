@@ -8,35 +8,28 @@
 
 #include <assert.h>
 
-double
+size_t
 dna4_count_mismatches_generic(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+	const char *other)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
 	assert(other != NULL);
 	assert(begin <= end);
 
-	size_t substitutions = 0;
+	size_t mismatches = 0;
 	size_t i = 0;
 	size_t length = end - begin;
 
 	for (; i < length; i++) {
 		if (UNLIKELY(begin[i] != other[i])) {
-			substitutions++;
+			mismatches++;
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-	double dist = -0.75 * dna_utils_log(1.0 - (4.0 / 3.0) * rate);
-
-	return dist;
+	return mismatches;
 }
 
 dna4_count_mismatches_fn *
@@ -59,9 +52,8 @@ dna4_count_mismatches_select(void)
 	}
 }
 
-double
+size_t
 dna4_count_mismatches(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions_ptr) __attribute__((ifunc("dna4_count_mismatches_select")));
+	const char *other) __attribute__((ifunc("dna4_count_mismatches_select")));

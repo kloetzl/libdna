@@ -12,19 +12,18 @@
 
 typedef __m256i vec_type;
 
-double
+size_t
 dna4_count_mismatches_avx512(
 	const char *begin,
 	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+	const char *other)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
 	assert(other != NULL);
 	assert(begin <= end);
 
-	size_t substitutions = 0;
+	size_t mismatches = 0;
 	size_t length = end - begin;
 
 	const size_t vec_bytes = sizeof(vec_type);
@@ -42,20 +41,14 @@ dna4_count_mismatches_avx512(
 		equal += __builtin_popcount(vmask);
 	}
 
-	substitutions = vec_length * vec_bytes - equal;
+	mismatches = vec_length * vec_bytes - equal;
 
 	size_t offset = vec_offset * vec_bytes;
 	for (; offset < length; offset++) {
 		if (begin[offset] != other[offset]) {
-			substitutions++;
+			mismatches++;
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-	double dist = -0.75 * dna_utils_log(1.0 - (4.0 / 3.0) * rate);
-
-	return dist;
+	return mismatches;
 }
