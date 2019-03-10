@@ -1,7 +1,16 @@
 project('libdna', 'c', 'cpp', version : '0.2', license : 'GPL3',
-    default_options : [ 'warning_level=3', 'c_std=gnu11', 'buildtype=debugoptimized' ]) #'buildtype=release'
+    default_options : [
+        'warning_level=3',
+        'c_std=gnu11',
+        'buildtype=debugoptimized',
+        'b_ndebug=true' # set to false on non-optimized
+    ]
+)
 
-#DNDEBUG -std=gnu11
+if get_option('buildtype').startswith('release')
+    warning('library will not be portable')
+    # … until I figure out how to discourage meson to use -O3.
+endif
 
 ###################################################
 # libdna
