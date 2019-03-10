@@ -1,4 +1,5 @@
-project('libdna', 'c', 'cpp', version : '0.2', license : 'GPL3')
+project('libdna', 'c', 'cpp', version : '0.2', license : 'GPL3',
+    default_options : [ 'warning_level=3', 'c_std=gnu11', 'buildtype=debugoptimized' ]) #'buildtype=release'
 
 #DNDEBUG -std=gnu11
 
@@ -46,7 +47,7 @@ genericfiles = [
     'src/utils.h'
 ]
 
-library('dna', ['include/dna.h', genericfiles],
+libdna = library('dna', ['include/dna.h', genericfiles],
     include_directories : incdir,
     soversion: '0',
     link_with: [sse42lib, avx2lib, avx512lib]
@@ -55,6 +56,17 @@ library('dna', ['include/dna.h', genericfiles],
 install_headers('include/dna.h')
 install_man(['man/geneticcode.7', 'man/iupac.7'])
 
+###################################################
+# Tests
+
+simple = executable('simple', 'test/simple.c',
+    link_with: libdna,
+    install: false,
+    build_by_default: false,
+    include_directories: incdir
+)
+
+test('simple', simple)
 
 ###################################################
 # Benchmarks
