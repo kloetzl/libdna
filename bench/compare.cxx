@@ -30,25 +30,17 @@ bench(benchmark::State &state, Bench_fn fn)
 	gen(other, LENGTH);
 	mutate(other, LENGTH);
 
-	size_t subst = 0;
-
 	for (auto _ : state) {
-		auto d = fn(forward, forward + LENGTH, other, &subst);
+		auto d = fn(forward, forward + LENGTH, other);
 		benchmark::DoNotOptimize(d);
 	}
-
-	benchmark::DoNotOptimize(subst);
 
 	free(other);
 	free(forward);
 }
 
 extern "C" double
-dna4_evodist_jc_generic(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr);
+dna4_evodist_jc_generic(const char *begin, const char *end, const char *other);
 
 static void
 libdna4_evodist_k80(benchmark::State &state)
@@ -82,11 +74,7 @@ noneq(const char *self, const char *other, size_t length)
 }
 
 double
-base(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+base(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t i = 0;
@@ -98,22 +86,13 @@ base(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 };
 
 #ifdef __SSE2__
 
 double
-intrinsics_sse2(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intrinsics_sse2(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -146,20 +125,11 @@ intrinsics_sse2(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 };
 
 double
-intrinsics_sse2_two(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intrinsics_sse2_two(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -201,12 +171,7 @@ intrinsics_sse2_two(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 };
 
 #endif
@@ -214,11 +179,7 @@ intrinsics_sse2_two(
 #ifdef __AVX2__
 
 double
-intrinsics_avx2(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intrinsics_avx2(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -251,20 +212,11 @@ intrinsics_avx2(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 };
 
 double
-intrinsics_avx2_two(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intrinsics_avx2_two(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -306,12 +258,7 @@ intrinsics_avx2_two(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 };
 
 #endif
@@ -319,11 +266,7 @@ intrinsics_avx2_two(
 #ifdef __AVX512BW__
 
 double
-intrinsics_mask_avx512(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intrinsics_mask_avx512(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -365,20 +308,11 @@ intrinsics_mask_avx512(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 };
 
 double
-intrinsics_mask256_avx512(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intrinsics_mask256_avx512(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -411,20 +345,11 @@ intrinsics_mask256_avx512(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 }
 
 double
-intrinsics_mask512_avx512(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intrinsics_mask512_avx512(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -455,12 +380,7 @@ intrinsics_mask512_avx512(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 }
 
 #endif
@@ -582,7 +502,7 @@ k80_twiddle2(benchmark::State &state)
 }
 BENCHMARK(k80_twiddle2);
 
-BENCHMARK_CAPTURE(bench, dna4_evodist_jc, dna4_evodist_jc);
+BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
 BENCHMARK_CAPTURE(bench, dna4_evodist_jc_generic, dna4_evodist_jc_generic);
 BENCHMARK_CAPTURE(bench, base, base);
 BENCHMARK_CAPTURE(bench, intrinsics_sse2, intrinsics_sse2);
