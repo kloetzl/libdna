@@ -80,3 +80,22 @@ test('simple', simple)
 ###################################################
 # Benchmarks
 
+benchcommonlib = static_library('benchcommon', 'bench/common.cxx',
+    include_directories: incdir,
+    c_args : ['-Ofast', '-march=native'],
+    install: false,
+)
+
+libbenchmark = dependency('benchmark',
+    # required: false
+)
+
+compare = executable('compare', 'bench/compare.cxx',
+    link_with: [libdna, benchcommonlib],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir,
+    dependencies: libbenchmark
+)
+
+benchmark('compare', compare)

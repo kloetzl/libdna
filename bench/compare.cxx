@@ -42,24 +42,24 @@ bench(benchmark::State &state, Bench_fn fn)
 extern "C" double
 dna4_evodist_jc_generic(const char *begin, const char *end, const char *other);
 
-static void
-libdna4_evodist_k80(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
-	char *other = (char *)malloc(LENGTH + 1);
-	gen(other, LENGTH);
-	mutate(other, LENGTH);
+// static void
+// libdna4_evodist_k80(benchmark::State &state)
+// {
+// 	char *forward = (char *)malloc(LENGTH + 1);
+// 	gen(forward, LENGTH);
+// 	char *other = (char *)malloc(LENGTH + 1);
+// 	gen(other, LENGTH);
+// 	mutate(other, LENGTH);
 
-	while (state.KeepRunning()) {
-		auto d = dna4_evodist_k80(forward, forward + LENGTH, other, NULL, NULL);
-		benchmark::DoNotOptimize(d);
-	}
+// 	while (state.KeepRunning()) {
+// 		auto d = dna4_evodist_k80(forward, forward + LENGTH, other, NULL, NULL);
+// 		benchmark::DoNotOptimize(d);
+// 	}
 
-	free(forward);
-	free(other);
-}
-BENCHMARK(libdna4_evodist_k80);
+// 	free(forward);
+// 	free(other);
+// }
+// BENCHMARK(libdna4_evodist_k80);
 
 size_t
 noneq(const char *self, const char *other, size_t length)
@@ -87,7 +87,7 @@ base(const char *begin, const char *end, const char *other)
 	}
 
 	return substitutions;
-};
+}
 
 #ifdef __SSE2__
 
@@ -126,7 +126,7 @@ intrinsics_sse2(const char *begin, const char *end, const char *other)
 	}
 
 	return substitutions;
-};
+}
 
 double
 intrinsics_sse2_two(const char *begin, const char *end, const char *other)
@@ -172,12 +172,11 @@ intrinsics_sse2_two(const char *begin, const char *end, const char *other)
 	}
 
 	return substitutions;
-};
+}
 
 #endif
 
 #ifdef __AVX2__
-
 double
 intrinsics_avx2(const char *begin, const char *end, const char *other)
 {
@@ -503,12 +502,15 @@ k80_twiddle2(benchmark::State &state)
 BENCHMARK(k80_twiddle2);
 
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
-BENCHMARK_CAPTURE(bench, dna4_evodist_jc_generic, dna4_evodist_jc_generic);
+// BENCHMARK_CAPTURE(bench, dna4_evodist_jc_generic, dna4_evodist_jc_generic);
 BENCHMARK_CAPTURE(bench, base, base);
 BENCHMARK_CAPTURE(bench, intrinsics_sse2, intrinsics_sse2);
 BENCHMARK_CAPTURE(bench, intrinsics_sse2_two, intrinsics_sse2_two);
+
+#ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, intrinsics_avx2, intrinsics_avx2);
 BENCHMARK_CAPTURE(bench, intrinsics_avx2_two, intrinsics_avx2_two);
+#endif
 
 #ifdef __AVX512BW__
 BENCHMARK_CAPTURE(bench, intrinsics_mask_avx512, intrinsics_mask_avx512);
