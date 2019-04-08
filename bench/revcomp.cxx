@@ -33,11 +33,6 @@ bench(benchmark::State &state, Pack_fn fn)
 	free(forward);
 }
 
-extern "C" {
-extern char *
-dna4_revcomp_ssse3(const char *begin, const char *end, char *dest);
-}
-
 static char *
 revcomp_switch(const char *forward, const char *end, char *reverse)
 {
@@ -311,7 +306,6 @@ dnax_replace(benchmark::State &state)
 BENCHMARK(dnax_replace);
 
 BENCHMARK_CAPTURE(bench, dna4_revcomp, dna4_revcomp);
-BENCHMARK_CAPTURE(bench, dna4_revcomp_ssse3, dna4_revcomp_ssse3);
 BENCHMARK_CAPTURE(bench, revcomp_switch, revcomp_switch);
 BENCHMARK_CAPTURE(bench, revcomp_table4, revcomp_table4);
 BENCHMARK_CAPTURE(bench, twiddle, twiddle);

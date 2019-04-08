@@ -82,7 +82,7 @@ test('simple', simple)
 
 benchcommonlib = static_library('benchcommon', 'bench/common.cxx',
     include_directories: incdir,
-    c_args : ['-Ofast', '-march=native'],
+    cpp_args : ['-O2'],
     install: false,
 )
 
@@ -95,7 +95,18 @@ compare = executable('compare', 'bench/compare.cxx',
     install: false,
     build_by_default: false,
     include_directories: incdir,
-    dependencies: libbenchmark
+    dependencies: libbenchmark,
+    cpp_args: ['-Ofast', '-march=native']
+)
+
+revcomp = executable('revcomp', 'bench/revcomp.cxx',
+    link_with: [libdna, benchcommonlib],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir,
+    dependencies: libbenchmark,
+    cpp_args: ['-Ofast', '-march=native']
 )
 
 benchmark('compare', compare)
+benchmark('revcomp', revcomp)
