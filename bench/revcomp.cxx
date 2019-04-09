@@ -305,6 +305,45 @@ dnax_replace(benchmark::State &state)
 }
 BENCHMARK(dnax_replace);
 
+static void
+bwa_encode(char *begin, char *end)
+{
+	static /*constexpr*/ char table[127];
+	memset(table, 4, sizeof(table));
+	table['A'] = 0;
+	table['C'] = 1;
+	table['G'] = 2;
+	table['T'] = 3;
+	dnax_replace(table, begin, end, begin);
+}
+
+static void
+bwa_revcomp(const char *begin, const char *end, char *dest)
+{
+	size_t i = 0, length = end - begin;
+	for (; i < length; i++) {
+		dest[length - 1 - i] = begin[i] < 4 ? 3 - begin[i] : 4;
+	}
+}
+
+static void
+bwa_bench(benchmark::State &state)
+{
+	char *forward = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+	bwa_encode(forward, forward + LENGTH);
+
+	for (auto _ : state) {
+		bwa_revcomp(forward, forward + LENGTH, reverse);
+		benchmark::DoNotOptimize(reverse);
+	}
+
+	free(forward);
+	free(reverse);
+}
+BENCHMARK(bwa_bench);
+
 BENCHMARK_CAPTURE(bench, dna4_revcomp, dna4_revcomp);
 BENCHMARK_CAPTURE(bench, revcomp_switch, revcomp_switch);
 BENCHMARK_CAPTURE(bench, revcomp_table4, revcomp_table4);
