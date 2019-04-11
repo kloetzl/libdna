@@ -44,6 +44,7 @@ genericfiles = [
     'src/dna4_gc_content.c',
     'src/dna4_pack.c',
     'src/dna4_revcomp.c',
+    'src/dna_internal.h',
     'src/dna_version.c',
     'src/dnax_count.c',
     'src/dnax_find_first_not_of.c',
