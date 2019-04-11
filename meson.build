@@ -108,5 +108,15 @@ revcomp = executable('revcomp', 'bench/revcomp.cxx',
     cpp_args: ['-Ofast', '-march=native']
 )
 
+compare_rev = executable('compare_rev', 'bench/compare_rev.cxx',
+    link_with: [libdna, benchcommonlib],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir,
+    dependencies: libbenchmark,
+    cpp_args: ['-Ofast', '-march=native']
+)
+
 benchmark('compare', compare)
 benchmark('revcomp', revcomp)
+benchmark('compare_rev', compare_rev)

@@ -30,39 +30,14 @@ bench(benchmark::State &state, Bench_fn fn)
 	mutate(other, LENGTH);
 	std::reverse(other, other + LENGTH);
 
-	size_t subst = 0;
-
-	while (state.KeepRunning()) {
-		auto d = fn(forward, forward + LENGTH, other, &subst);
+	for (auto _ : state) {
+		auto d = fn(forward, forward + LENGTH, other);
 		benchmark::DoNotOptimize(d);
 	}
-	benchmark::DoNotOptimize(subst);
 
 	free(forward);
 	free(other);
 }
-
-static void
-dna4_evodist_jc(benchmark::State &state)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
-	char *other = (char *)malloc(LENGTH + 1);
-	gen(other, LENGTH);
-	mutate(other, LENGTH);
-
-	size_t subst = 0;
-
-	while (state.KeepRunning()) {
-		auto d = dna4_evodist_jc(forward, forward + LENGTH, other, &subst);
-		benchmark::DoNotOptimize(d);
-	}
-	benchmark::DoNotOptimize(subst);
-
-	free(forward);
-	free(other);
-}
-BENCHMARK(dna4_evodist_jc);
 
 constexpr bool
 is_complement(char c, char d)
@@ -72,11 +47,7 @@ is_complement(char c, char d)
 }
 
 double
-base_rev(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+base_rev(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t i = 0;
@@ -88,20 +59,11 @@ base_rev(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 }
 
 double
-intr(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+intr(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -141,33 +103,27 @@ intr(
 		}
 	}
 
-	if (substitutions_ptr) *substitutions_ptr = substitutions;
-
-	// math
-	double rate = (double)substitutions / length;
-
-	return rate;
+	return substitutions;
 }
 
-double
-revcomp_evodist_jc(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *substitutions_ptr)
+size_t
+revcomp_then_count_mismatches(
+	const char *begin, const char *end, const char *other)
 {
 	char *buffer = (char *)malloc(LENGTH + 1);
 	dna4_revcomp(begin, end, buffer);
 	char *buffer_end = buffer + LENGTH;
 
-	double d = dna4_evodist_jc(buffer, buffer_end, other, substitutions_ptr);
+	auto d = dna4_count_mismatches(buffer, buffer_end, other);
 
 	free(buffer);
 	return d;
 }
 
+BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
 BENCHMARK_CAPTURE(bench, intr, intr);
 BENCHMARK_CAPTURE(bench, base_rev, base_rev);
-BENCHMARK_CAPTURE(bench, revcomp_evodist_jc, revcomp_evodist_jc);
+BENCHMARK_CAPTURE(
+	bench, revcomp_then_count_mismatches, revcomp_then_count_mismatches);
 
 BENCHMARK_MAIN();
