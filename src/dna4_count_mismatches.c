@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+#include "dna_internal.h"
 #include "utils.h"
 
 #include <assert.h>
