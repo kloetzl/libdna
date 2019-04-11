@@ -212,7 +212,7 @@ intrinsics_avx2(const char *begin, const char *end, const char *other)
 	}
 
 	return substitutions;
-};
+}
 
 double
 intrinsics_avx2_two(const char *begin, const char *end, const char *other)
@@ -258,7 +258,7 @@ intrinsics_avx2_two(const char *begin, const char *end, const char *other)
 	}
 
 	return substitutions;
-};
+}
 
 #endif
 
@@ -308,7 +308,7 @@ intrinsics_mask_avx512(const char *begin, const char *end, const char *other)
 	}
 
 	return substitutions;
-};
+}
 
 double
 intrinsics_mask256_avx512(const char *begin, const char *end, const char *other)
