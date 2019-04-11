@@ -24,7 +24,7 @@ sse42lib = static_library('sse42lib', sse42files,
     c_args : ['-O3', '-mpopcnt', '-msse4.2']
 )
 
-avx2files = ['src/dna4_count_mismatches_avx2.c']
+avx2files = ['src/dna4_count_mismatches_avx2.c', 'src/dna4_revcomp_avx2.c']
 avx2lib = static_library('avx2lib', avx2files,
     include_directories: incdir,
     pic: true,

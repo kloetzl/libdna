@@ -14,7 +14,7 @@
 typedef __m128i vec_type;
 
 char *
-dna4_revcomp_ssse3(const char *begin, const char *end, char *restrict dest)
+dna4_revcomp_sse42(const char *begin, const char *end, char *restrict dest)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
