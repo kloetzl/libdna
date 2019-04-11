@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018 © Fabian Klötzl
+ * Copyright 2019 © Fabian Klötzl
  */
 
 #include <inttypes.h>
@@ -24,37 +24,8 @@ dna_version(void);
 
 /// dna4 - only ACGT
 
-typedef size_t(dna4_count_mismatches_fn)(
-	const char *begin,
-	const char *end,
-	const char *other);
-
 extern size_t
 dna4_count_mismatches(
-	const char *begin,
-	const char *end,
-	const char *other);
-
-size_t
-dna4_count_mismatches_generic(
-	const char *begin,
-	const char *end,
-	const char *other);
-
-size_t
-dna4_count_mismatches_sse2(
-	const char *begin,
-	const char *end,
-	const char *other);
-
-size_t
-dna4_count_mismatches_avx2(
-	const char *begin,
-	const char *end,
-	const char *other);
-
-size_t
-dna4_count_mismatches_avx512(
 	const char *begin,
 	const char *end,
 	const char *other);
