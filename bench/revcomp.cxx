@@ -29,6 +29,8 @@ bench(benchmark::State &state, Pack_fn fn)
 		benchmark::DoNotOptimize(reverse);
 	}
 
+	benchmark::DoNotOptimize(reverse);
+
 	free(reverse);
 	free(forward);
 }
@@ -92,7 +94,6 @@ twiddle(const char *begin, const char *end, char *__restrict dest)
 	return dest + length;
 }
 
-#ifdef __AVX512VBMI__
 char *
 twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
 {
@@ -198,6 +199,7 @@ twiddle_avx2(const char *begin, const char *end, char *__restrict dest)
 	return dest + length;
 }
 
+#ifdef __AVX512VBMI__
 char *
 twiddle_avx2_permute(const char *begin, const char *end, char *__restrict dest)
 {
@@ -349,10 +351,7 @@ BENCHMARK_CAPTURE(bench, revcomp_switch, revcomp_switch);
 BENCHMARK_CAPTURE(bench, revcomp_table4, revcomp_table4);
 BENCHMARK_CAPTURE(bench, twiddle, twiddle);
 BENCHMARK_CAPTURE(bench, subtract, subtract);
-
-#ifdef __AVX512VBMI__
 BENCHMARK_CAPTURE(bench, twiddle_sse42, twiddle_sse42);
 BENCHMARK_CAPTURE(bench, twiddle_avx2, twiddle_avx2);
-#endif
 
-BENCHMARK_MAIN();
+BENCHMARK_MAIN()

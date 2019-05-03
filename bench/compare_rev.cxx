@@ -46,7 +46,7 @@ is_complement(char c, char d)
 	return (xorr & 6) == 4;
 }
 
-double
+size_t
 base_rev(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
@@ -62,8 +62,8 @@ base_rev(const char *begin, const char *end, const char *other)
 	return substitutions;
 }
 
-double
-intr(const char *begin, const char *end, const char *other)
+size_t
+intrinsics(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -121,9 +121,9 @@ revcomp_then_count_mismatches(
 }
 
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
-BENCHMARK_CAPTURE(bench, intr, intr);
+BENCHMARK_CAPTURE(bench, intrinsics, intrinsics);
 BENCHMARK_CAPTURE(bench, base_rev, base_rev);
 BENCHMARK_CAPTURE(
 	bench, revcomp_then_count_mismatches, revcomp_then_count_mismatches);
 
-BENCHMARK_MAIN();
+BENCHMARK_MAIN()
