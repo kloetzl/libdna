@@ -76,6 +76,106 @@ revcomp_table4(const char *forward, const char *end, char *reverse)
 	return reverse;
 }
 
+char *
+shuffle(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef __m128i vec_type;
+
+	size_t vec_bytes = sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+
+	vec_type revmask =
+		_mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+	vec_type nibblecode = _mm_setr_epi8(
+		'0', 'T', '2', 'G', 'A', '5', '6', 'C', '8', '9', 'a', 'b', 'c', 'd',
+		'e', 'f');
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset++) {
+		size_t offset = vec_offset * vec_bytes;
+		// fprintf(stderr, "%zu\n", offset);
+		vec_type chunk;
+		memcpy(&chunk, begin + offset, vec_bytes);
+		// fprintf(stderr, "%16.16s\n", &chunk);
+
+		vec_type reversed = _mm_shuffle_epi8(chunk, revmask);
+		// fprintf(stderr, "%16.16s\n", &reversed);
+
+		vec_type mapped = _mm_shuffle_epi8(nibblecode, reversed);
+		// fprintf(stderr, "%16.16s\n\n", &mapped);
+
+		memcpy(
+			dest + length - (vec_offset + 1) * vec_bytes, &mapped, vec_bytes);
+	}
+
+	size_t offset = vec_offset * vec_bytes;
+	for (size_t i = offset; i < length; i++) {
+		char c = begin[i];
+
+		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;
+	}
+
+	return dest + length;
+}
+
+char *
+shuffle_avx2(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef __m256i vec_type;
+
+	size_t vec_bytes = sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+
+	vec_type revmask = _mm256_set_epi8(
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5,
+		6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+	vec_type nibblecode = _mm256_setr_epi8(
+		'0', 'T', '2', 'G', 'A', '5', '6', 'C', '8', '9', 'a', 'b', 'c', 'd',
+		'e', 'f', '0', 'T', '2', 'G', 'A', '5', '6', 'C', '8', '9', 'a', 'b',
+		'c', 'd', 'e', 'f');
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset++) {
+		size_t offset = vec_offset * vec_bytes;
+		// fprintf(stderr, "%zu\n", offset);
+		vec_type chunk;
+		memcpy(&chunk, begin + offset, vec_bytes);
+		// fprintf(stderr, "%32.32s\n", &chunk);
+
+		vec_type halfreversed = _mm256_shuffle_epi8(chunk, revmask);
+		vec_type reversed =
+			_mm256_permute2x128_si256(halfreversed, halfreversed, 1);
+		// fprintf(stderr, "%32.32s\n", &reversed);
+
+		vec_type mapped = _mm256_shuffle_epi8(nibblecode, reversed);
+		// fprintf(stderr, "%32.32s\n\n", &mapped);
+
+		memcpy(
+			dest + length - (vec_offset + 1) * vec_bytes, &mapped, vec_bytes);
+	}
+
+	size_t offset = vec_offset * vec_bytes;
+	for (size_t i = offset; i < length; i++) {
+		char c = begin[i];
+
+		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;
+	}
+
+	return dest + length;
+}
+
 static __attribute__((target_clones("avx2", "sse2", "default"))) char *
 twiddle(const char *begin, const char *end, char *__restrict dest)
 {
@@ -147,6 +247,62 @@ twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
 
 char *
 twiddle_avx2(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef __m256i vec_type;
+
+	size_t vec_bytes = sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+
+	vec_type all0 = _mm256_set1_epi8(0);
+	vec_type all2 = _mm256_set1_epi8(2);
+	vec_type all4 = _mm256_set1_epi8(4);
+	vec_type all21 = _mm256_set1_epi8(21);
+	vec_type revmask = _mm256_set_epi8(
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5,
+		6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset++) {
+		size_t offset = vec_offset * vec_bytes;
+		// fprintf(stderr, "%zu\n", offset);
+		vec_type chunk;
+		memcpy(&chunk, begin + offset, vec_bytes);
+		// fprintf(stderr, "%16.16s\n", &chunk);
+
+		vec_type halfreversed = _mm256_shuffle_epi8(chunk, revmask);
+		vec_type reversed =
+			_mm256_permute2x128_si256(halfreversed, halfreversed, 1);
+		// fprintf(stderr, "%16.16s\n", &reversed);
+
+		vec_type check = _mm256_and_si256(reversed, all2);
+		vec_type is_zero = _mm256_cmpeq_epi8(check, all0);
+		vec_type blended_mask = _mm256_blendv_epi8(all4, all21, is_zero);
+		vec_type xored = _mm256_xor_si256(blended_mask, reversed);
+		// fprintf(stderr, "%16.16s\n", &xored);
+
+		memcpy(dest + length - (vec_offset + 1) * vec_bytes, &xored, vec_bytes);
+	}
+
+	size_t offset = vec_offset * vec_bytes;
+	for (size_t i = offset; i < length; i++) {
+		char c = begin[i];
+
+		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;
+	}
+
+	return dest + length;
+}
+
+// -mprefer
+char *
+twiddle_avx2_wide_register(
+	const char *begin, const char *end, char *__restrict dest)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
@@ -353,5 +509,7 @@ BENCHMARK_CAPTURE(bench, twiddle, twiddle);
 BENCHMARK_CAPTURE(bench, subtract, subtract);
 BENCHMARK_CAPTURE(bench, twiddle_sse42, twiddle_sse42);
 BENCHMARK_CAPTURE(bench, twiddle_avx2, twiddle_avx2);
+BENCHMARK_CAPTURE(bench, shuffle, shuffle);
+BENCHMARK_CAPTURE(bench, shuffle_avx2, shuffle_avx2);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();
