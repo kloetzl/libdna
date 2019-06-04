@@ -107,6 +107,54 @@ intrinsics(const char *begin, const char *end, const char *other)
 }
 
 size_t
+shuffle(const char *begin, const char *end, const char *other)
+{
+	size_t substitutions = 0;
+	size_t offset = 0;
+	size_t length = end - begin;
+
+	typedef __m128i vec_type;
+	size_t vec_offset = 0;
+	size_t vec_length = length / sizeof(__m128i);
+
+	vec_type nibblecode = _mm_setr_epi8(
+			'0', 'T', '2', 'G', 'A', '5', '6', 'C', '8', '9', 'a', 'b', 'c', 'd',
+			'e', 'f');
+	__m128i mask =
+		_mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+	substitutions += sizeof(__m128i) * vec_length;
+	for (; vec_offset < vec_length; vec_offset++) {
+		__m128i b;
+		memcpy(&b, begin + vec_offset * sizeof(__m128i), sizeof(b));
+		__m128i o;
+		size_t pos = length - (vec_offset + 1) * sizeof(__m128i);
+		memcpy(&o, other + pos, sizeof(o));
+
+		__m128i reversed = _mm_shuffle_epi8(o, mask);
+
+		__m128i complemented = _mm_shuffle_epi8(nibblecode, b);
+
+		__m128i v3 = _mm_cmpeq_epi8(complemented, reversed);
+
+		unsigned int vmask = _mm_movemask_epi8(v3);
+		// substitutions += sizeof(__m128i) - __builtin_popcount(vmask);
+		substitutions -= __builtin_popcount(vmask);
+	}
+
+	offset += vec_offset * sizeof(__m128i);
+
+	for (; offset < length; offset++) {
+		if (!is_complement(begin[offset], other[length - 1 - offset])) {
+			substitutions++;
+		}
+	}
+
+	return substitutions;
+}
+
+
+size_t
 revcomp_then_count_mismatches(
 	const char *begin, const char *end, const char *other)
 {
@@ -122,8 +170,9 @@ revcomp_then_count_mismatches(
 
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
 BENCHMARK_CAPTURE(bench, intrinsics, intrinsics);
+BENCHMARK_CAPTURE(bench, shuffle, shuffle);
 BENCHMARK_CAPTURE(bench, base_rev, base_rev);
 BENCHMARK_CAPTURE(
 	bench, revcomp_then_count_mismatches, revcomp_then_count_mismatches);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();
