@@ -65,6 +65,8 @@ char *
 dnax_find_first_of(const char *table, const char *begin, const char *end);
 char *
 dnax_find_first_not_of(const char *table, const char *begin, const char *end);
+char *
+dnax_find_first_not_dna4(const char *begin, const char *end);
 
 extern const char dnax_revcomp_table[];
 extern const char dnax_pack_table[];

@@ -118,6 +118,16 @@ compare_rev = executable('compare_rev', 'bench/compare_rev.cxx',
     cpp_args: ['-Ofast', '-march=native']
 )
 
+find_first_not = executable('find_first_not', 'bench/find_first_not.cxx',
+    link_with: [libdna, benchcommonlib],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir,
+    dependencies: libbenchmark,
+    cpp_args: ['-Ofast', '-march=native']
+)
+
 benchmark('compare', compare)
 benchmark('revcomp', revcomp)
 benchmark('compare_rev', compare_rev)
+benchmark('find_first_not', find_first_not)
