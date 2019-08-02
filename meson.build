@@ -15,7 +15,7 @@ endif
 ###################################################
 # libdna
 
-incdir = include_directories('include')
+incdir = include_directories('include', 'bench')
 
 sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
 sse42lib = static_library('sse42lib', sse42files,
@@ -127,7 +127,17 @@ find_first_not = executable('find_first_not', 'bench/find_first_not.cxx',
     cpp_args: ['-Ofast', '-march=native']
 )
 
+dnax_to_dna4 = executable('dnax_to_dna4', 'bench/dnax_to_dna4.cxx', 'bench/despace_tables.h',
+    link_with: [libdna, benchcommonlib],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir,
+    dependencies: libbenchmark,
+    cpp_args: ['-Ofast', '-march=native']
+)
+
 benchmark('compare', compare)
 benchmark('revcomp', revcomp)
 benchmark('compare_rev', compare_rev)
 benchmark('find_first_not', find_first_not)
+benchmark('dnax_to_dna4', dnax_to_dna4)
