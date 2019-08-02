@@ -11,9 +11,7 @@
 
 size_t
 dna4_count_mismatches_generic(
-	const char *begin,
-	const char *end,
-	const char *other)
+	const char *begin, const char *end, const char *other)
 {
 	assert(begin != NULL);
 	assert(end != NULL);
@@ -54,7 +52,5 @@ dna4_count_mismatches_select(void)
 }
 
 size_t
-dna4_count_mismatches(
-	const char *begin,
-	const char *end,
-	const char *other) __attribute__((ifunc("dna4_count_mismatches_select")));
+dna4_count_mismatches(const char *begin, const char *end, const char *other)
+	__attribute__((ifunc("dna4_count_mismatches_select")));

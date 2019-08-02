@@ -118,8 +118,8 @@ shuffle(const char *begin, const char *end, const char *other)
 	size_t vec_length = length / sizeof(__m128i);
 
 	vec_type nibblecode = _mm_setr_epi8(
-			'0', 'T', '2', 'G', 'A', '5', '6', 'C', '8', '9', 'a', 'b', 'c', 'd',
-			'e', 'f');
+		'0', 'T', '2', 'G', 'A', '5', '6', 'C', '8', '9', 'a', 'b', 'c', 'd',
+		'e', 'f');
 	__m128i mask =
 		_mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
@@ -152,7 +152,6 @@ shuffle(const char *begin, const char *end, const char *other)
 
 	return substitutions;
 }
-
 
 size_t
 revcomp_then_count_mismatches(

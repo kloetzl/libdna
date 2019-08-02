@@ -14,9 +14,7 @@ typedef __m256i vec_type;
 
 size_t
 dna4_count_mismatches_avx512(
-	const char *begin,
-	const char *end,
-	const char *other)
+	const char *begin, const char *end, const char *other)
 {
 	assert(begin != NULL);
 	assert(end != NULL);

@@ -25,10 +25,7 @@ dna_version(void);
 /// dna4 - only ACGT
 
 extern size_t
-dna4_count_mismatches(
-	const char *begin,
-	const char *end,
-	const char *other);
+dna4_count_mismatches(const char *begin, const char *end, const char *other);
 
 double
 dna4_evodist_k80(

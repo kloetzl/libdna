@@ -39,7 +39,8 @@ bench(benchmark::State &state, Pack_fn fn)
 	free(forward);
 }
 
-static char* table_based(const char *begin, const char *end)
+static char *
+table_based(const char *begin, const char *end)
 {
 	return dnax_find_first_not_of(dnax_to_dna4_table, begin, end);
 }
@@ -52,27 +53,36 @@ G: 0100 0111
 T: 0101 0100
 
  */
-static char* shuffle_complex(const char *begin, const char *end)
+static char *
+shuffle_complex(const char *begin, const char *end)
 {
 	typedef __m128i vec_type;
 	size_t vec_size = sizeof(vec_type);
 	size_t capped_length = (end - begin) & ~(vec_size - 1);
 
-	#define MAYBE_A (1 << 0)
-	#define MAYBE_C (1 << 1)
-	#define MAYBE_G (1 << 2)
-	#define MAYBE_T (1 << 3)
+#define MAYBE_A (1 << 0)
+#define MAYBE_C (1 << 1)
+#define MAYBE_G (1 << 2)
+#define MAYBE_T (1 << 3)
 
-	vec_type mask_low_nibble = _mm_setr_epi8(0, MAYBE_A, 0, MAYBE_C, MAYBE_T, 0, 0, MAYBE_G, 0, 0, 0, 0, 0, 0, 0, 0);
-	vec_type mask_high_nibble = _mm_setr_epi8(0, 0, 0, 0, MAYBE_A | MAYBE_C | MAYBE_G, MAYBE_T, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	vec_type mask_low_nibble = _mm_setr_epi8(
+		0, MAYBE_A, 0, MAYBE_C, MAYBE_T, 0, 0, MAYBE_G, 0, 0, 0, 0, 0, 0, 0, 0);
+	vec_type mask_high_nibble = _mm_setr_epi8(
+		0, 0, 0, 0, MAYBE_A | MAYBE_C | MAYBE_G, MAYBE_T, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0);
 	for (size_t i = 0; i < capped_length; i += vec_size) {
 		vec_type chunk;
 		memcpy(&chunk, begin + i, vec_size);
 		// fprintf(stderr, "%16.16s\n", &chunk);
 
-		vec_type v1 = _mm_shuffle_epi8(mask_low_nibble, chunk); // mask_low_nibble[chunk]; // SHUFFLE
+		vec_type v1 = _mm_shuffle_epi8(
+			mask_low_nibble, chunk); // mask_low_nibble[chunk]; // SHUFFLE
 		// TODO: and 7
-		vec_type v2 = _mm_shuffle_epi8(mask_high_nibble, _mm_and_si128(_mm_srai_epi32(chunk, 4), _mm_set1_epi8(7))); //mask_high_nibble[chunk >> 4]; // SHUFFLE
+		vec_type v2 = _mm_shuffle_epi8(
+			mask_high_nibble,
+			_mm_and_si128(
+				_mm_srai_epi32(chunk, 4),
+				_mm_set1_epi8(7))); // mask_high_nibble[chunk >> 4]; // SHUFFLE
 
 		// vec_type debug_or_mask = _mm_set1_epi8('0');
 		// vec_type debug_v1 = _mm_or_si128(v1, debug_or_mask);
@@ -91,7 +101,6 @@ static char* shuffle_complex(const char *begin, const char *end)
 		// vec_type debug_v4 = _mm_or_si128(v4, debug_or_mask);
 		// fprintf(stderr, "%16.16s\n", &debug_v4);
 
-
 		int mask = _mm_movemask_epi8(v4);
 		if (mask) {
 			int offset = __builtin_ctz(mask);
@@ -106,13 +115,15 @@ static char* shuffle_complex(const char *begin, const char *end)
 	return table_based(begin + capped_length, end);
 }
 
-static char* shuffle_fast(const char *begin, const char *end)
+static char *
+shuffle_fast(const char *begin, const char *end)
 {
 	typedef __m128i vec_type;
 	size_t vec_size = sizeof(vec_type);
 	size_t capped_length = (end - begin) & ~(vec_size - 1);
 
-	vec_type mask_low_nibble = _mm_setr_epi8(0, 'A', 0, 'C', 'T', 0, 0, 'G', 0, 0, 0, 0, 0, 0, 0, 0);
+	vec_type mask_low_nibble =
+		_mm_setr_epi8(0, 'A', 0, 'C', 'T', 0, 0, 'G', 0, 0, 0, 0, 0, 0, 0, 0);
 	for (size_t i = 0; i < capped_length; i += vec_size) {
 		vec_type chunk;
 		memcpy(&chunk, begin + i, vec_size);
@@ -129,8 +140,6 @@ static char* shuffle_fast(const char *begin, const char *end)
 	// finalize
 	return table_based(begin + capped_length, end);
 }
-
-
 
 BENCHMARK_CAPTURE(bench, table_based, table_based);
 BENCHMARK_CAPTURE(bench, shuffle_complex, shuffle_complex);
