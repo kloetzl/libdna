@@ -76,7 +76,15 @@ simple = executable('simple', 'test/simple.c',
     include_directories: incdir
 )
 
+Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
+    link_with: libdna,
+    install: false,
+    build_by_default: false,
+    include_directories: incdir
+)
+
 test('simple', simple)
+test('Tdnax_revcomp', Tdnax_revcomp)
 
 ###################################################
 # Benchmarks
