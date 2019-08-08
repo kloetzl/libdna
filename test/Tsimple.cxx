@@ -1,9 +1,11 @@
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
+
 #include <assert.h>
 #include <dna.h>
 #include <string.h>
 
-int
-main(int argc, char const *argv[])
+TEST_CASE("Some simple checks")
 {
 	const char *subject = "AACGTACGT";
 	const char *subject_end = subject + strlen(subject);
@@ -11,7 +13,7 @@ main(int argc, char const *argv[])
 	const char *query_end = query + strlen(query);
 
 	size_t mismatches = dna4_count_mismatches(subject, subject_end, query);
-	assert(mismatches == 1);
+	REQUIRE(mismatches == 1);
 
 	char *rcsubject = strdup(subject);
 	dna4_revcomp(subject, subject_end, rcsubject);
@@ -22,7 +24,5 @@ main(int argc, char const *argv[])
 	const char *rcsubject_end = rcsubject + strlen(rcsubject);
 	size_t rcmismatches =
 		dna4_count_mismatches(rcsubject, rcsubject_end, rcquery);
-	assert(rcmismatches == 1);
-
-	return 0;
+	REQUIRE(rcmismatches == 1);
 }

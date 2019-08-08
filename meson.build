@@ -69,7 +69,7 @@ install_man(['man/geneticcode.7', 'man/iupac.7'])
 ###################################################
 # Tests
 
-Tsimple = executable('Tsimple', 'test/Tsimple.c',
+Tsimple = executable('Tsimple', 'test/Tsimple.cxx',
     link_with: libdna,
     install: false,
     build_by_default: false,
