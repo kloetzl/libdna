@@ -1,3 +1,6 @@
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
+
 #include <assert.h>
 #include <dna.h>
 #include <string>
@@ -27,19 +30,20 @@ repeat(std::string in, int count)
 	return ret;
 }
 
-int
-main(int argc, char const *argv[])
+TEST_CASE("Basic revcomp checks")
 {
 	auto forward = repeat("ACGT", 10);
 
 	auto buffer = new char[forward.size() + 1];
+	memset(buffer, 0, forward.size() + 1);
 
-	dna4_revcomp(begin_data(forward), end_data(forward), buffer);
-	assert(forward == buffer);
+	auto end_ptr = dna4_revcomp(begin_data(forward), end_data(forward), buffer);
+	REQUIRE(end_ptr - buffer == forward.size());
+	REQUIRE(forward == buffer);
 
-	dnax_revcomp(
+	end_ptr = dnax_revcomp(
 		dnax_revcomp_table, begin_data(forward), end_data(forward), buffer);
-	assert(forward == buffer);
 
-	return 0;
+	REQUIRE(end_ptr - buffer == forward.size());
+	REQUIRE(forward == buffer);
 }

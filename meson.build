@@ -3,7 +3,7 @@ project('libdna', 'c', 'cpp', version : '0.2', license : 'GPL3',
         'warning_level=3',
         'c_std=gnu11',
         'buildtype=debugoptimized',
-        'b_ndebug=true' # set to false on non-optimized
+        'b_ndebug=false' # set to false on non-optimized
     ]
 )
 
@@ -15,7 +15,7 @@ endif
 ###################################################
 # libdna
 
-incdir = include_directories('include', 'bench')
+incdir = include_directories('include', 'bench', 'test')
 
 sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
 sse42lib = static_library('sse42lib', sse42files,
@@ -69,7 +69,7 @@ install_man(['man/geneticcode.7', 'man/iupac.7'])
 ###################################################
 # Tests
 
-simple = executable('simple', 'test/simple.c',
+Tsimple = executable('Tsimple', 'test/Tsimple.c',
     link_with: libdna,
     install: false,
     build_by_default: false,
@@ -83,7 +83,7 @@ Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
     include_directories: incdir
 )
 
-test('simple', simple)
+test('Tsimple', Tsimple)
 test('Tdnax_revcomp', Tdnax_revcomp)
 
 ###################################################
