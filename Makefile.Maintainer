@@ -5,6 +5,7 @@ SHELL=zsh
 format:
 	clang-format -i src/*.h src/*.c include/*.h
 	clang-format -i bench/*.cxx
+	clang-format -i test/*.cxx
 
 clean:
 	$(MAKE) -C src clean

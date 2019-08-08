@@ -1,8 +1,8 @@
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #include <assert.h>
 #include <dna.h>
+#include <string.h>
 #include <string>
 
 auto

@@ -69,15 +69,28 @@ install_man(['man/geneticcode.7', 'man/iupac.7'])
 ###################################################
 # Tests
 
+testlib = static_library('Tmain', 'test/Tmain.cxx',
+    include_directories: incdir,
+    cpp_args : ['-O2'],
+    install: false,
+)
+
 Tsimple = executable('Tsimple', 'test/Tsimple.cxx',
-    link_with: libdna,
+    link_with: [libdna, testlib],
     install: false,
     build_by_default: false,
     include_directories: incdir
 )
 
 Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
-    link_with: libdna,
+    link_with: [libdna, testlib],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir
+)
+
+Ttranslate = executable('Ttranslate', 'test/Ttranslate.cxx',
+    link_with: [libdna, testlib],
     install: false,
     build_by_default: false,
     include_directories: incdir
@@ -85,6 +98,7 @@ Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
 
 test('Tsimple', Tsimple)
 test('Tdnax_revcomp', Tdnax_revcomp)
+test('Ttranslate', Ttranslate)
 
 ###################################################
 # Benchmarks
