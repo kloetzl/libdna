@@ -46,4 +46,6 @@ TEST_CASE("Basic revcomp checks")
 
 	REQUIRE(end_ptr - buffer == forward.size());
 	REQUIRE(forward == buffer);
+
+	delete[] buffer;
 }
