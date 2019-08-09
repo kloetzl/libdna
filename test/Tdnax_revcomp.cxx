@@ -1,21 +1,10 @@
+#include "Tcommon.h"
 #include "catch.hpp"
 
 #include <assert.h>
 #include <dna.h>
 #include <string.h>
 #include <string>
-
-auto
-begin_data(std::string &str)
-{
-	return str.data();
-}
-
-auto
-end_data(std::string &str)
-{
-	return str.data() + str.size();
-}
 
 auto
 repeat(std::string in, int count)
@@ -37,12 +26,12 @@ TEST_CASE("Basic revcomp checks")
 	auto buffer = new char[forward.size() + 1];
 	memset(buffer, 0, forward.size() + 1);
 
-	auto end_ptr = dna4_revcomp(begin_data(forward), end_data(forward), buffer);
+	auto end_ptr = dna4_revcomp(dna::begin(forward), dna::end(forward), buffer);
 	REQUIRE(end_ptr - buffer == forward.size());
 	REQUIRE(forward == buffer);
 
 	end_ptr = dnax_revcomp(
-		dnax_revcomp_table, begin_data(forward), end_data(forward), buffer);
+		dnax_revcomp_table, dna::begin(forward), dna::end(forward), buffer);
 
 	REQUIRE(end_ptr - buffer == forward.size());
 	REQUIRE(forward == buffer);

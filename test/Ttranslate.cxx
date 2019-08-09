@@ -1,31 +1,8 @@
+#include "Tcommon.h"
 #include "catch.hpp"
 
 #include <dna.h>
 #include <string>
-
-auto
-str_begin(std::string &str)
-{
-	return str.data();
-}
-
-auto
-str_end(std::string &str)
-{
-	return str.data() + str.size();
-}
-
-const auto
-str_begin(const std::string &str)
-{
-	return str.data();
-}
-
-const auto
-str_end(const std::string &str)
-{
-	return str.data() + str.size();
-}
 
 TEST_CASE("Some simple checks")
 {
@@ -77,7 +54,7 @@ TEST_CASE("Compact table")
 	for (const auto &code : table) {
 		char buffer[4];
 		auto amino_acid_end = dnax_translate_quirks(
-			str_begin(std::get<2>(code)), str_end(std::get<2>(code)), buffer);
+			dna::begin(std::get<2>(code)), dna::end(std::get<2>(code)), buffer);
 		auto amino_acid = std::string(buffer, amino_acid_end - buffer);
 		REQUIRE(amino_acid == std::get<1>(code));
 	}

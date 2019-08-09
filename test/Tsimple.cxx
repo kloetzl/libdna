@@ -1,27 +1,30 @@
+#include "Tcommon.h"
 #include "catch.hpp"
 
-#include <assert.h>
 #include <dna.h>
-#include <string.h>
+#include <iostream>
+#include <string>
+
+using namespace std::string_literals;
 
 TEST_CASE("Some simple checks")
 {
-	const char *subject = "AACGTACGT";
-	const char *subject_end = subject + strlen(subject);
-	const char *query = "AACGTACCT";
-	const char *query_end = query + strlen(query);
+	const auto subject = "AACGTACGT"s;
+	const auto query = "AACGTACCT"s;
 
-	size_t mismatches = dna4_count_mismatches(subject, subject_end, query);
+	size_t mismatches = dna4_count_mismatches(
+		dna::begin(subject), dna::end(subject), dna::begin(query));
 	REQUIRE(mismatches == 1);
 
-	char *rcsubject = strdup(subject);
-	dna4_revcomp(subject, subject_end, rcsubject);
+	auto rsubject = std::string(subject); // copy for length reasons
+	dna4_revcomp(dna::begin(subject), dna::end(subject), dna::begin(rsubject));
 
-	char *rcquery = strdup(query);
-	dnax_revcomp(dnax_revcomp_table, query, query_end, rcquery);
+	auto rquery = std::string(query); // copy
+	dnax_revcomp(
+		dnax_revcomp_table, dna::begin(query), dna::end(query),
+		dna::begin(rquery));
 
-	const char *rcsubject_end = rcsubject + strlen(rcsubject);
-	size_t rcmismatches =
-		dna4_count_mismatches(rcsubject, rcsubject_end, rcquery);
+	size_t rcmismatches = dna4_count_mismatches(
+		dna::begin(rsubject), dna::end(rsubject), dna::begin(rquery));
 	REQUIRE(rcmismatches == 1);
 }
