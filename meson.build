@@ -103,7 +103,7 @@ test('Ttranslate', Ttranslate)
 ###################################################
 # Benchmarks
 
-benchcommonlib = static_library('benchcommon', 'bench/common.cxx',
+benchcommonlib = static_library('benchcommon', 'bench/Bcommon.cxx',
     include_directories: incdir,
     cpp_args : ['-O2'],
     install: false,
@@ -113,7 +113,7 @@ libbenchmark = dependency('benchmark',
     # required: false
 )
 
-compare = executable('compare', 'bench/compare.cxx',
+Bcompare = executable('Bcompare', 'bench/Bcompare.cxx',
     link_with: [libdna, benchcommonlib],
     install: false,
     build_by_default: false,
@@ -122,7 +122,7 @@ compare = executable('compare', 'bench/compare.cxx',
     cpp_args: ['-Ofast', '-march=native']
 )
 
-revcomp = executable('revcomp', 'bench/revcomp.cxx',
+Brevcomp = executable('Brevcomp', 'bench/Brevcomp.cxx',
     link_with: [libdna, benchcommonlib],
     install: false,
     build_by_default: false,
@@ -131,7 +131,7 @@ revcomp = executable('revcomp', 'bench/revcomp.cxx',
     cpp_args: ['-Ofast', '-march=native']
 )
 
-compare_rev = executable('compare_rev', 'bench/compare_rev.cxx',
+Bcompare_rev = executable('Bcompare_rev', 'bench/Bcompare_rev.cxx',
     link_with: [libdna, benchcommonlib],
     install: false,
     build_by_default: false,
@@ -140,7 +140,7 @@ compare_rev = executable('compare_rev', 'bench/compare_rev.cxx',
     cpp_args: ['-Ofast', '-march=native']
 )
 
-find_first_not = executable('find_first_not', 'bench/find_first_not.cxx',
+Bfind_first_not = executable('Bfind_first_not', 'bench/Bfind_first_not.cxx',
     link_with: [libdna, benchcommonlib],
     install: false,
     build_by_default: false,
@@ -149,7 +149,7 @@ find_first_not = executable('find_first_not', 'bench/find_first_not.cxx',
     cpp_args: ['-Ofast', '-march=native']
 )
 
-dnax_to_dna4 = executable('dnax_to_dna4', 'bench/dnax_to_dna4.cxx', 'bench/despace_tables.h',
+Bdnax_to_dna4 = executable('Bdnax_to_dna4', 'bench/Bdnax_to_dna4.cxx', 'bench/despace_tables.h',
     link_with: [libdna, benchcommonlib],
     install: false,
     build_by_default: false,
@@ -158,8 +158,8 @@ dnax_to_dna4 = executable('dnax_to_dna4', 'bench/dnax_to_dna4.cxx', 'bench/despa
     cpp_args: ['-Ofast', '-march=native']
 )
 
-benchmark('compare', compare)
-benchmark('revcomp', revcomp)
-benchmark('compare_rev', compare_rev)
-benchmark('find_first_not', find_first_not)
-benchmark('dnax_to_dna4', dnax_to_dna4)
+benchmark('Bcompare', Bcompare)
+benchmark('Brevcomp', Brevcomp)
+benchmark('Bcompare_rev', Bcompare_rev)
+benchmark('Bfind_first_not', Bfind_first_not)
+benchmark('Bdnax_to_dna4', Bdnax_to_dna4)
