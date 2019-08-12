@@ -5,6 +5,10 @@
  * Copyright 2019 © Fabian Klötzl
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // CPU specific mismatch count
 typedef size_t(dna4_count_mismatches_fn)(
 	const char *begin, const char *end, const char *other);
@@ -34,3 +38,7 @@ char *
 dna4_revcomp_sse42(const char *begin, const char *end, char *dest);
 char *
 dna4_revcomp_avx2(const char *begin, const char *end, char *dest);
+
+#ifdef __cplusplus
+}
+#endif
