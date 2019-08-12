@@ -15,7 +15,7 @@ endif
 ###################################################
 # libdna
 
-incdir = include_directories('include', 'bench', 'test')
+incdir = include_directories('include', 'bench', 'test', 'src')
 
 sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
 sse42lib = static_library('sse42lib', sse42files,
@@ -75,14 +75,22 @@ testlib = static_library('Tmain', 'test/Tmain.cxx',
     install: false,
 )
 
-Tsimple = executable('Tsimple', 'test/Tsimple.cxx',
+Tdna4_revcomp = executable('Tdna4_revcomp', 'test/Tdna4_revcomp.cxx',
+    link_with: [testlib, libdna],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir,
+    cpp_args: ['-march=native']
+)
+
+Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
     link_with: [libdna, testlib],
     install: false,
     build_by_default: false,
     include_directories: incdir
 )
 
-Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
+Tsimple = executable('Tsimple', 'test/Tsimple.cxx',
     link_with: [libdna, testlib],
     install: false,
     build_by_default: false,
@@ -96,8 +104,9 @@ Ttranslate = executable('Ttranslate', 'test/Ttranslate.cxx',
     include_directories: incdir
 )
 
-test('Tsimple', Tsimple)
+test('Tdna4_revcomp', Tdna4_revcomp)
 test('Tdnax_revcomp', Tdnax_revcomp)
+test('Tsimple', Tsimple)
 test('Ttranslate', Ttranslate)
 
 ###################################################
