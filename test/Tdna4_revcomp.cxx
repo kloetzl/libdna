@@ -22,6 +22,13 @@ repeat(std::string in, int count)
 
 TEST_CASE("Basic revcomp checks")
 {
+	const char str[] = "ACGTACGTACGT";
+	char buf[13];
+	char *end = dna4_revcomp(str, str + sizeof(str) - 1, buf);
+	*end = (unsigned char)'\0';
+
+	REQUIRE(strncmp(str, buf, 12) == 0);
+
 	auto forward = repeat("ACGT", 10);
 
 	auto buffer = new char[forward.size() + 1];
