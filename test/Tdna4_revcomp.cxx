@@ -177,3 +177,17 @@ TEST_CASE("Various AVX2")
 	}
 }
 #endif
+
+TEST_CASE("Dispatch")
+{
+	// The test should be compiled and executed with -march=native.
+#ifdef __AVX2__
+	REQUIRE(&dna4_revcomp == &dna4_revcomp_avx2);
+#else
+#ifdef __SSE4_2__
+	REQUIRE(&dna4_revcomp == &dna4_revcomp_sse42);
+#else
+	REQUIRE(&dna4_revcomp == &dna4_revcomp_generic);
+#endif
+#endif
+}
