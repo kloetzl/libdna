@@ -1,9 +1,10 @@
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018 (C) Fabian Klötzl
+ * Copyright 2018-2019 (C) Fabian Klötzl
  */
 
 #include "dna.h"
+#include "dna_internal.h"
 
 #include <assert.h>
 
@@ -47,6 +48,7 @@ m[nucl].toLowerCase().charCodeAt(0);
 // TODO: make 256
 
 // IUPAC Code see iupac(7)
+DNA_PUBLIC
 const char dnax_revcomp_table[] = {
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
@@ -65,6 +67,7 @@ const char dnax_revcomp_table[] = {
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1};
 
+DNA_PUBLIC
 char *
 dnax_revcomp(
 	const char *restrict table, const char *begin, const char *end, char *dest)

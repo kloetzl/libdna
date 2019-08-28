@@ -16,7 +16,7 @@ extern "C" {
 #define DNA_VERSION_MAJOR 0
 #define DNA_VERSION ((DNA_VERSION_MAJOR << 16) | DNA_VERSION_MINOR)
 
-int
+extern int
 dna_version(void);
 
 // Future versions of libdna should support _FOTIFY_SOURCE with
@@ -27,25 +27,21 @@ dna_version(void);
 extern size_t
 dna4_count_mismatches(const char *begin, const char *end, const char *other);
 
-double
-dna4_evodist_k80(
-	const char *begin,
-	const char *end,
-	const char *other,
-	size_t *transitions,
-	size_t *transversions);
-double
+extern double
 dna4_gc_content(const char *begin, const char *end);
-uint64_t
+
+extern uint64_t
 dna4_pack(const char *begin, size_t k);
-char *
+
+extern char *
 dna4_revcomp(const char *begin, const char *end, char *dest);
 
 /// dnax - Any ASCII char or UTF8 byte
 // -1 == skip
 uint64_t
 dnax_pack(const char *table, const char *begin, const char *end, size_t k);
-char *
+
+extern char *
 dnax_revcomp(const char *table, const char *begin, const char *end, char *dest);
 
 char *

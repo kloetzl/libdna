@@ -92,9 +92,13 @@ revcomp(const std::string &forward)
 	return reverse;
 }
 
+#ifdef EXPOSE_INTERNALS
+
 const auto revcomp_generic = rc<dna4_revcomp_generic>;
 const auto revcomp_sse42 = rc<dna4_revcomp_sse42>;
 const auto revcomp_avx2 = rc<dna4_revcomp_avx2>;
+
+#endif
 
 } // namespace dna4
 
@@ -125,6 +129,8 @@ TEST_CASE("Different lengths")
 		REQUIRE(dna4::revcomp(repeat("ACGT", k)) == repeat("ACGT", k));
 	}
 }
+
+#ifdef EXPOSE_INTERNALS
 
 TEST_CASE("Various Generic")
 {
@@ -191,3 +197,5 @@ TEST_CASE("Dispatch")
 #endif
 #endif
 }
+
+#endif

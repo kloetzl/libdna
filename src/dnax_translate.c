@@ -1,9 +1,10 @@
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018 (C) Fabian Klötzl
+ * Copyright 2018-2019 (C) Fabian Klötzl
  */
 
 #include "dna.h"
+#include "dna_internal.h"
 
 #include <assert.h>
 #include <string.h>
@@ -60,6 +61,7 @@ static const char iupac_codes[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1};
 
+DNA_PUBLIC
 char *
 dnax_translate_quirks(const char *begin, const char *end, char *dest)
 {

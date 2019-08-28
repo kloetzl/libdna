@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+#include "dna_internal.h"
 
 #include <assert.h>
 #include <emmintrin.h>
@@ -13,6 +14,7 @@
 
 typedef __m128i vec_type;
 
+DNA_LOCAL
 char *
 dna4_revcomp_sse42(const char *begin, const char *end, char *restrict dest)
 {

@@ -3,13 +3,13 @@ project('libdna', 'c', 'cpp', version : '0.2', license : 'GPL3',
         'warning_level=3',
         'c_std=gnu11',
         'buildtype=debugoptimized',
-        'b_ndebug=false' # set to false on non-optimized
+        'optimization=2',
+        'b_ndebug=if-release'
     ]
 )
 
+warning(get_option('buildtype'))
 if get_option('buildtype').startswith('release')
-    warning('library will not be portable')
-    # … until I figure out how to discourage meson to use -O3.
 endif
 
 ###################################################
@@ -21,21 +21,21 @@ sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
 sse42lib = static_library('sse42lib', sse42files,
     include_directories: incdir,
     pic: true,
-    c_args : ['-O3', '-mpopcnt', '-msse4.2']
+    c_args : ['-O3', '-mpopcnt', '-msse4.2', '-fvisibility=hidden']
 )
 
 avx2files = ['src/dna4_count_mismatches_avx2.c', 'src/dna4_revcomp_avx2.c']
 avx2lib = static_library('avx2lib', avx2files,
     include_directories: incdir,
     pic: true,
-    c_args : ['-O3', '-mpopcnt', '-mavx2']
+    c_args : ['-O3', '-mpopcnt', '-mavx2', '-fvisibility=hidden']
 )
 
 avx512files = ['src/dna4_count_mismatches_avx512.c']
 avx512lib = static_library('avx512lib', avx512files,
     include_directories: incdir,
     pic: true,
-    c_args : ['-O3', '-mpopcnt', '-mavx512bw', '-mavx512vl']
+    c_args : ['-O3', '-mpopcnt', '-mavx512bw', '-mavx512vl', '-fvisibility=hidden']
 )
 
 genericfiles = [
@@ -60,7 +60,9 @@ genericfiles = [
 libdna = library('dna', ['include/dna.h', genericfiles],
     include_directories : incdir,
     soversion: '0',
-    link_with: [sse42lib, avx2lib, avx512lib]
+    link_with: [sse42lib, avx2lib, avx512lib],
+    pic: true,
+    c_args : ['-O2', '-fvisibility=hidden']
 )
 
 install_headers('include/dna.h')

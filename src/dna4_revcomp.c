@@ -8,6 +8,7 @@
 
 #include <assert.h>
 
+DNA_LOCAL
 char *
 dna4_revcomp_generic(const char *begin, const char *end, char *restrict dest)
 {
@@ -26,6 +27,7 @@ dna4_revcomp_generic(const char *begin, const char *end, char *restrict dest)
 	return dest + length;
 }
 
+DNA_LOCAL
 dna4_revcomp_fn *
 dna4_revcomp_select(void)
 {
@@ -43,6 +45,7 @@ dna4_revcomp_select(void)
 	}
 }
 
+DNA_PUBLIC
 char *
 dna4_revcomp(const char *begin, const char *end, char *dest)
 	__attribute__((ifunc("dna4_revcomp_select")));

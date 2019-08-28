@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018 (C) Fabian Klötzl
+ * Copyright 2018-2019 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -51,6 +51,7 @@ dna4_count_mismatches_select(void)
 	}
 }
 
+DNA_PUBLIC
 size_t
 dna4_count_mismatches(const char *begin, const char *end, const char *other)
 	__attribute__((ifunc("dna4_count_mismatches_select")));
