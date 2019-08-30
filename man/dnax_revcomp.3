@@ -1,0 +1,33 @@
+.TH DNAX_REVCOMP 3 2019-08-12 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_revcomp \- compute the reverse complement
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "char *dnax_revcomp(const char *" table ", const char *" begin ", const char *" end ", char *" dest ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_revcomp\fR() function computes the reverse complement. The input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The result is stored at \fIdest\fR.
+
+The \fItable\fR parameter can be used to customize the reverse complement of individual characters. The supplied table \fIdnax_revcomp_table\fR complements according to the IUPAC notation. A value of -1 can be used to indicate a character which should be skipped. Thus, the resulting string may be shorter than the input.
+
+.SH RETURN VALUE
+The return value points one byte past the last character written. You may want to write a null byte there.
+
+.SH EXAMPLE
+.in +4
+.EX
+const char str[] = "ACGTacgtACGT!";
+char buffer[13];
+char *end = dnax_revcomp(dnax_revcomp_table, str, str + sizeof(str) - 1, buffer);
+*end = '\\0';
+
+assert(strncmp(str, buffer, 12) == 0);
+
+.SH SEE ALSO
+.BR dna4_revcomp (3)
+.BR iupac (7)
