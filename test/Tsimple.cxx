@@ -4,6 +4,7 @@
 #include <dna.h>
 #include <iostream>
 #include <string>
+#include <cstring>
 
 using namespace std::string_literals;
 
@@ -27,4 +28,33 @@ TEST_CASE("Some simple checks")
 	size_t rcmismatches = dna4_count_mismatches(
 		dna::begin(rsubject), dna::end(rsubject), dna::begin(rquery));
 	REQUIRE(rcmismatches == 1);
+}
+
+TEST_CASE("Example from dna4_count_mismatches manpage")
+{
+	const char seq1[] = "ACGTACGTACGT";
+	const char seq2[] = "ACGTTCGTACGA";
+	size_t snps = dna4_count_mismatches(seq1, seq1 + sizeof(seq1) - 1, seq2);
+
+	REQUIRE(snps == 2);
+}
+
+TEST_CASE("Example from dna4_revcomp manpage")
+{
+	const char str[] = "ACGTACGTACGT";
+	char buffer[13];
+	char *end = dna4_revcomp(str, str + sizeof(str) - 1, buffer);
+	*end = '\0';
+
+	assert(strncmp(str, buffer, 12) == 0);
+}
+
+TEST_CASE("Example from dnax_revcomp manpage")
+{
+	const char str[] = "ACGTacgtACGT!";
+	char buffer[13];
+	char *end = dnax_revcomp(dnax_revcomp_table, str, str + sizeof(str) - 1, buffer);
+	*end = '\0';
+
+	assert(strncmp(str, buffer, 12) == 0);
 }
