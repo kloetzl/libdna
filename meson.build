@@ -79,56 +79,35 @@ testlib = static_library('Tmain', 'test/Tmain.cxx',
     install: false,
 )
 
-Tdna4_pack_2bits = executable('Tdna4_pack_2bits', 'test/Tdna4_pack_2bits.cxx',
-    link_with: [testlib, libdna],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir,
-    cpp_args: ['-march=native']
-)
+nativetests = ['Tdna4_pack_2bits', 'Tdna4_revcomp']
+foreach Tname : nativetests
+    Texe = executable(Tname,
+        'test/' + Tname + '.cxx',
+        link_with: [testlib, libdna],
+        install: false,
+        build_by_default: false,
+        include_directories: incdir,
+        cpp_args: ['-march=native']
+    )
+    test(Tname, Texe)
+endforeach
 
-Tdna4_revcomp = executable('Tdna4_revcomp', 'test/Tdna4_revcomp.cxx',
-    link_with: [testlib, libdna],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir,
-    cpp_args: ['-march=native']
-)
-
-Tdnax_pack_4bits = executable('Tdnax_pack_4bits', 'test/Tdnax_pack_4bits.cxx',
-    link_with: [libdna, testlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir
-)
-
-Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
-    link_with: [libdna, testlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir
-)
-
-Tsimple = executable('Tsimple', 'test/Tsimple.cxx',
-    link_with: [libdna, testlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir
-)
-
-Ttranslate = executable('Ttranslate', 'test/Ttranslate.cxx',
-    link_with: [libdna, testlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir
-)
-
-test('Tdna4_pack_2bits', Tdna4_pack_2bits)
-test('Tdna4_revcomp', Tdna4_revcomp)
-test('Tdnax_pack_4bits', Tdnax_pack_4bits)
-test('Tdnax_revcomp', Tdnax_revcomp)
-test('Tsimple', Tsimple)
-test('Ttranslate', Ttranslate)
+plaintests = [
+    'Tdnax_pack_4bits',
+    'Tdnax_revcomp',
+    'Tsimple',
+    'Ttranslate'
+]
+foreach Tname : plaintests
+    Texe = executable(Tname,
+        'test/' + Tname + '.cxx',
+        link_with: [testlib, libdna],
+        install: false,
+        build_by_default: false,
+        include_directories: incdir
+    )
+    test(Tname, Texe)
+endforeach
 
 ###################################################
 # Benchmarks
@@ -143,41 +122,22 @@ libbenchmark = dependency('benchmark',
     # required: false
 )
 
-Bcompare = executable('Bcompare', 'bench/Bcompare.cxx',
-    link_with: [libdna, benchcommonlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir,
-    dependencies: libbenchmark,
-    cpp_args: ['-Ofast', '-march=native']
-)
-
-Brevcomp = executable('Brevcomp', 'bench/Brevcomp.cxx',
-    link_with: [libdna, benchcommonlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir,
-    dependencies: libbenchmark,
-    cpp_args: ['-Ofast', '-march=native']
-)
-
-Bcompare_rev = executable('Bcompare_rev', 'bench/Bcompare_rev.cxx',
-    link_with: [libdna, benchcommonlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir,
-    dependencies: libbenchmark,
-    cpp_args: ['-Ofast', '-march=native']
-)
-
-Bfind_first_not = executable('Bfind_first_not', 'bench/Bfind_first_not.cxx',
-    link_with: [libdna, benchcommonlib],
-    install: false,
-    build_by_default: false,
-    include_directories: incdir,
-    dependencies: libbenchmark,
-    cpp_args: ['-Ofast', '-march=native']
-)
+plainbench = [
+    'Bcompare',
+    'Brevcomp',
+    'Bcompare_rev',
+    'Bfind_first_not',
+]
+foreach Bname : plainbench
+    Bexe = executable(Bname, 'bench/' + Bname + '.cxx',
+        link_with: [libdna, benchcommonlib],
+        install: false,
+        build_by_default: false,
+        include_directories: incdir,
+        dependencies: libbenchmark,
+        cpp_args: ['-Ofast', '-march=native']
+    )
+endforeach
 
 Bdnax_to_dna4 = executable('Bdnax_to_dna4', 'bench/Bdnax_to_dna4.cxx', 'bench/despace_tables.h',
     link_with: [libdna, benchcommonlib],
@@ -188,8 +148,4 @@ Bdnax_to_dna4 = executable('Bdnax_to_dna4', 'bench/Bdnax_to_dna4.cxx', 'bench/de
     cpp_args: ['-Ofast', '-march=native']
 )
 
-benchmark('Bcompare', Bcompare)
-benchmark('Brevcomp', Brevcomp)
-benchmark('Bcompare_rev', Bcompare_rev)
-benchmark('Bfind_first_not', Bfind_first_not)
 benchmark('Bdnax_to_dna4', Bdnax_to_dna4)
