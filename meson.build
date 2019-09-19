@@ -42,18 +42,20 @@ genericfiles = [
     'src/dna4_count_mismatches.c',
     # 'src/dna4_count_mismatches_revcomp.c',
     'src/dna4_gc_content.c',
-    'src/dna4_pack.c',
+    'src/dna4_pack_2bits.c',
     'src/dna4_revcomp.c',
+    'src/dna4_unpack_2bits.c',
     'src/dna_internal.h',
     'src/dna_version.c',
     'src/dnax_count.c',
     'src/dnax_find_first_not_of.c',
     'src/dnax_find_first_of.c',
     'src/dnax_find_mismatch.c',
-    'src/dnax_pack.c',
+    'src/dnax_pack_4bits.c',
     'src/dnax_replace.c',
     'src/dnax_revcomp.c',
     'src/dnax_translate.c',
+    'src/dnax_unpack_4bits.c',
     'src/utils.h'
 ]
 
@@ -77,12 +79,27 @@ testlib = static_library('Tmain', 'test/Tmain.cxx',
     install: false,
 )
 
+Tdna4_pack_2bits = executable('Tdna4_pack_2bits', 'test/Tdna4_pack_2bits.cxx',
+    link_with: [testlib, libdna],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir,
+    cpp_args: ['-march=native']
+)
+
 Tdna4_revcomp = executable('Tdna4_revcomp', 'test/Tdna4_revcomp.cxx',
     link_with: [testlib, libdna],
     install: false,
     build_by_default: false,
     include_directories: incdir,
     cpp_args: ['-march=native']
+)
+
+Tdnax_pack_4bits = executable('Tdnax_pack_4bits', 'test/Tdnax_pack_4bits.cxx',
+    link_with: [libdna, testlib],
+    install: false,
+    build_by_default: false,
+    include_directories: incdir
 )
 
 Tdnax_revcomp = executable('Tdnax_revcomp', 'test/Tdnax_revcomp.cxx',
@@ -106,7 +123,9 @@ Ttranslate = executable('Ttranslate', 'test/Ttranslate.cxx',
     include_directories: incdir
 )
 
+test('Tdna4_pack_2bits', Tdna4_pack_2bits)
 test('Tdna4_revcomp', Tdna4_revcomp)
+test('Tdnax_pack_4bits', Tdnax_pack_4bits)
 test('Tdnax_revcomp', Tdnax_revcomp)
 test('Tsimple', Tsimple)
 test('Ttranslate', Ttranslate)

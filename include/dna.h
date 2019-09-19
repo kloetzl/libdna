@@ -30,16 +30,24 @@ dna4_count_mismatches(const char *begin, const char *end, const char *other);
 extern double
 dna4_gc_content(const char *begin, const char *end);
 
-extern uint64_t
-dna4_pack(const char *begin, size_t k);
-
 extern char *
 dna4_revcomp(const char *begin, const char *end, char *dest);
 
+extern uint64_t
+dna4_pack_2bits(const char *begin, size_t k);
+
+extern void
+dna4_unpack_2bits(char *begin, size_t k, uint64_t packed);
+
 /// dnax - Any ASCII char or UTF8 byte
 // -1 == skip
-uint64_t
-dnax_pack(const char *table, const char *begin, const char *end, size_t k);
+
+extern unsigned char *
+dnax_pack_4bits(const char *begin, const char *end, unsigned char *dest);
+
+extern char *
+dnax_unpack_4bits(
+	const unsigned char *begin, const unsigned char *end, char *dest);
 
 extern char *
 dnax_revcomp(const char *table, const char *begin, const char *end, char *dest);
@@ -62,7 +70,6 @@ char *
 dnax_find_first_not_dna4(const char *begin, const char *end);
 
 extern const char dnax_revcomp_table[];
-extern const char dnax_pack_table[];
 extern const char dnax_to_dna4_table[];
 
 #ifdef __cplusplus

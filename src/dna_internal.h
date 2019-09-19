@@ -11,12 +11,12 @@
 #define EXPOSE_INTERNALS 1
 #endif
 
-#define DNA_PUBLIC __attribute__((visibility ("default")))
+#define DNA_PUBLIC __attribute__((visibility("default")))
 
 #ifdef EXPOSE_INTERNALS
-#define DNA_LOCAL __attribute__((visibility ("default")))
+#define DNA_LOCAL __attribute__((visibility("default")))
 #else
-#define DNA_LOCAL __attribute__((visibility ("hidden")))
+#define DNA_LOCAL __attribute__((visibility("hidden")))
 #endif
 
 #ifdef __cplusplus

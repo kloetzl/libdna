@@ -1,10 +1,10 @@
 #include "Tcommon.h"
 #include "catch.hpp"
 
+#include <cstring>
 #include <dna.h>
 #include <iostream>
 #include <string>
-#include <cstring>
 
 using namespace std::string_literals;
 
@@ -53,7 +53,8 @@ TEST_CASE("Example from dnax_revcomp manpage")
 {
 	const char str[] = "ACGTacgtACGT!";
 	char buffer[13];
-	char *end = dnax_revcomp(dnax_revcomp_table, str, str + sizeof(str) - 1, buffer);
+	char *end =
+		dnax_revcomp(dnax_revcomp_table, str, str + sizeof(str) - 1, buffer);
 	*end = '\0';
 
 	assert(strncmp(str, buffer, 12) == 0);
