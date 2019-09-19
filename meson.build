@@ -68,7 +68,13 @@ libdna = library('dna', ['include/dna.h', genericfiles],
 )
 
 install_headers('include/dna.h')
-install_man(['man/geneticcode.7', 'man/iupac.7'])
+install_man([
+    'man/dna4_count_mismatches.3',
+    'man/dna4_revcomp.3',
+    'man/dnax_revcomp.3',
+    'man/geneticcode.7',
+    'man/iupac.7'
+])
 
 ###################################################
 # Tests
