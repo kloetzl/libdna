@@ -1,0 +1,28 @@
+.TH DNA4_UNPACK_2BITS 3 2019-09-19 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dna4_unpack_2bits \- decode two-bit packed DNA representation
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "void dna4_unpack_2bits(char *" dest ", size_t " k ", uint64_t " packed ");"
+.fi
+
+.SH DESCRIPTION
+Given a packed \fIk\fR-mer the \fBdna4_pack_2bits\fR() function recovers its ASCII representation. The resulting string is written to the location pointed to by \fIdest\fR.
+
+.SH EXAMPLE
+.in +4
+.EX
+uint64_t packed = 0x1b1bf5;
+char buffer[13] = {0};
+dna4_unpack_2bits(buffer, 12, packed);
+
+assert(strcmp(buffer, "ACGTACGTTTCC") == 0);
+
+.SH SEE ALSO
+.BR dna4_pack_2bits (3)
+.BR dnax_pack_4bits (3)
+.BR dnax_unpack_4bits (3)

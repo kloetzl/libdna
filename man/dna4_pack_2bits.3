@@ -1,0 +1,37 @@
+.TH DNA4_PACK_2BITS 3 2019-09-19 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dna4_pack_2bits \- encode DNA using two bits per nucleotide
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "uint64_t dna4_pack_2bits(const char *" begin ", size_t " k ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdna4_pack_2bits\fR() function packs a \fIk\fR-mer into one 64bit integer using two bits per nucleotide. Thus, \fIk\fR is limited to 32.
+
+The result is undefined if the input string contains characters besides
+.IR A ,
+.IR C ,
+.IR G " and"
+.IR T .
+Lowercase letters are also not allowed.
+
+.SH RETURN VALUE
+One packed 64bit integer representing the \fIk\fR input nucleotides.
+
+.SH EXAMPLE
+.in +4
+.EX
+const char str[] = "ACGTACGTTTCC";
+uint64_t packed = dna4_pack_2bits(str, 12);
+
+assert(packed == 0x1b1bf5);
+
+.SH SEE ALSO
+.BR dna4_unpack_2bits (3)
+.BR dnax_pack_4bits (3)
+.BR dnax_unpack_4bits (3)

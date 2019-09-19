@@ -1,0 +1,38 @@
+.TH DNAX_UNPACK_4BITS 3 2019-09-19 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_unpack_4bits \- encode DNA using four bits per nucleotide
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "char *dnax_unpack_4bits("
+.in +4
+.BI "const unsigned char *" begin ", const unsigned char *" end ", char *" dest ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_unpack_4bits\fR() function decodes the nucleotides previously packed with \fBdnax_unpack_4bits\fR(3). The decoding of characters is compatible to the Nucleotide Archival Format.
+
+This function always writes an even number of bytes.
+
+.SH RETURN VALUE
+The return value points one byte past the last character written.
+
+.SH EXAMPLE
+.in +4
+.EX
+const char str[] = "ACGT-W";
+unsigned char packed[3] = {0};
+char buffer[7] = {0};
+
+dnax_pack_4bits(str, str + 6, packed);
+dnax_unpack_4bits(packed, packed + 3, buffer);
+
+assert(strcmp(str, buffer) == 0);
+
+.SH SEE ALSO
+.BR dna4_pack_2bits (3)
+.BR dna4_unpack_4bits (3)
+.BR dnax_unpack_4bits (3)

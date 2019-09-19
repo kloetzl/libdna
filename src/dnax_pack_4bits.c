@@ -62,7 +62,7 @@ const char dnax_pack_4bits_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1};
 
 DNA_PUBLIC
-unsigned char *
+size_t
 dnax_pack_4bits(const char *begin, const char *end, unsigned char *dest)
 {
 	assert(begin != NULL);
@@ -70,15 +70,19 @@ dnax_pack_4bits(const char *begin, const char *end, unsigned char *dest)
 	assert(begin <= end);
 	assert(dest != NULL);
 
+	size_t counter = 0;
 	const char *ptr = dnax_find_first_of(dnax_pack_4bits_table, begin, end);
 
 	while (ptr < end) {
 		unsigned int bits = dnax_pack_4bits_table[*(unsigned char *)ptr];
+		counter++;
 
 		ptr = dnax_find_first_of(dnax_pack_4bits_table, ptr + 1, end);
 		if (ptr < end) {
 			unsigned int high_nibble =
 				dnax_pack_4bits_table[*(unsigned char *)ptr];
+
+			counter++;
 			bits |= high_nibble << 4;
 			ptr = dnax_find_first_of(dnax_pack_4bits_table, ptr + 1, end);
 		}
@@ -86,5 +90,5 @@ dnax_pack_4bits(const char *begin, const char *end, unsigned char *dest)
 		*dest++ = bits;
 	}
 
-	return dest;
+	return counter;
 }

@@ -1,0 +1,35 @@
+.TH DNAX_PACK_4BITS 3 2019-09-19 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_pack_4bits \- encode DNA using four bits per nucleotide
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "size_t dnax_pack_4bits(const char *" begin ", const char *" end ", unsigned char *" dest ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_pack_4bits\fR() function packs a string of nucleotides into a sequence of bytes by representing each nucleotide with four bits. The input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The result is stored at \fIdest\fR.
+
+The encoding of nucleotides is compatible to the Nucleotide Archival Format. It can represent the common nucleotides, ambiguous bases, uracil (\fIU\fR) and gaps (\fI-\fR).
+
+.SH RETURN VALUE
+The number of encoded characters is returned.
+
+.SH EXAMPLE
+.in +4
+.EX
+const char str[] = "ACGT-W";
+unsigned char buffer[3] = {0};
+
+size_t nibbles = dnax_pack_4bits(str, str + 6, buffer);
+size_t bytes = (nibbles + 1) >> 1;
+
+assert(bytes == 3);
+
+.SH SEE ALSO
+.BR dna4_pack_2bits (3)
+.BR dna4_unpack_4bits (3)
+.BR dnax_unpack_4bits (3)

@@ -42,7 +42,7 @@ dna4_unpack_2bits(char *begin, size_t k, uint64_t packed);
 /// dnax - Any ASCII char or UTF8 byte
 // -1 == skip
 
-extern unsigned char *
+extern size_t
 dnax_pack_4bits(const char *begin, const char *end, unsigned char *dest);
 
 extern char *
