@@ -61,7 +61,7 @@ dnax_count(size_t *table, const char *begin, const char *end);
 char *
 dnax_replace(const char *table, const char *begin, const char *end, char *dest);
 char *
-dnax_mismatch(const char *begin, const char *end, const char *other);
+dnax_find_mismatch(const char *begin, const char *end, const char *other);
 char *
 dnax_find_first_of(const char *table, const char *begin, const char *end);
 char *

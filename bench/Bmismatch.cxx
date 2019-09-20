@@ -104,7 +104,7 @@ direct_cmp(const char *begin, const char *end, const char *other)
 
 BENCHMARK_CAPTURE(bench, chunked, chunked);
 BENCHMARK_CAPTURE(bench, direct_cmp, direct_cmp);
-BENCHMARK_CAPTURE(bench, dnax_mismatch, dnax_mismatch);
+BENCHMARK_CAPTURE(bench, dnax_find_mismatch, dnax_find_mismatch);
 BENCHMARK_CAPTURE(bench, simple, simple);
 
 BENCHMARK_MAIN();

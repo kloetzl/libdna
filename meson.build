@@ -134,9 +134,10 @@ libbenchmark = dependency('benchmark',
 
 plainbench = [
     'Bcompare',
-    'Brevcomp',
     'Bcompare_rev',
     'Bfind_first_not',
+    'Bmismatch',
+    'Brevcomp'
 ]
 foreach Bname : plainbench
     Bexe = executable(Bname, 'bench/' + Bname + '.cxx',
