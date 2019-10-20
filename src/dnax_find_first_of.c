@@ -1,10 +1,12 @@
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018 (C) Fabian Klötzl
+ * Copyright 2018 - 2019 (C) Fabian Klötzl
  */
 
 #include "dna.h"
+#include "dna_internal.h"
 
+DNA_PUBLIC
 char *
 dnax_find_first_of(
 	const char *restrict table, const char *begin, const char *end)

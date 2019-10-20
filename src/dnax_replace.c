@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018 (C) Fabian Klötzl
+ * Copyright 2018 - 2019 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -34,6 +34,7 @@ function generate_table() {
 
 */
 
+DNA_PUBLIC
 const char dnax_to_dna4_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
