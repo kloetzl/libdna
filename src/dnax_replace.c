@@ -4,6 +4,7 @@
  */
 
 #include "dna.h"
+#include "dna_internal.h"
 #include "utils.h"
 
 #include <assert.h>
@@ -49,6 +50,7 @@ const char dnax_to_dna4_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1};
 
+DNA_PUBLIC
 char *
 dnax_replace(
 	const char *restrict table, const char *begin, const char *end, char *dest)
