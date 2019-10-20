@@ -2,15 +2,9 @@ project('libdna', 'c', 'cpp', version : '0.2', license : 'GPL3',
     default_options : [
         'warning_level=3',
         'c_std=gnu11',
-        'buildtype=debugoptimized',
-        'optimization=2',
         'b_ndebug=if-release'
     ]
 )
-
-warning(get_option('buildtype'))
-if get_option('buildtype').startswith('release')
-endif
 
 ###################################################
 # libdna
@@ -86,7 +80,7 @@ install_man([
 testlib = static_library('Tmain', 'test/Tmain.cxx',
     include_directories: incdir,
     cpp_args : ['-O2'],
-    install: false,
+    install: false
 )
 
 nativetests = ['Tdna4_pack_2bits', 'Tdna4_revcomp']
@@ -125,7 +119,7 @@ endforeach
 benchcommonlib = static_library('benchcommon', 'bench/Bcommon.cxx',
     include_directories: incdir,
     cpp_args : ['-O2'],
-    install: false,
+    install: false
 )
 
 libbenchmark = dependency('benchmark',
