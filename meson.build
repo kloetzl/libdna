@@ -128,6 +128,7 @@ libbenchmark = dependency('benchmark',
 
 plainbench = [
     'Bcompare',
+    'Bcompare_wg',
     'Bcompare_rev',
     'Bfind_first_not',
     'Bmismatch',
