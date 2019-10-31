@@ -19,16 +19,10 @@ extern "C" {
 extern int
 dna_version(void);
 
-// Future versions of libdna should support _FOTIFY_SOURCE with
-// __builtin_object_size.
-
 /// dna4 - only ACGT
 
 extern size_t
 dna4_count_mismatches(const char *begin, const char *end, const char *other);
-
-extern double
-dna4_gc_content(const char *begin, const char *end);
 
 extern char *
 dna4_revcomp(const char *begin, const char *end, char *dest);
@@ -58,14 +52,19 @@ dnax_translate_quirks(const char *begin, const char *end, char *dest);
 
 void
 dnax_count(size_t *table, const char *begin, const char *end);
+
 char *
 dnax_replace(const char *table, const char *begin, const char *end, char *dest);
+
 char *
 dnax_find_mismatch(const char *begin, const char *end, const char *other);
+
 char *
 dnax_find_first_of(const char *table, const char *begin, const char *end);
+
 char *
 dnax_find_first_not_of(const char *table, const char *begin, const char *end);
+
 char *
 dnax_find_first_not_dna4(const char *begin, const char *end);
 
