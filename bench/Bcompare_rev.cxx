@@ -11,7 +11,7 @@
 static const size_t LENGTH = 1000000;
 
 size_t seed = 1729;
-size_t invrate = 100;
+size_t invrate = 71;
 
 extern void
 gen(char *str, size_t length);
@@ -63,7 +63,7 @@ base_rev(const char *begin, const char *end, const char *other)
 }
 
 size_t
-intrinsics(const char *begin, const char *end, const char *other)
+xoreq(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t offset = 0;
@@ -96,6 +96,105 @@ intrinsics(const char *begin, const char *end, const char *other)
 	}
 
 	offset += vec_offset * sizeof(__m128i);
+
+	for (; offset < length; offset++) {
+		if (!is_complement(begin[offset], other[length - 1 - offset])) {
+			substitutions++;
+		}
+	}
+
+	return substitutions;
+}
+
+size_t
+xoreq_avx2(const char *begin, const char *end, const char *other)
+{
+	size_t substitutions = 0;
+	size_t offset = 0;
+	size_t length = end - begin;
+
+	using vec_type = __m256i;
+	size_t vec_size = sizeof(vec_type);
+	size_t vec_offset = 0;
+	size_t vec_length = length / vec_size;
+
+	substitutions += vec_size * vec_length;
+
+	vec_type mask = _mm256_set_epi8(
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5,
+		6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+	vec_type mask6 = _mm256_set1_epi8(6);
+	vec_type mask4 = _mm256_set1_epi8(4);
+
+	for (; vec_offset < vec_length; vec_offset++) {
+		vec_type b;
+		memcpy(&b, begin + vec_offset * vec_size, vec_size);
+		vec_type o;
+		size_t pos = length - (vec_offset + 1) * vec_size;
+		memcpy(&o, other + pos, vec_size);
+
+		vec_type reversed = _mm256_shuffle_epi8(o, mask);
+		vec_type swapped = _mm256_permute2x128_si256(b, b, 1);
+
+		vec_type v1 = _mm256_xor_si256(swapped, reversed);
+		vec_type v2 = _mm256_and_si256(v1, mask6);
+		vec_type v3 = _mm256_cmpeq_epi8(v2, mask4);
+
+		unsigned int vmask = _mm256_movemask_epi8(v3);
+		substitutions -= __builtin_popcount(vmask);
+	}
+
+	offset += vec_offset * vec_size;
+
+	for (; offset < length; offset++) {
+		if (!is_complement(begin[offset], other[length - 1 - offset])) {
+			substitutions++;
+		}
+	}
+
+	return substitutions;
+}
+
+size_t
+xorshuffle(const char *begin, const char *end, const char *other)
+{
+	size_t substitutions = 0;
+	size_t offset = 0;
+	size_t length = end - begin;
+
+	using vec_type = __m128i;
+	size_t vec_offset = 0;
+	size_t vec_size = sizeof(vec_type);
+	size_t vec_length = length / vec_size;
+
+	vec_type mask =
+		_mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+	vec_type derp = _mm_set_epi8(
+		0, 0, 0, 0, (unsigned char)0xff, (unsigned char)0xff, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0);
+
+	substitutions += vec_size * vec_length;
+	for (; vec_offset < vec_length; vec_offset++) {
+		vec_type b;
+		memcpy(&b, begin + vec_offset * vec_size, vec_size);
+		vec_type o;
+		size_t pos = length - (vec_offset + 1) * vec_size;
+		memcpy(&o, other + pos, vec_size);
+
+		vec_type reversed = _mm_shuffle_epi8(o, mask);
+
+		vec_type v1 = _mm_xor_si128(b, reversed);
+		// a shuffle reduces the instruction counts, but only one shuffle can be
+		// issued per clock. Thus it is slower wrt. throughput.
+		vec_type v3 = _mm_shuffle_epi8(derp, v1);
+
+		unsigned int vmask = _mm_movemask_epi8(v3);
+		// substitutions += vec_size - __builtin_popcount(vmask);
+		substitutions -= __builtin_popcount(vmask);
+	}
+
+	offset += vec_offset * vec_size;
 
 	for (; offset < length; offset++) {
 		if (!is_complement(begin[offset], other[length - 1 - offset])) {
@@ -168,7 +267,9 @@ revcomp_then_count_mismatches(
 }
 
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
-BENCHMARK_CAPTURE(bench, intrinsics, intrinsics);
+BENCHMARK_CAPTURE(bench, xoreq, xoreq);
+BENCHMARK_CAPTURE(bench, xoreq_avx2, xoreq_avx2);
+BENCHMARK_CAPTURE(bench, xorshuffle, xorshuffle);
 BENCHMARK_CAPTURE(bench, shuffle, shuffle);
 BENCHMARK_CAPTURE(bench, base_rev, base_rev);
 BENCHMARK_CAPTURE(
