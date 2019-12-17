@@ -2,6 +2,6 @@ version: 2
 
 mkdocs:
         configuration: mkdocs.yml
-        fail_on_warnigns: false
+        fail_on_warnings: false
 
 formats: all
