@@ -1,0 +1,15 @@
+site_name: libdna
+nav:
+- Home: 'index.md'
+- 'api.md'
+- Functions:
+  - 'dna4_count_mismatches.3.md'
+  - 'dna4_pack_2bits.3.md'
+  - 'dna4_revcomp.3.md'
+  - 'dna4_unpack_2bits.3.md'
+  - 'dnax_find_mismatch.3.md'
+  - 'dnax_pack_4bits.3.md'
+  - 'dnax_revcomp.3.md'
+  - 'dnax_unpack_4bits.3.md'
+- Misc:
+  - 'iupac.7.md'
