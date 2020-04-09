@@ -30,7 +30,7 @@ old_bench(benchmark::State &state, Bench_fn fn)
 	char *other = (char *)malloc(LENGTH + 1);
 	gen(other, LENGTH);
 	mutate(other, LENGTH);
-	for (size_t i = 0; i < LENGTH; i+= gaprate) {
+	for (size_t i = 0; i < LENGTH; i += gaprate) {
 		other[i] = '-';
 	}
 
@@ -52,7 +52,7 @@ bench(benchmark::State &state, Bench_fn fn)
 	char *other = (char *)malloc(LENGTH + 1);
 	gen(other, LENGTH);
 	mutate(other, LENGTH);
-	for (size_t i = 0; i < LENGTH; i+= gaprate) {
+	for (size_t i = 0; i < LENGTH; i += gaprate) {
 		other[i] = '-';
 	}
 
@@ -91,7 +91,8 @@ base(const char *begin, const char *end, const char *other, size_t *gaps)
 }
 
 size_t
-intrinsics_sse(const char *begin, const char *end, const char *other, size_t *gaps)
+intrinsics_sse(
+	const char *begin, const char *end, const char *other, size_t *gaps)
 {
 	size_t local_total = 0;
 	size_t substitutions = 0;
@@ -123,7 +124,8 @@ intrinsics_sse(const char *begin, const char *end, const char *other, size_t *ga
 		unsigned int eqlorgap = _mm_movemask_epi8(eql);
 		unsigned int gap_mask = _mm_movemask_epi8(gaps);
 
-		unsigned int neql_mask = (~eqlorgap) & (((unsigned long)1 << vec_size) - 1);
+		unsigned int neql_mask =
+			(~eqlorgap) & (((unsigned long)1 << vec_size) - 1);
 		substitutions += __builtin_popcount(neql_mask);
 		local_total += vec_size - __builtin_popcount(gap_mask);
 	}
@@ -143,7 +145,8 @@ intrinsics_sse(const char *begin, const char *end, const char *other, size_t *ga
 }
 
 size_t
-intrinsics_sse_crazy(const char *begin, const char *end, const char *other, size_t *gapptr)
+intrinsics_sse_crazy(
+	const char *begin, const char *end, const char *other, size_t *gapptr)
 {
 	size_t local_total = 0;
 	size_t local_gaps = 0;
@@ -167,7 +170,8 @@ intrinsics_sse_crazy(const char *begin, const char *end, const char *other, size
 
 		vec_type eql = _mm_cmpeq_epi8(chunk1, chunk2);
 
-		vec_type chimeric = _mm_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
+		vec_type chimeric =
+			_mm_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
 		vec_type gaps = _mm_cmpeq_epi8(chimeric, all_gap);
 
 		unsigned int gap_mask = _mm_movemask_epi8(gaps);
@@ -177,7 +181,7 @@ intrinsics_sse_crazy(const char *begin, const char *end, const char *other, size
 		local_gaps += __builtin_popcount(gap_mask);
 	}
 
-	substitutions = i - equalorgap;	
+	substitutions = i - equalorgap;
 	local_total = i - local_gaps;
 
 	for (; i < length; i++) {
@@ -194,11 +198,11 @@ intrinsics_sse_crazy(const char *begin, const char *end, const char *other, size
 	return substitutions;
 }
 
-
 #ifdef __AVX2__
 
 size_t
-intrinsics_avx2(const char *begin, const char *end, const char *other, size_t *gaps)
+intrinsics_avx2(
+	const char *begin, const char *end, const char *other, size_t *gaps)
 {
 	size_t local_total = 0;
 	size_t substitutions = 0;
@@ -228,7 +232,8 @@ intrinsics_avx2(const char *begin, const char *end, const char *other, size_t *g
 		unsigned int eqlorgap = _mm256_movemask_epi8(eql);
 		unsigned int gap_mask = _mm256_movemask_epi8(gaps);
 
-		unsigned int neql_mask = (~eqlorgap) & (((unsigned long)1 << vec_size) - 1);
+		unsigned int neql_mask =
+			(~eqlorgap) & (((unsigned long)1 << vec_size) - 1);
 		substitutions += __builtin_popcount(neql_mask);
 		local_total += vec_size - __builtin_popcount(gap_mask);
 	}
@@ -248,7 +253,8 @@ intrinsics_avx2(const char *begin, const char *end, const char *other, size_t *g
 }
 
 size_t
-intrinsics_avx2_derp(const char *begin, const char *end, const char *other, size_t *gapptr)
+intrinsics_avx2_derp(
+	const char *begin, const char *end, const char *other, size_t *gapptr)
 {
 	size_t local_total = 0;
 	size_t local_gaps = 0;
@@ -284,7 +290,7 @@ intrinsics_avx2_derp(const char *begin, const char *end, const char *other, size
 		local_gaps += __builtin_popcount(gap_mask);
 	}
 
-	substitutions = i - equalorgap;	
+	substitutions = i - equalorgap;
 	local_total = i - local_gaps;
 
 	for (; i < length; i++) {
@@ -302,7 +308,8 @@ intrinsics_avx2_derp(const char *begin, const char *end, const char *other, size
 }
 
 size_t
-intrinsics_avx2_crazy(const char *begin, const char *end, const char *other, size_t *gapptr)
+intrinsics_avx2_crazy(
+	const char *begin, const char *end, const char *other, size_t *gapptr)
 {
 	size_t local_total = 0;
 	size_t local_gaps = 0;
@@ -326,7 +333,8 @@ intrinsics_avx2_crazy(const char *begin, const char *end, const char *other, siz
 
 		vec_type eql = _mm256_cmpeq_epi8(chunk1, chunk2);
 
-		vec_type chimeric = _mm256_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
+		vec_type chimeric =
+			_mm256_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
 		vec_type gaps = _mm256_cmpeq_epi8(chimeric, all_gap);
 
 		unsigned int gap_mask = _mm256_movemask_epi8(gaps);
@@ -336,7 +344,7 @@ intrinsics_avx2_crazy(const char *begin, const char *end, const char *other, siz
 		local_gaps += __builtin_popcount(gap_mask);
 	}
 
-	substitutions = i - equalorgap;	
+	substitutions = i - equalorgap;
 	local_total = i - local_gaps;
 
 	for (; i < length; i++) {
@@ -358,7 +366,8 @@ intrinsics_avx2_crazy(const char *begin, const char *end, const char *other, siz
 #ifdef __AVX512BW__
 
 size_t
-intrinsics_avx512_256_crazy(const char *begin, const char *end, const char *other, size_t *gapptr)
+intrinsics_avx512_256_crazy(
+	const char *begin, const char *end, const char *other, size_t *gapptr)
 {
 	size_t local_total = 0;
 	size_t local_gaps = 0;
@@ -382,14 +391,16 @@ intrinsics_avx512_256_crazy(const char *begin, const char *end, const char *othe
 
 		unsigned int gap_mask = _mm256_cmpeq_epi8_mask(chunk1, chunk2);
 
-		vec_type chimeric = _mm256_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
-		unsigned int eqlorgap = _mm256_cmpeq_epi8_mask(chimeric, all_gap) | gap_mask;
+		vec_type chimeric =
+			_mm256_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
+		unsigned int eqlorgap =
+			_mm256_cmpeq_epi8_mask(chimeric, all_gap) | gap_mask;
 
 		equalorgap += __builtin_popcount(eqlorgap);
 		local_gaps += __builtin_popcount(gap_mask);
 	}
 
-	substitutions = i - equalorgap;	
+	substitutions = i - equalorgap;
 	local_total = i - local_gaps;
 
 	for (; i < length; i++) {
@@ -407,7 +418,8 @@ intrinsics_avx512_256_crazy(const char *begin, const char *end, const char *othe
 }
 
 size_t
-intrinsics_avx512_crazy(const char *begin, const char *end, const char *other, size_t *gapptr)
+intrinsics_avx512_crazy(
+	const char *begin, const char *end, const char *other, size_t *gapptr)
 {
 	size_t local_total = 0;
 	size_t local_gaps = 0;
@@ -431,14 +443,16 @@ intrinsics_avx512_crazy(const char *begin, const char *end, const char *other, s
 
 		unsigned int gap_mask = _mm512_cmpeq_epi8_mask(chunk1, chunk2);
 
-		vec_type chimeric = _mm512_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
-		unsigned int eqlorgap = _mm512_cmpeq_epi8_mask(chimeric, all_gap) | gap_mask;
+		vec_type chimeric =
+			_mm512_min_epu8(chunk1, chunk2); // safe, because '-' < ACGT
+		unsigned int eqlorgap =
+			_mm512_cmpeq_epi8_mask(chimeric, all_gap) | gap_mask;
 
 		equalorgap += __builtin_popcount(eqlorgap);
 		local_gaps += __builtin_popcount(gap_mask);
 	}
 
-	substitutions = i - equalorgap;	
+	substitutions = i - equalorgap;
 	local_total = i - local_gaps;
 
 	for (; i < length; i++) {
@@ -465,7 +479,8 @@ BENCHMARK_CAPTURE(bench, intrinsics_avx2_derp, intrinsics_avx2_derp);
 BENCHMARK_CAPTURE(bench, intrinsics_avx2_crazy, intrinsics_avx2_crazy);
 
 #ifdef __AVX512BW__
-BENCHMARK_CAPTURE(bench, intrinsics_avx512_256_crazy, intrinsics_avx512_256_crazy);
+BENCHMARK_CAPTURE(
+	bench, intrinsics_avx512_256_crazy, intrinsics_avx512_256_crazy);
 BENCHMARK_CAPTURE(bench, intrinsics_avx512_crazy, intrinsics_avx512_crazy);
 #endif
 
