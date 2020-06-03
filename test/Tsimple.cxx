@@ -69,3 +69,25 @@ TEST_CASE("Example from dnax_find_first_mismatch manpage")
 	REQUIRE(ptr - str1 == 5);
 	printf("common prefix: %.*s\n", (int)(ptr - str1), str1);
 }
+
+double gc_content(const char *begin, const char *end)
+{
+	size_t table[256] = {0};
+	dnax_count(table, begin, end);
+	double gc = table['G'] + table['C'] + table['g'] + table['c'];
+	return gc / (end - begin);
+}
+
+TEST_CASE("Example from dnax_count manpage")
+{
+	size_t table[256] = {0};
+	const char str[] = "AACGTACCT";
+
+	dnax_count(table, str, str + 9);
+	REQUIRE(table['A'] == 3);
+	REQUIRE(table['C'] == 3);
+	REQUIRE(table['G'] == 1);
+	REQUIRE(table['T'] == 2);
+
+	REQUIRE(gc_content(str, str + 9) == 4.0/9);
+}

@@ -1,15 +1,15 @@
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018 (C) Fabian Klötzl
+ * Copyright 2020 (C) Fabian Klötzl
  */
 
 #include "dna.h"
+#include "dna_internal.h"
 
 #include <assert.h>
 #include <string.h>
 
-// CHAR_BIT
-
+DNA_PUBLIC
 void
 dnax_count(size_t *restrict table, const char *begin, const char *end)
 {
