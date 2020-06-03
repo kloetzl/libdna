@@ -60,12 +60,12 @@ TEST_CASE("Example from dnax_revcomp manpage")
 	assert(strncmp(str, buffer, 12) == 0);
 }
 
-TEST_CASE("Example from dnax_find_mismatch manpage")
+TEST_CASE("Example from dnax_find_first_mismatch manpage")
 {
 	const char str1[] = "ACGGWaA";
 	const char str2[] = "ACGGWAAT";
 
-	const char *ptr = dnax_find_mismatch(str1, str1 + 7, str2);
+	const char *ptr = dnax_find_first_mismatch(str1, str1 + 7, str2);
 	REQUIRE(ptr - str1 == 5);
 	printf("common prefix: %.*s\n", (int)(ptr - str1), str1);
 }

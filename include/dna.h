@@ -59,7 +59,7 @@ dnax_extract_dna4(const char *begin, const char *end, char *dest);
 char *
 dnax_replace(const char *table, const char *begin, const char *end, char *dest);
 
-char *
+extern char *
 dnax_find_first_mismatch(const char *begin, const char *end, const char *other);
 
 char *

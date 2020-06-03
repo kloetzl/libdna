@@ -11,7 +11,7 @@
 
 DNA_PUBLIC
 char *
-dnax_find_mismatch(const char *begin, const char *end, const char *other)
+dnax_find_first_mismatch(const char *begin, const char *end, const char *other)
 {
 	assert(begin != NULL);
 	assert(end != NULL);

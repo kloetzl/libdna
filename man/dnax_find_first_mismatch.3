@@ -1,0 +1,31 @@
+.TH DNAX_FIND_FIRST_MISMATCH 3 2020-06-03 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_find_first_mismatch \- find the first mismatching character
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "char *dnax_find_first_mismatch(const char *" begin ", const char *" end ", char *" other ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_find_first_mismatch\fR() function compares two strings and returns the position of the first mismatching character. One input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The other is simply given by its beginning \fIother\fR.
+
+.SH RETURN VALUE
+The return value points to the mismatching character, or to \fIend\fR if no such character exists.
+
+.SH EXAMPLE
+.in +4
+.EX
+const char str1[] = "ACGGWaA";
+const char str2[] = "ACGGWAAT";
+
+const char *ptr = dnax_find_first_mismatch(str1, str1 + 7, str2);
+assert(ptr - str1 == 5);
+printf("common prefix: %.*s\n", (int)(ptr - str1), str1);
+
+.SH SEE ALSO
+.BR memcmp (3)
+.BR strcmp (3)
