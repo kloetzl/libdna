@@ -26,24 +26,24 @@ Most functions expect a `begin` and an `end` pointer. These are to make the half
 Every symbol exported by this library starts with `dna`. Functions beginning with `dna4_` work on the letters `ACGT` exclusively. All other characters (lower case, null bytes, `U`) may trigger arbitrary behavior.
 
 * dna4_count_mismatches
-* dna4_revcomp
 * dna4_pack_2bits
+* dna4_revcomp
 * dna4_unpack_2bits
 
 ## DNAX
 
 The following functions are not limited to any alphabet. They commonly use a table to allow custom behavior.
 
+* dnax_count
+* dnax_extract_dna4
+* dnax_find_first_not_of
+* dnax_find_first_of
+* dnax_find_first_mismatch
 * dnax_pack_4bits
-* dnax_unpack_4bits
+* dnax_replace
 * dnax_revcomp
 * dnax_translate
-* dnax_count
-* dnax_replace
-* dnax_find_mismatch
-* dnax_find_first_of
-* dnax_find_first_not_of
-* dnax_find_first_not_dna4
+* dnax_unpack_4bits
 
 # Bonus
 
