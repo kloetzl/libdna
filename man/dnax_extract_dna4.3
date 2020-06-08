@@ -1,0 +1,32 @@
+.TH DNAX_EXTRACT_DNA4 3 2020-06-08 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_extract_dna4 \- convert to dna4
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "char *dnax_extract_dna4(const char *" begin ", const char *" end ", char *" dest ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_extract_dna4\fR() converts lower case characters to upper case and only keeps ACGT. The input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The result is stored at \fIdest\fR.
+
+.SH RETURN VALUE
+The return value points one byte past the last character written. You may want to write a null byte there.
+
+.SH EXAMPLE
+.in +4
+.EX
+char in[] = "AaC!GT";
+char out[6] = {0};
+
+char *end = dnax_extract_dna4(in, in + 6, out);
+*end = '\0';
+
+assert(strncmp(out, "AACGT", 5) == 0);
+
+.SH SEE ALSO
+.BR iupac (7),
+.BR dnax_replace (3)

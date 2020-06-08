@@ -107,7 +107,17 @@ TEST_CASE("Example from dnax_replace manpage")
 
 	char *end = dnax_replace(table, in, in + 5, out);
 	*end = '\0';
-	std::cerr << out << std::endl;
 
 	REQUIRE(std::string(out) == "acgt");
+}
+
+TEST_CASE("Example from dnax_extract_dna4 manpage")
+{
+	char in[] = "AaC!GT";
+	char out[6] = {0};
+
+	char *end = dnax_extract_dna4(in, in + 6, out);
+	*end = '\0';
+
+	REQUIRE(std::string(out) == "AACGT");
 }
