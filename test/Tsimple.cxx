@@ -70,7 +70,8 @@ TEST_CASE("Example from dnax_find_first_mismatch manpage")
 	printf("common prefix: %.*s\n", (int)(ptr - str1), str1);
 }
 
-double gc_content(const char *begin, const char *end)
+double
+gc_content(const char *begin, const char *end)
 {
 	size_t table[256] = {0};
 	dnax_count(table, begin, end);
@@ -89,5 +90,24 @@ TEST_CASE("Example from dnax_count manpage")
 	REQUIRE(table['G'] == 1);
 	REQUIRE(table['T'] == 2);
 
-	REQUIRE(gc_content(str, str + 9) == 4.0/9);
+	REQUIRE(gc_content(str, str + 9) == 4.0 / 9);
+}
+
+TEST_CASE("Example from dnax_replace manpage")
+{
+	char in[] = "AaCGT";
+	char out[6] = {0};
+
+	char table[256] = {};
+	memset(table, -1, 256);
+	table['A'] = 'a';
+	table['C'] = 'c';
+	table['G'] = 'g';
+	table['T'] = 't';
+
+	char *end = dnax_replace(table, in, in + 5, out);
+	*end = '\0';
+	std::cerr << out << std::endl;
+
+	REQUIRE(std::string(out) == "acgt");
 }

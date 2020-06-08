@@ -9,7 +9,6 @@
 
 #include <assert.h>
 
-
 DNA_PUBLIC
 char *
 dnax_extract_dna4(const char *begin, const char *end, char *dest)
