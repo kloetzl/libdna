@@ -1,0 +1,32 @@
+.TH DNAX_TRANSLATE 3 2020-06-08 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_translate \- translate DNA or RNA to amino acids
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "char *dnax_translate(const char *" begin ", const char *" end ", char *" dest ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_translate\fR() function translates DNA and RNA to an amino acid sequence using the standard genetic code. The input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The result is stored at \fIdest\fR.
+
+.SH RETURN VALUE
+The return value points one byte past the last character written. You may want to write a null byte there.
+
+.SH EXAMPLE
+.in +4
+.EX
+char in[] = "AUG!CTN";
+char out[3] = {0};
+
+char *end = dnax_translate(in, in + 7, out);
+*end = '\\0';
+
+assert(strncmp(out, "ML", 3) == 0);
+
+.SH SEE ALSO
+.BR iupac (7),
+.BR geneticcode (7)

@@ -121,3 +121,14 @@ TEST_CASE("Example from dnax_extract_dna4 manpage")
 
 	REQUIRE(std::string(out) == "AACGT");
 }
+
+TEST_CASE("Example from dnax_translate manpage")
+{
+	char in[] = "AUG!CTN";
+	char out[3] = {0};
+
+	char *end = dnax_translate(in, in + 7, out);
+	*end = '\0';
+
+	REQUIRE(std::string(out) == "ML");
+}
