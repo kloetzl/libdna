@@ -1,0 +1,41 @@
+.TH DNAX_REPLACE 3 2020-06-08 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_replace \- replace characters
+
+.SH SYNOPSIS
+.nf
+.B #include <dna.h>
+.PP
+.BI "char *dnax_replace(const char *" table ", const char *" begin ", const char *" end ", char *" dest ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_replace\fR() function replaces characters according to the given table. The input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The result is stored at \fIdest\fR.
+
+The \fItable\fR parameter can be used to customize the replacement of individual characters. A value of -1 can be used to indicate a character which should be skipped. Thus, the resulting string may be shorter than the input. LibDNA comes with \fIdnax_to_dna4_table\fR which can be used to convert RNA and non-canonical DNA to DNA4.
+
+.SH RETURN VALUE
+The return value points one byte past the last character written. You may want to write a null byte there.
+
+.SH EXAMPLE
+.in +4
+.EX
+char in[] = "AaCGT";
+char out[6] = {0};
+
+char table[256] = {};
+memset(table, -1, 256);
+table['A'] = 'a';
+table['C'] = 'c';
+table['G'] = 'g';
+table['T'] = 't';
+
+char *end = dnax_replace(table, in, in + 5, out);
+*end = '\\0';
+
+assert(strncmp(out, "acgt", 4) == 0);
+
+.SH SEE ALSO
+.BR iupac (7),
+.BR dnax_count (3)
