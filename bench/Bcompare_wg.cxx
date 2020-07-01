@@ -472,11 +472,15 @@ intrinsics_avx512_crazy(
 
 BENCHMARK_CAPTURE(old_bench, dna4_count_mismatches, dna4_count_mismatches);
 BENCHMARK_CAPTURE(bench, base, base);
+#ifdef __SSE2__
 BENCHMARK_CAPTURE(bench, intrinsics_sse, intrinsics_sse);
 BENCHMARK_CAPTURE(bench, intrinsics_sse_crazy, intrinsics_sse_crazy);
+#endif
+#ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, intrinsics_avx2, intrinsics_avx2);
 BENCHMARK_CAPTURE(bench, intrinsics_avx2_derp, intrinsics_avx2_derp);
 BENCHMARK_CAPTURE(bench, intrinsics_avx2_crazy, intrinsics_avx2_crazy);
+#endif
 
 #ifdef __AVX512BW__
 BENCHMARK_CAPTURE(
