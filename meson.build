@@ -136,7 +136,8 @@ plainbench = [
     'Bcompare_rev',
     'Bfind_first_not',
     'Bmismatch',
-    'Brevcomp'
+    'Brevcomp',
+    'Bstrconstr'
 ]
 foreach Bname : plainbench
     Bexe = executable(Bname, 'bench/' + Bname + '.cxx',
