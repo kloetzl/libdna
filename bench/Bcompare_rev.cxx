@@ -62,6 +62,7 @@ base_rev(const char *begin, const char *end, const char *other)
 	return substitutions;
 }
 
+#ifdef __SSE2__
 size_t
 xoreq(const char *begin, const char *end, const char *other)
 {
@@ -105,7 +106,9 @@ xoreq(const char *begin, const char *end, const char *other)
 
 	return substitutions;
 }
+#endif
 
+#ifdef __AVX2__
 size_t
 xoreq_avx2(const char *begin, const char *end, const char *other)
 {
@@ -154,7 +157,9 @@ xoreq_avx2(const char *begin, const char *end, const char *other)
 
 	return substitutions;
 }
+#endif
 
+#ifdef __SSE4_2__
 size_t
 xorshuffle(const char *begin, const char *end, const char *other)
 {
@@ -251,6 +256,7 @@ shuffle(const char *begin, const char *end, const char *other)
 
 	return substitutions;
 }
+#endif
 
 size_t
 revcomp_then_count_mismatches(
@@ -268,9 +274,13 @@ revcomp_then_count_mismatches(
 
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
 BENCHMARK_CAPTURE(bench, xoreq, xoreq);
+#ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, xoreq_avx2, xoreq_avx2);
+#endif
+#ifdef __SSE4_2__
 BENCHMARK_CAPTURE(bench, xorshuffle, xorshuffle);
 BENCHMARK_CAPTURE(bench, shuffle, shuffle);
+#endif
 BENCHMARK_CAPTURE(bench, base_rev, base_rev);
 BENCHMARK_CAPTURE(
 	bench, revcomp_then_count_mismatches, revcomp_then_count_mismatches);

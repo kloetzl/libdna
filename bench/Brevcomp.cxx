@@ -76,6 +76,7 @@ revcomp_table4(const char *forward, const char *end, char *reverse)
 	return reverse;
 }
 
+#ifdef __SSE4_2__
 char *
 shuffle(const char *begin, const char *end, char *__restrict dest)
 {
@@ -123,7 +124,9 @@ shuffle(const char *begin, const char *end, char *__restrict dest)
 
 	return dest + length;
 }
+#endif
 
+#ifdef __AVX2__
 char *
 shuffle_avx2(const char *begin, const char *end, char *__restrict dest)
 {
@@ -175,6 +178,7 @@ shuffle_avx2(const char *begin, const char *end, char *__restrict dest)
 
 	return dest + length;
 }
+#endif
 
 static __attribute__((target_clones("avx2", "sse2", "default"))) char *
 twiddle(const char *begin, const char *end, char *__restrict dest)
@@ -194,6 +198,7 @@ twiddle(const char *begin, const char *end, char *__restrict dest)
 	return dest + length;
 }
 
+#ifdef __SSE4_2__
 char *
 twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
 {
@@ -244,7 +249,9 @@ twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
 
 	return dest + length;
 }
+#endif
 
+#ifdef __AVX2__
 char *
 twiddle_avx2(const char *begin, const char *end, char *__restrict dest)
 {
@@ -354,6 +361,7 @@ twiddle_avx2_wide_register(
 
 	return dest + length;
 }
+#endif
 
 #ifdef __AVX512VBMI__
 char *
@@ -507,9 +515,13 @@ BENCHMARK_CAPTURE(bench, revcomp_switch, revcomp_switch);
 BENCHMARK_CAPTURE(bench, revcomp_table4, revcomp_table4);
 BENCHMARK_CAPTURE(bench, twiddle, twiddle);
 BENCHMARK_CAPTURE(bench, subtract, subtract);
+#ifdef __SSE4_2__
 BENCHMARK_CAPTURE(bench, twiddle_sse42, twiddle_sse42);
-BENCHMARK_CAPTURE(bench, twiddle_avx2, twiddle_avx2);
 BENCHMARK_CAPTURE(bench, shuffle, shuffle);
+#endif
+#ifdef __AVX2__
+BENCHMARK_CAPTURE(bench, twiddle_avx2, twiddle_avx2);
 BENCHMARK_CAPTURE(bench, shuffle_avx2, shuffle_avx2);
+#endif
 
 BENCHMARK_MAIN();
