@@ -1,12 +1,18 @@
-// C++ convenience header
+#pragma once
+
+/**
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright 2020 © Fabian Klötzl
+ *
+ * C++ convenience header
+ */
 
 #if __cplusplus < 201703L
 #error "This header requires C++17"
 #endif
 
-#pragma once
-
 #include <array>
+#include <cstddef>
 #include <dna.h>
 #include <string>
 #include <string_view>
