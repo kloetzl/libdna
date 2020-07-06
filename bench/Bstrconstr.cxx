@@ -8,7 +8,7 @@ static void
 empty(benchmark::State &state)
 {
 	for (auto _ : state) {
-		auto s = std::string(LENGTH, '0');
+		auto s = std::string(LENGTH, '\0');
 		benchmark::DoNotOptimize(s);
 	}
 }
