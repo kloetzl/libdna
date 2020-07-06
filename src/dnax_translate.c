@@ -63,7 +63,7 @@ static const char iupac_codes[] = {
 
 DNA_PUBLIC
 char *
-dnax_translate_quirks(const char *begin, const char *end, char *dest)
+dnax_translate(const char *begin, const char *end, char *dest)
 {
 	assert(begin != NULL);
 	assert(end != NULL);

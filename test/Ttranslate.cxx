@@ -10,7 +10,7 @@ TEST_CASE("Some simple checks")
 	char *aa = new char[mrna.size() / 3 + 10];
 
 	char *ptr =
-		dnax_translate_quirks(mrna.data(), mrna.data() + mrna.size(), aa);
+		dnax_translate(mrna.data(), mrna.data() + mrna.size(), aa);
 	*ptr = 0;
 
 	REQUIRE(std::string(aa) == "KNKNTTTT");
@@ -53,7 +53,7 @@ TEST_CASE("Compact table")
 
 	for (const auto &code : table) {
 		char buffer[4];
-		auto amino_acid_end = dnax_translate_quirks(
+		auto amino_acid_end = dnax_translate(
 			dna::begin(std::get<2>(code)), dna::end(std::get<2>(code)), buffer);
 		auto amino_acid = std::string(buffer, amino_acid_end - buffer);
 		REQUIRE(amino_acid == std::get<1>(code));

@@ -46,26 +46,25 @@ dnax_unpack_4bits(
 extern char *
 dnax_revcomp(const char *table, const char *begin, const char *end, char *dest);
 
-char *
-dnax_translate_quirks(const char *begin, const char *end, char *dest);
-#define dnax_translate dnax_translate_quirks
+extern char *
+dnax_translate(const char *begin, const char *end, char *dest);
 
-void
+extern void
 dnax_count(size_t *table, const char *begin, const char *end);
 
-char *
+extern char *
 dnax_extract_dna4(const char *begin, const char *end, char *dest);
 
-char *
+extern char *
 dnax_replace(const char *table, const char *begin, const char *end, char *dest);
 
 extern char *
 dnax_find_first_mismatch(const char *begin, const char *end, const char *other);
 
-char *
+extern char *
 dnax_find_first_of(const char *table, const char *begin, const char *end);
 
-char *
+extern char *
 dnax_find_first_not_of(const char *table, const char *begin, const char *end);
 
 extern const char dnax_revcomp_table[];
