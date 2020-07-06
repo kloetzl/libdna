@@ -1,0 +1,127 @@
+// C++ convenience header
+
+#if __cplusplus < 201703L
+#error "This header requires C++17"
+#endif
+
+#pragma once
+
+#include <array>
+#include <dna.h>
+#include <string>
+#include <string_view>
+#include <vector>
+
+namespace dna
+{
+char *
+begin(std::string &str)
+{
+	return str.data();
+}
+
+char *
+end(std::string &str)
+{
+	return str.data() + str.size();
+}
+
+const char *
+begin(const std::string_view &str)
+{
+	return str.data();
+}
+
+const char *
+end(const std::string_view &str)
+{
+	return str.data() + str.size();
+}
+
+int
+version()
+{
+	return dna_version();
+}
+} // namespace dna
+
+namespace dna4
+{
+size_t
+count_mismatches(const std::string_view &s1, const std::string_view &s2)
+{
+	// assume s1.size() == s2.size()
+	return dna4_count_mismatches(dna::begin(s1), dna::end(s1), dna::begin(s2));
+}
+
+std::string
+revcomp(const std::string_view &str)
+{
+	auto ret = std::string(str.size(), '\0');
+	dna4_revcomp(dna::begin(str), dna::end(str), dna::begin(ret));
+	return ret;
+}
+
+uint64_t
+pack_2bits(size_t k, const std::string_view &str)
+{
+	return dna4_pack_2bits(dna::begin(str), k);
+}
+
+std::string
+unpack_2bits(size_t k, uint64_t packed)
+{
+	auto ret = std::string(k, '\0');
+	dna4_unpack_2bits(dna::begin(ret), k, packed);
+	return ret;
+}
+} // namespace dna4
+
+namespace dnax
+{
+
+auto
+pack_4bits(const std::string_view &str)
+{
+	auto ret = std::vector<unsigned char>((str.size() + 1) / 2, '\0');
+	auto bytes = dnax_pack_4bits(dna::begin(str), dna::end(str), ret.data());
+	// TODO: ret set size to bytes
+	return ret;
+}
+
+auto
+unpack_4bits(const std::vector<unsigned char> &vec)
+{
+	auto ret = std::string(vec.size() * 2, '\0');
+	dnax_unpack_4bits(vec.data(), vec.data() + vec.size(), dna::begin(ret));
+	return ret;
+}
+
+std::string
+revcomp(const char *table, const std::string_view &str)
+{
+	auto ret = std::string(str.size(), '\0');
+	auto end =
+		dnax_revcomp(table, dna::begin(str), dna::end(str), dna::begin(ret));
+	ret.erase(ret.begin() + (end - dna::begin(ret)), ret.end());
+	return ret;
+}
+
+std::string
+translate(const std::string_view& str)
+{
+	auto ret = std::string(str.size() / 3, '\0');
+	auto end = dnax_translate(dna::begin(str), dna::end(str), dna::begin(ret));
+	ret.erase(ret.begin() + (end - dna::begin(ret)), ret.end());
+	return ret;
+}
+
+std::array<size_t, 256>
+count(const std::string_view &str)
+{
+	auto ret = std::array<size_t, 256>;
+	dnax_count(std::begin(ret), dna::begin(str), dna::end(str));
+	return ret;
+}
+
+} // namespace dnax

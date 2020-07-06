@@ -7,31 +7,6 @@
 #include <string.h>
 #include <string>
 
-namespace dnax
-{
-auto
-pack_4bits(const std::string &str)
-{
-	auto ret = std::vector<unsigned char>(str.size(), 0);
-
-	auto count = dnax_pack_4bits(dna::begin(str), dna::end(str), ret.data());
-	auto bytes = (count + 1) >> 1;
-	ret.erase(ret.begin() + bytes, ret.end());
-	return ret;
-}
-
-auto
-unpack_4bits(const std::vector<unsigned char> &packed)
-{
-	auto ret = std::string(packed.size() * 2, 0);
-
-	dnax_unpack_4bits(
-		packed.data(), packed.data() + packed.size(), dna::begin(ret));
-
-	return ret;
-}
-} // namespace dnax
-
 using namespace std::string_literals;
 
 TEST_CASE("Basic packing (4bits) checks")

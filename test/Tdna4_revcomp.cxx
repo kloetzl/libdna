@@ -82,16 +82,6 @@ rc(const std::string &forward)
 	return reverse;
 }
 
-auto
-revcomp(const std::string &forward)
-{
-	auto reverse = std::string(forward.size(), 0);
-	auto end = dna4_revcomp(
-		dna::begin(forward), dna::end(forward), dna::begin(reverse));
-	reverse.erase(end - dna::begin(reverse));
-	return reverse;
-}
-
 #ifdef EXPOSE_INTERNALS
 
 const auto revcomp_generic = rc<dna4_revcomp_generic>;
