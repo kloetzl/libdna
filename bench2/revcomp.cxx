@@ -114,8 +114,9 @@ bench_seqan3_dna4(benchmark::State &state)
 	auto s_as_dna = s | seqan3::views::char_to<seqan3::dna4>;
 
 	for (auto _ : state) {
-		auto revcomp =
-			s_as_dna | std::views::reverse | seqan3::views::complement;
+		auto revcomp = s | std::views::reverse |
+					   seqan3::views::char_to<seqan3::dna4> |
+					   seqan3::views::complement;
 
 		// force evaluation of view
 		for (auto foo : revcomp)
@@ -125,6 +126,36 @@ bench_seqan3_dna4(benchmark::State &state)
 	free(forward);
 }
 
+void
+bench_seqan3_dna4_vector(benchmark::State &state)
+{
+	char *forward = (char *)malloc(LENGTH + 1);
+	// char *reverse = (char *)malloc(LENGTH + 1);
+	gen(forward, LENGTH);
+
+	auto s = std::string{forward};
+	auto s_as_dna = s | seqan3::views::char_to<seqan3::dna4>;
+
+	std::vector<seqan3::dna4> rev;
+	rev.resize(LENGTH);
+
+	for (auto _ : state) {
+		auto revcomp =
+			s_as_dna | std::views::reverse | seqan3::views::complement;
+
+		// force evaluation of view
+		size_t i = 0;
+		for (auto foo : revcomp) {
+			rev[i++] = foo;
+		}
+
+		benchmark::DoNotOptimize(rev);
+	}
+
+	free(forward);
+}
+
 BENCHMARK_CAPTURE(bench, dna4_revcomp, dna4_revcomp);
 BENCHMARK(bench_seqan3_dna4);
+BENCHMARK(bench_seqan3_dna4_vector);
 BENCHMARK_MAIN();
