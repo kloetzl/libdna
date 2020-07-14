@@ -8,7 +8,7 @@
 #include <random>
 #include <smmintrin.h>
 
-static const size_t LENGTH = 1000000;
+static const size_t LENGTH = 1000003;
 
 size_t seed = 1729;
 size_t invrate;
