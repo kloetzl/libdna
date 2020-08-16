@@ -16,7 +16,7 @@ The \fBdnax_pack_4bits\fR() function packs a string of nucleotides into a sequen
 The encoding of nucleotides is compatible to the Nucleotide Archival Format. It can represent the common nucleotides, ambiguous bases, uracil (\fIU\fR) and gaps (\fI-\fR).
 
 .SH RETURN VALUE
-The number of encoded characters is returned.
+The number of encoded characters is returned, let's call this \fIenc\fR. The number of bytes used for encoding is \fI(enc + 1) / 2\fR.
 
 .SH EXAMPLE
 .in +4
