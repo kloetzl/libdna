@@ -1,6 +1,4 @@
-# API
-
-*The following API (and ABI) should not be considered stable for the time being.*
+# C API
 
 ```C
 #include <dna.h>
