@@ -65,6 +65,24 @@ dnax_revcomp(benchmark::State &state)
 }
 BENCHMARK(dnax_revcomp);
 
+static char *
+dna4_revcomp_inline(const char *begin, const char *end, char *dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	for (size_t i = 0; i < length; i++) {
+		char c = begin[length - 1 - i];
+
+		dest[i] = c ^= c & 2 ? 4 : 21;
+	}
+
+	return dest + length;
+}
+
 static void
 bwa_encode(char *begin, char *end)
 {
@@ -156,6 +174,7 @@ bench_seqan3_dna4_vector(benchmark::State &state)
 }
 
 BENCHMARK_CAPTURE(bench, dna4_revcomp, dna4_revcomp);
+BENCHMARK_CAPTURE(bench, dna4_revcomp_inline, dna4_revcomp_inline);
 BENCHMARK(bench_seqan3_dna4);
 BENCHMARK(bench_seqan3_dna4_vector);
 BENCHMARK_MAIN();
