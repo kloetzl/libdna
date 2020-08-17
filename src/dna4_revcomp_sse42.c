@@ -31,7 +31,7 @@ dna4_revcomp_sse42(const char *begin, const char *end, char *restrict dest)
 
 	for (; vec_offset < vec_length; vec_offset++) {
 		vec_type chunk;
-		memcpy(&chunk, begin + vec_offset * vec_bytes, vec_bytes);
+		memcpy(&chunk, end - (vec_offset + 1) * vec_bytes, vec_bytes);
 
 		// reverse
 		vec_type mask_shuffle =
@@ -57,12 +57,11 @@ dna4_revcomp_sse42(const char *begin, const char *end, char *restrict dest)
 
 		vec_type comp = _mm_xor_si128(xor_mask, reversed);
 
-		memcpy(
-			dest + length - vec_offset * vec_bytes - vec_bytes, &comp,
-			vec_bytes);
+		size_t offset = vec_offset * vec_bytes;
+		memcpy(dest + offset, &comp, vec_bytes);
 	}
 
-	for (size_t i = vec_offset * vec_bytes; i < length; i++) {
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i++) {
 		char c = begin[i];
 
 		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;

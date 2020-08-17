@@ -99,10 +99,8 @@ shuffle(const char *begin, const char *end, char *__restrict dest)
 
 	size_t vec_offset = 0;
 	for (; vec_offset < vec_length; vec_offset++) {
-		size_t offset = vec_offset * vec_bytes;
-		// fprintf(stderr, "%zu\n", offset);
 		vec_type chunk;
-		memcpy(&chunk, begin + offset, vec_bytes);
+		memcpy(&chunk, end - (vec_offset + 1) * vec_bytes, vec_bytes);
 		// fprintf(stderr, "%16.16s\n", &chunk);
 
 		vec_type reversed = _mm_shuffle_epi8(chunk, revmask);
@@ -111,12 +109,12 @@ shuffle(const char *begin, const char *end, char *__restrict dest)
 		vec_type mapped = _mm_shuffle_epi8(nibblecode, reversed);
 		// fprintf(stderr, "%16.16s\n\n", &mapped);
 
-		memcpy(
-			dest + length - (vec_offset + 1) * vec_bytes, &mapped, vec_bytes);
+		size_t offset = vec_offset * vec_bytes;
+		memcpy(dest + offset, &mapped, vec_bytes);
 	}
 
 	size_t offset = vec_offset * vec_bytes;
-	for (size_t i = offset; i < length; i++) {
+	for (size_t i = 0; i < length - offset; i++) {
 		char c = begin[i];
 
 		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;
@@ -151,10 +149,8 @@ shuffle_avx2(const char *begin, const char *end, char *__restrict dest)
 
 	size_t vec_offset = 0;
 	for (; vec_offset < vec_length; vec_offset++) {
-		size_t offset = vec_offset * vec_bytes;
-		// fprintf(stderr, "%zu\n", offset);
 		vec_type chunk;
-		memcpy(&chunk, begin + offset, vec_bytes);
+		memcpy(&chunk, end - (vec_offset + 1) * vec_bytes, vec_bytes);
 		// fprintf(stderr, "%32.32s\n", &chunk);
 
 		vec_type halfreversed = _mm256_shuffle_epi8(chunk, revmask);
@@ -165,8 +161,8 @@ shuffle_avx2(const char *begin, const char *end, char *__restrict dest)
 		vec_type mapped = _mm256_shuffle_epi8(nibblecode, reversed);
 		// fprintf(stderr, "%32.32s\n\n", &mapped);
 
-		memcpy(
-			dest + length - (vec_offset + 1) * vec_bytes, &mapped, vec_bytes);
+		size_t offset = vec_offset * vec_bytes;
+		memcpy(dest + offset, &mapped, vec_bytes);
 	}
 
 	size_t offset = vec_offset * vec_bytes;
@@ -222,10 +218,8 @@ twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
 
 	size_t vec_offset = 0;
 	for (; vec_offset < vec_length; vec_offset++) {
-		size_t offset = vec_offset * vec_bytes;
-		// fprintf(stderr, "%zu\n", offset);
 		vec_type chunk;
-		memcpy(&chunk, begin + offset, vec_bytes);
+		memcpy(&chunk, end - (vec_offset + 1) * vec_bytes, vec_bytes);
 		// fprintf(stderr, "%16.16s\n", &chunk);
 
 		vec_type reversed = _mm_shuffle_epi8(chunk, revmask);
@@ -237,11 +231,12 @@ twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
 		vec_type xored = _mm_xor_si128(blended_mask, reversed);
 		// fprintf(stderr, "%16.16s\n", &xored);
 
-		memcpy(dest + length - (vec_offset + 1) * vec_bytes, &xored, vec_bytes);
+		size_t offset = vec_offset * vec_bytes;
+		memcpy(dest + offset, &xored, vec_bytes);
 	}
 
-	size_t offset = vec_offset * vec_bytes;
-	for (size_t i = offset; i < length; i++) {
+	// size_t offset = vec_offset * vec_bytes;
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i++) {
 		char c = begin[i];
 
 		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;
@@ -276,10 +271,8 @@ twiddle_avx2(const char *begin, const char *end, char *__restrict dest)
 
 	size_t vec_offset = 0;
 	for (; vec_offset < vec_length; vec_offset++) {
-		size_t offset = vec_offset * vec_bytes;
-		// fprintf(stderr, "%zu\n", offset);
 		vec_type chunk;
-		memcpy(&chunk, begin + offset, vec_bytes);
+		memcpy(&chunk, end - (vec_offset + 1) * vec_bytes, vec_bytes);
 		// fprintf(stderr, "%16.16s\n", &chunk);
 
 		vec_type halfreversed = _mm256_shuffle_epi8(chunk, revmask);
@@ -293,11 +286,11 @@ twiddle_avx2(const char *begin, const char *end, char *__restrict dest)
 		vec_type xored = _mm256_xor_si256(blended_mask, reversed);
 		// fprintf(stderr, "%16.16s\n", &xored);
 
-		memcpy(dest + length - (vec_offset + 1) * vec_bytes, &xored, vec_bytes);
+		size_t offset = vec_offset * vec_bytes;
+		memcpy(dest + offset, &xored, vec_bytes);
 	}
 
-	size_t offset = vec_offset * vec_bytes;
-	for (size_t i = offset; i < length; i++) {
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i++) {
 		char c = begin[i];
 
 		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;
@@ -488,7 +481,7 @@ bwa_revcomp(const char *begin, const char *end, char *dest)
 {
 	size_t i = 0, length = end - begin;
 	for (; i < length; i++) {
-		dest[length - 1 - i] = begin[i] < 4 ? 3 - begin[i] : 4;
+		dest[i] = begin[length - 1 - i] < 4 ? 3 - begin[length - 1 - i] : 4;
 	}
 }
 

@@ -32,7 +32,7 @@ dna4_revcomp_avx2(const char *begin, const char *end, char *restrict dest)
 
 	for (; vec_offset < vec_length; vec_offset++) {
 		vec_type chunk;
-		memcpy(&chunk, begin + vec_offset * vec_bytes, vec_bytes);
+		memcpy(&chunk, end - (vec_offset + 1) * vec_bytes, vec_bytes);
 
 		// reverse
 		vec_type mask_shuffle = _mm256_set_epi8(
@@ -55,12 +55,10 @@ dna4_revcomp_avx2(const char *begin, const char *end, char *restrict dest)
 			_mm256_blendv_epi8(all_bytes_4, all_bytes_21, iszero);
 		vec_type comp = _mm256_xor_si256(xor_mask, reversed);
 
-		memcpy(
-			dest + length - vec_offset * vec_bytes - vec_bytes, &comp,
-			vec_bytes);
+		memcpy(dest + vec_offset * vec_bytes, &comp, vec_bytes);
 	}
 
-	for (size_t i = vec_offset * vec_bytes; i < length; i++) {
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i++) {
 		char c = begin[i];
 
 		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;

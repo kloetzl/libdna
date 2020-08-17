@@ -100,7 +100,7 @@ bwa_revcomp(const char *begin, const char *end, char *dest)
 {
 	size_t i = 0, length = end - begin;
 	for (; i < length; i++) {
-		dest[length - 1 - i] = begin[i] < 4 ? 3 - begin[i] : 4;
+		dest[i] = begin[length - 1 - i] < 4 ? 3 - begin[length - 1 - i] : 4;
 	}
 }
 
