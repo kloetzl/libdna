@@ -2,6 +2,9 @@ SHELL=zsh
 
 .PHONY: clean format
 
+exportedsymbols:
+	nm builddir/libdna.so | awk '$$2 ~ /R|T/' > $@
+
 format:
 	clang-format -i src/*.h src/*.c include/*.h
 	clang-format -i bench/*.cxx
