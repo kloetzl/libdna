@@ -1,11 +1,15 @@
 # libdna
 
+[![Build Status](https://travis-ci.org/kloetzl/libdna.svg?branch=master)](https://travis-ci.org/kloetzl/libdna)
+[![Documentation Status](https://readthedocs.org/projects/libdna/badge/?version=latest)](https://libdna.readthedocs.io/en/latest/?badge=latest)
+
 The aim of this project is to unify functionality commonly found in bioinformatics projects working on DNA. As DNA sequences tend to be long, most functions are designed to be very efficient including SIMD optimizations where appropriate.
 
 # Installation
 
-Libdna requires the Meson buildsystem but no other dependencies.
+Libdna requires the Meson buildsystem. At the moment it also need googles benchmark library to build.
 
+    mkdir builddir
     meson builddir
     cd builddir
     ninja
