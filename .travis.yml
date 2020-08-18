@@ -3,7 +3,7 @@ branches:
     - readthedocs
 
 language: cpp
-dist: bionic
+dist: focal
 compiler: gcc
 
 before_install:
