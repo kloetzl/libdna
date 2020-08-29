@@ -121,27 +121,40 @@ endforeach
 ###################################################
 # Benchmarks
 
-benchcommonlib = static_library('benchcommon', 'bench/Bcommon.cxx',
-    include_directories: incdir,
-    cpp_args : ['-O2'],
-    install: false
-)
+if get_option('with-benchmarks')
 
-libbenchmark = dependency('benchmark',
-    # required: false
-)
+    benchcommonlib = static_library('benchcommon', 'bench/Bcommon.cxx',
+        include_directories: incdir,
+        cpp_args : ['-O2'],
+        install: false
+    )
 
-plainbench = [
-    'Bcompare',
-    'Bcompare_wg',
-    'Bcompare_rev',
-    'Bfind_first_not',
-    'Bmismatch',
-    'Brevcomp',
-    'Bstrconstr'
-]
-foreach Bname : plainbench
-    Bexe = executable(Bname, 'bench/' + Bname + '.cxx',
+    libbenchmark = dependency('benchmark',
+        # required: false
+    )
+
+    plainbench = [
+        'Bcompare',
+        'Bcompare_wg',
+        'Bcompare_rev',
+        'Bfind_first_not',
+        'Bmismatch',
+        'Brevcomp',
+        'Bstrconstr'
+    ]
+    foreach Bname : plainbench
+        Bexe = executable(Bname, 'bench/' + Bname + '.cxx',
+            link_with: [libdna, benchcommonlib],
+            install: false,
+            build_by_default: true,
+            include_directories: incdir,
+            dependencies: libbenchmark,
+            cpp_args: ['-Ofast', '-march=native']
+        )
+        benchmark(Bname, Bexe)
+    endforeach
+
+    Bdnax_to_dna4 = executable('Bdnax_to_dna4', 'bench/Bdnax_to_dna4.cxx', 'bench/despace_tables.h',
         link_with: [libdna, benchcommonlib],
         install: false,
         build_by_default: true,
@@ -149,16 +162,7 @@ foreach Bname : plainbench
         dependencies: libbenchmark,
         cpp_args: ['-Ofast', '-march=native']
     )
-    benchmark(Bname, Bexe)
-endforeach
 
-Bdnax_to_dna4 = executable('Bdnax_to_dna4', 'bench/Bdnax_to_dna4.cxx', 'bench/despace_tables.h',
-    link_with: [libdna, benchcommonlib],
-    install: false,
-    build_by_default: true,
-    include_directories: incdir,
-    dependencies: libbenchmark,
-    cpp_args: ['-Ofast', '-march=native']
-)
+    benchmark('Bdnax_to_dna4', Bdnax_to_dna4)
 
-benchmark('Bdnax_to_dna4', Bdnax_to_dna4)
+endif
