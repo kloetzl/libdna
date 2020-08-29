@@ -1,10 +1,7 @@
-project('libdna', 'c', 'cpp', version : '0.2', license : 'GPL3',
-    default_options : [
-        'warning_level=3',
-        'c_std=gnu11',
-        'cpp_std=c++17',
-        'b_ndebug=if-release'
-    ]
+project('libdna', 'c', 'cpp',
+    version : '0.9',
+    license : 'GPL3',
+    default_options : ['warning_level=3', 'c_std=gnu11', 'cpp_std=c++17', 'b_ndebug=if-release']
 )
 
 ###################################################
@@ -132,9 +129,7 @@ if get_option('with-benchmarks')
         install: false
     )
 
-    libbenchmark = dependency('benchmark',
-        # required: false
-    )
+    libbenchmark = dependency('benchmark')
 
     plainbench = [
         'Bcompare',
