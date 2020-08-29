@@ -132,3 +132,25 @@ TEST_CASE("Example from dnax_translate manpage")
 
 	REQUIRE(std::string(out) == "ML");
 }
+
+TEST_CASE("Example from dnax_find_first_of manpage")
+{
+	const char str[] = "ACGT-AA";
+	char table[256] = {0};
+	std::memset(table, -1, 256);
+	table['-'] = 2;
+
+	const char *gap = dnax_find_first_of(table, str, str + 7);
+	REQUIRE(gap - str == 4);
+}
+
+TEST_CASE("Example from dnax_find_first_not_of manpage")
+{
+	const char str[] = "ACGT-AA";
+	char table[256] = {0};
+	std::memset(table, 0, 256);
+	table['-'] = -1;
+
+	const char *gap = dnax_find_first_not_of(table, str, str + 7);
+	REQUIRE(gap - str == 4);
+}
