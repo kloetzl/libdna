@@ -71,9 +71,12 @@ install_man([
     'man/dnax_count.3',
     'man/dnax_extract_dna4.3',
     'man/dnax_find_first_mismatch.3',
+    'man/dnax_find_first_not_of.3',
+    'man/dnax_find_first_of.3',
     'man/dnax_pack_4bits.3',
     'man/dnax_replace.3',
     'man/dnax_revcomp.3',
+    'man/dnax_translate.3',
     'man/dnax_unpack_4bits.3',
     'man/geneticcode.7',
     'man/iupac.7'
