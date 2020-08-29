@@ -3,51 +3,47 @@
 [![Build Status](https://travis-ci.org/kloetzl/libdna.svg?branch=master)](https://travis-ci.org/kloetzl/libdna)
 [![Documentation Status](https://readthedocs.org/projects/libdna/badge/?version=latest)](https://libdna.readthedocs.io/en/latest/?badge=latest)
 
-The aim of this project is to unify functionality commonly found in bioinformatics projects working on DNA. As DNA sequences tend to be long, most functions are designed to be very efficient including SIMD optimizations where appropriate.
+The aim of this project is to unify functionality commonly found in bioinformatics projects working on DNA. As DNA sequences tend to be long, most functions are designed to be very efficient, including SIMD optimizations where appropriate.
 
 # Installation
 
-Libdna requires the Meson buildsystem. At the moment it also need googles benchmark library to build.
+Libdna requires the Meson buildsystem.
 
     mkdir builddir
-    meson builddir
+    meson builddir --buildtype=release
     cd builddir
     ninja
     ninja install
 
-# API
+# How to use
 
-*The following API (and ABI) should not be considered stable for the time being.*
+Libdna is both simple, efficient and customizable. For instance, many bioinformatics tools need to compute the reverse complement of some sequence. Now it is just one function call away.
 
 ```C
 #include <dna.h>
+
+int main()
+{
+	char buffer[] = "ACGT";
+	char rev[5] = {0};
+	dna4_revcomp(buffer, buffer + 4, rev);
+
+	printf("%s\n", rev);
+}
 ```
 
-Most functions expect a `begin` and an `end` pointer. These are to make the half-open interval of DNA sequence to work on. Instead of relying on null-termination of strings, using an end-pointer enables better SIMD and working only on subsequences of strings. As genomes are long, you should avoid calling `strlen` too often and store the length with the data in one place anyways.
+In C++ things are even simpler thanks to a thin wrapper.
 
-## DNA4
+```C++
+#include <dna>
 
-Every symbol exported by this library starts with `dna`. Functions beginning with `dna4_` work on the letters `ACGT` exclusively. All other characters (lower case, null bytes, `U`) may trigger arbitrary behavior.
+int main()
+{
+	std::cout << dna4::revcomp("ACGT") << "\n";
+}
+```
 
-* dna4_count_mismatches
-* dna4_pack_2bits
-* dna4_revcomp
-* dna4_unpack_2bits
-
-## DNAX
-
-The following functions are not limited to any alphabet. They commonly use a table to allow custom behavior.
-
-* dnax_count
-* dnax_extract_dna4
-* dnax_find_first_not_of
-* dnax_find_first_of
-* dnax_find_first_mismatch
-* dnax_pack_4bits
-* dnax_replace
-* dnax_revcomp
-* dnax_translate
-* dnax_unpack_4bits
+Don't forget to link with `-ldna`.
 
 # Bonus
 
@@ -61,4 +57,3 @@ Copyright © 2018 - 2020 Fabian Klötzl <kloetzl@evolbio.mpg.de>
 License GPLv3+: GNU GPL version 3 or later.
 
 This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law. The full license text is available at http://gnu.org/licenses/gpl.html.
-
