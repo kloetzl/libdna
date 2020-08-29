@@ -15,6 +15,8 @@ nav:
   - dna4_unpack_2bits: 'dna4_unpack_2bits.3.md'
   - dnax_count: 'dnax_count.3.md'
   - dnax_find_first_mismatch: 'dnax_find_first_mismatch.3.md'
+  - dnax_find_first_not_of: 'dnax_find_first_not_of.3.md'
+  - dnax_find_first_of: 'dnax_find_first_of.3.md'
   - dnax_pack_4bits: 'dnax_pack_4bits.3.md'
   - dnax_replace: 'dnax_replace.3.md'
   - dnax_revcomp: 'dnax_revcomp.3.md'
