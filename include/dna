@@ -33,25 +33,25 @@ end(std::string &str)
 }
 
 const char *
-begin(const std::string_view &str)
+begin(std::string_view str)
 {
 	return str.data();
 }
 
 const char *
-end(const std::string_view &str)
+end(std::string_view str)
 {
 	return str.data() + str.size();
 }
 
 const char *
-cbegin(const std::string_view &str)
+cbegin(std::string_view str)
 {
 	return str.data();
 }
 
 const char *
-cend(const std::string_view &str)
+cend(std::string_view str)
 {
 	return str.data() + str.size();
 }
@@ -66,7 +66,7 @@ version()
 namespace dna4
 {
 size_t
-count_mismatches(const std::string_view &s1, const std::string_view &s2)
+count_mismatches(std::string_view s1, std::string_view s2)
 {
 	// assume s1.size() == s2.size()
 	return dna4_count_mismatches(
@@ -74,7 +74,7 @@ count_mismatches(const std::string_view &s1, const std::string_view &s2)
 }
 
 std::string
-revcomp(const std::string_view &str)
+revcomp(std::string_view str)
 {
 	auto ret = std::string(str.size(), '\0');
 	dna4_revcomp(dna::cbegin(str), dna::cend(str), dna::begin(ret));
@@ -82,7 +82,7 @@ revcomp(const std::string_view &str)
 }
 
 uint64_t
-pack_2bits(size_t k, const std::string_view &str)
+pack_2bits(size_t k, std::string_view str)
 {
 	return dna4_pack_2bits(dna::cbegin(str), k);
 }
@@ -100,7 +100,7 @@ namespace dnax
 {
 
 auto
-pack_4bits(const std::string_view &str)
+pack_4bits(std::string_view str)
 {
 	auto ret = std::vector<unsigned char>((str.size() + 1) / 2, '\0');
 	auto encoded = dnax_pack_4bits(dna::cbegin(str), dna::cend(str), ret.data());
@@ -118,7 +118,7 @@ unpack_4bits(const std::vector<unsigned char> &vec)
 }
 
 std::string
-revcomp(const char *table, const std::string_view &str)
+revcomp(const char *table, std::string_view str)
 {
 	auto ret = std::string(str.size(), '\0');
 	auto end =
@@ -128,7 +128,7 @@ revcomp(const char *table, const std::string_view &str)
 }
 
 std::string
-translate(const std::string_view &str)
+translate(std::string_view str)
 {
 	auto ret = std::string(str.size() / 3, '\0');
 	auto end =
@@ -138,7 +138,7 @@ translate(const std::string_view &str)
 }
 
 std::array<size_t, 256>
-count(const std::string_view &str)
+count(std::string_view str)
 {
 	auto ret = std::array<size_t, 256>();
 	dnax_count(std::begin(ret), dna::cbegin(str), dna::end(str));
@@ -146,7 +146,7 @@ count(const std::string_view &str)
 }
 
 std::string
-extract_dna4(const std::string_view &str)
+extract_dna4(std::string_view str)
 {
 	auto ret = std::string(str.size(), '\0');
 	auto end =
@@ -156,7 +156,7 @@ extract_dna4(const std::string_view &str)
 }
 
 std::string
-replace(const char *table, const std::string_view &str)
+replace(const char *table, std::string_view str)
 {
 	auto ret = std::string(str.size(), '\0');
 	auto end =
@@ -166,7 +166,7 @@ replace(const char *table, const std::string_view &str)
 }
 
 std::string_view::size_type
-find_first_mismatch(const std::string_view &s1, const std::string_view &s2)
+find_first_mismatch(std::string_view s1, std::string_view s2)
 {
 	auto pos = dnax_find_first_mismatch(
 		dna::cbegin(s1), dna::cend(s1), dna::cbegin(s2));
@@ -174,14 +174,14 @@ find_first_mismatch(const std::string_view &s1, const std::string_view &s2)
 }
 
 std::string_view::size_type
-find_first_of(const char *table, const std::string_view &str)
+find_first_of(const char *table, std::string_view str)
 {
 	auto pos = dnax_find_first_of(table, dna::cbegin(str), dna::cend(str));
 	return pos - dna::cbegin(str);
 }
 
 std::string_view::size_type
-find_first_not_of(const char *table, const std::string_view &str)
+find_first_not_of(const char *table, std::string_view str)
 {
 	auto pos = dnax_find_first_not_of(table, dna::cbegin(str), dna::cend(str));
 	return pos - dna::cbegin(str);
