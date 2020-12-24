@@ -1,4 +1,7 @@
-void kasai (const char *T, const int *SA, const int *ISA, size_t n, int *LCP)
+#include <dna.h>
+
+void
+kasai(const char *T, const int *SA, const int *ISA, size_t n, int *LCP)
 {
 	int k = 0;
 	LCP[0] = -1;
