@@ -19,7 +19,7 @@ Libdna requires the Meson buildsystem.
 Libdna is both simple, efficient and customizable. For instance, many bioinformatics tools need to compute the reverse complement of some sequence. Now it is just one function call away.
 
 ```C
-#include <dna.h>
+#include <kloetzl/dna.h>
 
 int main()
 {
@@ -34,7 +34,7 @@ int main()
 In C++ things are even simpler thanks to a thin wrapper.
 
 ```C++
-#include <dna>
+#include <kloetzl/dna>
 
 int main()
 {

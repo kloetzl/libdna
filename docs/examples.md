@@ -3,7 +3,7 @@
 Given a long genome, do something with the canonical kmers of length K. Assume the genome is AGTNAGCC. The first 3mer is AGT. However, it is not canonical, because its reverse complement is lexicographically smaller ACT < AGT. So ACT is passed to the callback. The next 3mer GTN is invalid as N is an ambiguous base. Thus processing continues beyond that position.
 
 ```C++
-#include <dna.h>
+#include <kloetzl/dna.h>
 
 typedef void (*process_fn)(const char *, size_t);
 
@@ -42,7 +42,7 @@ process_canonical_kmers(
 This code shows how to compute the GC content of a sequence. Note that is counts Cs, Gs, and Ss that is either G or C. Also lower case letters are allowed.
 
 ```C++
-#include <dna>
+#include <kloetzl/dna>
 
 double
 gc_content(const std::string &str)
@@ -59,7 +59,7 @@ gc_content(const std::string &str)
 This algorithm computes the LCP array using the method from Kasai et al.
 
 ```C++
-#include <dna.h>
+#include <kloetzl/dna.h>
 
 void
 kasai(const char *T, const int *SA, const int *ISA, size_t n, int *LCP)

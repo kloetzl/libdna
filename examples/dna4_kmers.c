@@ -1,4 +1,4 @@
-#include <dna.h>
+#include <kloetzl/dna.h>
 
 typedef void (*process_fn)(const char *, size_t);
 

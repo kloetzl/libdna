@@ -2,7 +2,7 @@
 
 LIBDNA, 2019-08-12
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     char *dna4_revcomp(const char *begin, const char *end, char *dest);
 

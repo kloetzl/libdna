@@ -2,7 +2,7 @@
 
 LIBDNA, 2019-09-19
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     char *dnax_unpack_4bits( const unsigned char *begin, const unsigned char *end, char *dest);
 

@@ -2,7 +2,7 @@
 
 LIBDNA, 2019-08-30
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     size_t dna4_count_mismatches(const char *begin, const char *end, const char *other);
 

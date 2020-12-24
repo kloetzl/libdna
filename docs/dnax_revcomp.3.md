@@ -2,7 +2,7 @@
 
 LIBDNA, 2019-08-12
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     char *dnax_revcomp(const char *table, const char *begin, const char *end, char *dest);
 

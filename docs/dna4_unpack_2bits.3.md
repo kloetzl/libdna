@@ -2,7 +2,7 @@
 
 LIBDNA, 2019-09-19
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     void dna4_unpack_2bits(char *dest, size_t k, uint64_t packed);
 

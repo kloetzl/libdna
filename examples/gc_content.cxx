@@ -1,4 +1,4 @@
-#include <dna>
+#include <kloetzl/dna>
 
 double
 gc_content(const std::string &str)

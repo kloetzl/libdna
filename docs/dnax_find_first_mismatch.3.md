@@ -2,7 +2,7 @@
 
 LIBDNA, 2020-06-03 "LIBDNA"
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     char *dnax_find_first_mismatch(const char *begin, const char *end, char *other);
 

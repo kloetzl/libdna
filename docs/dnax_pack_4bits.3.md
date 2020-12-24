@@ -2,7 +2,7 @@
 
 LIBDNA, 2019-09-19
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     size_t dnax_pack_4bits(const char *begin, const char *end, unsigned char *dest);
 

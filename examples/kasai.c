@@ -1,4 +1,4 @@
-#include <dna.h>
+#include <kloetzl/dna.h>
 
 void
 kasai(const char *T, const int *SA, const int *ISA, size_t n, int *LCP)

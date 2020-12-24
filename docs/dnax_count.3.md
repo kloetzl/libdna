@@ -2,7 +2,7 @@
 
 LIBDNA, 2020-06-03
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     void dnax_count(size_t *table, const char *begin, const char *end);
 

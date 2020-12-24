@@ -2,7 +2,7 @@
 
 LIBDNA, 2020-08-29
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     char *dnax_find_first_of( const char *table, const char *begin, const char *end);
 

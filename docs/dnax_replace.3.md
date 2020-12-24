@@ -2,7 +2,7 @@
 
 LIBDNA, 2020-06-08
 
-    #include <dna.h>
+    #include <kloetzl/dna.h>
     
     char *dnax_replace(const char *table, const char *begin, const char *end, char *dest);
 
