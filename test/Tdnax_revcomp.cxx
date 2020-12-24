@@ -1,7 +1,7 @@
 #include "Tcommon.h"
-#include "catch.hpp"
 
 #include <assert.h>
+#include <catch2/catch.hpp>
 #include <dna.h>
 #include <string.h>
 #include <string>

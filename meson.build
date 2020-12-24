@@ -79,13 +79,19 @@ install_man([
     'man/iupac.7'
 ])
 
+libdna_dep = declare_dependency(include_directories : 'include',
+    link_with : libdna)
+
 ###################################################
 # Tests
+
+catch2_dep = dependency('catch2', fallback: ['catch2', 'catch2_dep'])
 
 testlib = static_library('Tmain', 'test/Tmain.cxx',
     include_directories: incdir,
     cpp_args : ['-O2'],
-    install: false
+    install: false,
+    dependencies: catch2_dep
 )
 
 nativetests = ['Tdna4_pack_2bits', 'Tdna4_revcomp']
@@ -96,7 +102,8 @@ foreach Tname : nativetests
         install: false,
         build_by_default: false,
         include_directories: incdir,
-        cpp_args: ['-march=native']
+        cpp_args: ['-march=native'],
+        dependencies: catch2_dep
     )
     test(Tname, Texe)
 endforeach
@@ -113,7 +120,8 @@ foreach Tname : plaintests
         link_with: [testlib, libdna],
         install: false,
         build_by_default: false,
-        include_directories: incdir
+        include_directories: incdir,
+        dependencies: catch2_dep
     )
     test(Tname, Texe)
 endforeach

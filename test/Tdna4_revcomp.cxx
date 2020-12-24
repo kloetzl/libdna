@@ -1,8 +1,8 @@
 #include "Tcommon.h"
-#include "catch.hpp"
 #include "dna_internal.h"
 
 #include <assert.h>
+#include <catch2/catch.hpp>
 #include <dna.h>
 #include <string.h>
 #include <string>
