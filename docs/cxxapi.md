@@ -13,10 +13,10 @@ namespace dna
 {
 	char *begin(std::string &str);
 	char *end(std::string &str);
-	const char *begin(const std::string_view &str);
-	const char *end(const std::string_view &str);
-	const char *cbegin(const std::string_view &str);
-	const char *cend(const std::string_view &str);
+	const char *begin(std::string_view str);
+	const char *end(std::string_view str);
+	const char *cbegin(std::string_view str);
+	const char *cend(std::string_view str);
 	int version();
 }
 ```
@@ -26,9 +26,9 @@ namespace dna
 ```C++
 namespace dna4
 {
-	size_t count_mismatches(const std::string_view &s1, const std::string_view &s2);
-	std::string revcomp(const std::string_view &str);
-	uint64_t pack_2bits(size_t k, const std::string_view &str);
+	size_t count_mismatches(std::string_view s1, std::string_view s2);
+	std::string revcomp(std::string_view str);
+	uint64_t pack_2bits(size_t k, std::string_view str);
 	std::string unpack_2bits(size_t k, uint64_t packed);
 }
 ```
@@ -38,14 +38,14 @@ namespace dna4
 ```C++
 namespace dnax
 {
-	auto pack_4bits(const std::string_view &str);
+	auto pack_4bits(std::string_view str);
 	auto unpack_4bits(const std::vector<unsigned char> &vec);
-	std::string revcomp(const char *table, const std::string_view &str);
-	std::string translate(const std::string_view &str);
-	std::array<size_t, 256> count(const std::string_view &str);
-	std::string extract_dna4(const std::string_view &str);
-	std::string replace(const char *table, const std::string_view &str);
-	std::string_view::size_type find_first_mismatch(const std::string_view &s1, const std::string_view &s2);
+	std::string revcomp(const char *table, std::string_view str);
+	std::string translate(std::string_view str);
+	std::array<size_t, 256> count(std::string_view str);
+	std::string extract_dna4(std::string_view str);
+	std::string replace(const char *table, std::string_view str);
+	std::string_view::size_type find_first_mismatch(std::string_view s1, const std::string_view &s2);
 	std::string_view::size_type find_first_of(const char *table, const std::string_view &str);
 	std::string_view::size_type find_first_not_of(const char *table, const std::string_view &str);
 }
