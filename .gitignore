@@ -13,6 +13,10 @@ pack
 replace
 revcomp
 
+# meson files
+subprojects/Catch2-*
+subprojects/packagecache
+subprojects/benchmark-*
 
 # perf
 perf.data*
