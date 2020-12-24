@@ -137,7 +137,8 @@ if get_option('with-benchmarks')
         install: false
     )
 
-    libbenchmark = dependency('benchmark')
+    libbenchmark = dependency('benchmark',
+            fallback: ['google-benchmark', 'google_benchmark_dep'])
 
     plainbench = [
         'Bcompare',
