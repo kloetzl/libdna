@@ -51,7 +51,20 @@ dna4_count_mismatches_select(void)
 	}
 }
 
+#if __has_attribute(ifunc)
+
 DNA_PUBLIC
 size_t
 dna4_count_mismatches(const char *begin, const char *end, const char *other)
 	__attribute__((ifunc("dna4_count_mismatches_select")));
+
+#else
+
+DNA_PUBLIC
+size_t
+dna4_count_mismatches(const char *begin, const char *end, const char *other)
+{
+	return (dna4_count_mismatches_select())(begin, end, other);
+}
+
+#endif

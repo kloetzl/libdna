@@ -45,7 +45,20 @@ dna4_revcomp_select(void)
 	}
 }
 
+#if __has_attribute(ifunc)
+
 DNA_PUBLIC
 char *
 dna4_revcomp(const char *begin, const char *end, char *dest)
 	__attribute__((ifunc("dna4_revcomp_select")));
+
+#else
+
+DNA_PUBLIC
+char *
+dna4_revcomp(const char *begin, const char *end, char *dest)
+{
+	return (dna4_revcomp_select())(begin, end, dest);
+}
+
+#endif
