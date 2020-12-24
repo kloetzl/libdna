@@ -1,0 +1,27 @@
+site_name: libdna
+site_description: Essential Functions for DNA Manipulation
+
+theme:
+  name: readthedocs
+
+nav:
+- Home: 'index.md'
+- C API: 'capi.md'
+- C++ API: 'cxxapi.md'
+- Functions:
+  - dna4_count_mismatches: 'dna4_count_mismatches.3.md'
+  - dna4_pack_2bits: 'dna4_pack_2bits.3.md'
+  - dna4_revcomp: 'dna4_revcomp.3.md'
+  - dna4_unpack_2bits: 'dna4_unpack_2bits.3.md'
+  - dnax_count: 'dnax_count.3.md'
+  - dnax_find_first_mismatch: 'dnax_find_first_mismatch.3.md'
+  - dnax_find_first_not_of: 'dnax_find_first_not_of.3.md'
+  - dnax_find_first_of: 'dnax_find_first_of.3.md'
+  - dnax_pack_4bits: 'dnax_pack_4bits.3.md'
+  - dnax_replace: 'dnax_replace.3.md'
+  - dnax_revcomp: 'dnax_revcomp.3.md'
+  - dnax_translate: 'dnax_translate.3.md'
+  - dnax_unpack_4bits: 'dnax_unpack_4bits.3.md'
+- Misc:
+  - IUPAC: 'iupac.7.md'
+  - Genetic Code: 'geneticcode.7.md'
