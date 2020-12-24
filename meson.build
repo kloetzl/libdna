@@ -56,7 +56,8 @@ libdna = library('dna', ['include/dna.h', genericfiles],
     soversion: '0',
     link_with: [sse42lib, avx2lib, avx512lib],
     pic: true,
-    c_args : ['-O2', '-fvisibility=hidden']
+    c_args : ['-O2', '-fvisibility=hidden'],
+    install: true
 )
 
 install_headers('include/dna.h')
