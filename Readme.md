@@ -9,7 +9,6 @@ The aim of this project is to unify functionality commonly found in bioinformati
 
 Libdna requires the Meson buildsystem.
 
-    mkdir builddir
     meson builddir --buildtype=release
     cd builddir
     ninja

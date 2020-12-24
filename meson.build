@@ -128,6 +128,7 @@ endforeach
 
 ###################################################
 # Benchmarks
+# meson setup builddir_wbench -Dwith-benchmarks=true
 
 if get_option('with-benchmarks')
 

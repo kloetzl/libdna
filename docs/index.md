@@ -6,11 +6,10 @@ The aim of this project is to unify functionality commonly found in bioinformati
 
 Libdna requires the Meson buildsystem but no other dependencies.
 
-    meson builddir
+    meson builddir --buildtype=release
     cd builddir
     ninja
     ninja install
-
 
 # Bonus
 
@@ -20,7 +19,7 @@ Libdna requires the Meson buildsystem but no other dependencies.
 
 # License
 
-Copyright © 2018 - 2019 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
+Copyright © 2018 - 2020 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
 License GPLv3+: GNU GPL version 3 or later.
 
 This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law. The full license text is available at http://gnu.org/licenses/gpl.html.
