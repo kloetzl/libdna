@@ -166,10 +166,10 @@ shuffle_avx2(const char *begin, const char *end, char *__restrict dest)
 	}
 
 	size_t offset = vec_offset * vec_bytes;
-	for (size_t i = offset; i < length; i++) {
-		char c = begin[i];
+	for (size_t i = 0; i < length - offset; i++) {
+		char c = begin[length - 1 - i];
 
-		dest[length - 1 - i] = c ^= c & 2 ? 4 : 21;
+		dest[offset + i] = c ^= c & 2 ? 4 : 21;
 	}
 
 	return dest + length;
