@@ -9,6 +9,7 @@
 
 #include <assert.h>
 
+DNA_LOCAL
 size_t
 dna4_count_mismatches_generic(
 	const char *begin, const char *end, const char *other)
@@ -31,6 +32,7 @@ dna4_count_mismatches_generic(
 	return mismatches;
 }
 
+DNA_LOCAL
 dna4_count_mismatches_fn *
 dna4_count_mismatches_select(void)
 {
@@ -60,11 +62,39 @@ dna4_count_mismatches(const char *begin, const char *end, const char *other)
 
 #else
 
+// If ifunc is unavailable (for instance on macOS or hurd) we have to implement
+// the functionality ourselves. Using a function pointer is faster than a
+// boolean variable.
+
+size_t
+dna4_count_mismatches_callonce(
+	const char *begin, const char *end, const char *other);
+
+static dna4_count_mismatches_fn *dna4_count_mismatches_fnptr =
+	dna4_count_mismatches_callonce;
+
+DNA_LOCAL
+size_t
+dna4_count_mismatches_callonce(
+	const char *begin, const char *end, const char *other)
+{
+	dna4_count_mismatches_fnptr = dna4_count_mismatches_select();
+	return dna4_count_mismatches_fnptr(begin, end, other);
+}
+
 DNA_PUBLIC
 size_t
 dna4_count_mismatches(const char *begin, const char *end, const char *other)
 {
-	return (dna4_count_mismatches_select())(begin, end, other);
+	return dna4_count_mismatches_fnptr(begin, end, other);
+}
+
+DNA_LOCAL
+DNA_CONSTRUCTOR
+void
+dna4_count_mismatches_init(void)
+{
+	dna4_count_mismatches_fnptr = dna4_count_mismatches_select();
 }
 
 #endif

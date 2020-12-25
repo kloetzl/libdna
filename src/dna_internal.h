@@ -19,6 +19,12 @@
 #define DNA_LOCAL __attribute__((visibility("hidden")))
 #endif
 
+#if __has_attribute(constructor)
+#define DNA_CONSTRUCTOR __attribute__((constructor))
+#else
+#define DNA_CONSTRUCTOR
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

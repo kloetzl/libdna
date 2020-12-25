@@ -54,11 +54,28 @@ dna4_revcomp(const char *begin, const char *end, char *dest)
 
 #else
 
+// If ifunc is unavailable (for instance on macOS or hurd) we have to implement
+// the functionality ourselves. Using a function pointer is faster than a
+// boolean variable.
+
+char *
+dna4_revcomp_callonce(const char *begin, const char *end, char *dest);
+
+static dna4_revcomp_fn *dna4_revcomp_fnptr = dna4_revcomp_callonce;
+
+DNA_LOCAL
+char *
+dna4_revcomp_callonce(const char *begin, const char *end, char *dest)
+{
+	dna4_revcomp_fnptr = dna4_revcomp_select();
+	return dna4_revcomp_fnptr(begin, end, dest);
+}
+
 DNA_PUBLIC
 char *
 dna4_revcomp(const char *begin, const char *end, char *dest)
 {
-	return (dna4_revcomp_select())(begin, end, dest);
+	return dna4_revcomp_fnptr(begin, end, dest);
 }
 
 #endif
