@@ -8,6 +8,22 @@ project('libdna', 'c', 'cpp',
 ###################################################
 # libdna
 
+cc = meson.get_compiler('c')
+aversion = meson.project_version().split('.')
+major = aversion[0].to_int()
+minor = aversion[1].to_int()
+
+configure_file(
+    input: 'src/config.h.in',
+    output: 'config.h',
+    configuration: {
+        'CAN_IFUNC': cc.has_function_attribute('ifunc').to_int(),
+        'CAN_CONSTRUCTOR': cc.has_function_attribute('constructor').to_int(),
+        'MINOR': minor,
+        'MAJOR': major
+    }
+)
+
 incdir = include_directories('include', 'bench', 'test', 'src')
 
 sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']

@@ -53,7 +53,7 @@ dna4_count_mismatches_select(void)
 	}
 }
 
-#if __has_attribute(ifunc)
+#if CAN_IFUNC && __has_attribute(ifunc)
 
 DNA_PUBLIC
 size_t

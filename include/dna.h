@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2019 © Fabian Klötzl
+ * Copyright 2019-2020 © Fabian Klötzl
  */
 
 #include <inttypes.h>
@@ -11,10 +11,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define DNA_VERSION_MINOR 0
-#define DNA_VERSION_MAJOR 0
-#define DNA_VERSION ((DNA_VERSION_MAJOR << 16) | DNA_VERSION_MINOR)
 
 extern int
 dna_version(void);

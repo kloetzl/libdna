@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2018-2019 (C) Fabian Klötzl
+ * Copyright 2018-2020 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -45,7 +45,7 @@ dna4_revcomp_select(void)
 	}
 }
 
-#if __has_attribute(ifunc)
+#if CAN_IFUNC && __has_attribute(ifunc)
 
 DNA_PUBLIC
 char *

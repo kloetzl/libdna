@@ -2,8 +2,10 @@
 
 /**
  * SPDX-License-Identifier: GPL-3.0-or-later
- * Copyright 2019 © Fabian Klötzl
+ * Copyright 2019-2020 © Fabian Klötzl
  */
+
+#include "config.h"
 
 #ifdef NDEBUG
 #undef EXPOSE_INTERNALS
@@ -19,7 +21,7 @@
 #define DNA_LOCAL __attribute__((visibility("hidden")))
 #endif
 
-#if __has_attribute(constructor)
+#if CAN_CONSTRUCTOR && __has_attribute(constructor)
 #define DNA_CONSTRUCTOR __attribute__((constructor))
 #else
 #define DNA_CONSTRUCTOR
