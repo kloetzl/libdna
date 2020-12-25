@@ -7,7 +7,8 @@ void
 gen(char *str, size_t length)
 {
 	static const char *ACGT = "ACGT";
-	auto base_rand = std::default_random_engine{seed};
+	auto base_rand = std::default_random_engine{
+		static_cast<std::default_random_engine::result_type>(seed)};
 	auto base_dist = std::uniform_int_distribution<int>{0, 3};
 	auto base_acgt = [&] { return ACGT[base_dist(base_rand)]; };
 
@@ -26,7 +27,8 @@ mutate(char *str, size_t length)
 	static const auto NO_G = "ACT";
 	static const auto NO_T = "ACG";
 
-	auto mut_rand = std::default_random_engine{seed};
+	auto mut_rand = std::default_random_engine{
+		static_cast<std::default_random_engine::result_type>(seed)};
 	auto mut_dist = std::uniform_int_distribution<int>{0, 2};
 	auto mut_acgt = [&](char c) {
 		auto r = mut_dist(mut_rand);
