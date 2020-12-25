@@ -69,8 +69,10 @@ revcomp_table4(const char *forward, const char *end, char *reverse)
 
 	reverse[len] = '\0';
 
+	const unsigned char *uforward =
+		reinterpret_cast<const unsigned char *>(forward);
 	for (size_t k = 0; k < len; k++) {
-		reverse[len - k - 1] = table[forward[k]];
+		reverse[len - k - 1] = table[uforward[k]];
 	}
 
 	return reverse;

@@ -27,13 +27,13 @@ TEST_CASE("Basic revcomp checks")
 	memset(buffer, 0, forward.size() + 1);
 
 	auto end_ptr = dna4_revcomp(dna::begin(forward), dna::end(forward), buffer);
-	REQUIRE(end_ptr - buffer == forward.size());
+	REQUIRE(static_cast<size_t>(end_ptr - buffer) == forward.size());
 	REQUIRE(forward == buffer);
 
 	end_ptr = dnax_revcomp(
 		dnax_revcomp_table, dna::begin(forward), dna::end(forward), buffer);
 
-	REQUIRE(end_ptr - buffer == forward.size());
+	REQUIRE(static_cast<size_t>(end_ptr - buffer) == forward.size());
 	REQUIRE(forward == buffer);
 
 	delete[] buffer;
