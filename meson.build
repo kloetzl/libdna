@@ -81,8 +81,18 @@ install_man([
     'man/iupac.7'
 ])
 
+# simplify using this as a subproject for other meson users
 libdna_dep = declare_dependency(include_directories : 'include',
     link_with : libdna)
+
+# create pkgconf file for users of this lib
+pkg = import('pkgconfig')
+pkg.generate(
+    libraries : libdna,
+    subdirs : 'kloetzl',
+    name : 'libdna',
+    description : 'Essential Functions for DNA Manipulation'
+)
 
 ###################################################
 # Tests
