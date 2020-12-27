@@ -15,13 +15,13 @@ all: RTversion RTrevcomp RTcxxversion
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $^
 
 RTversion: RTversion.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS)
 
 RTcxxversion: RTcxxversion.o
-	$(CXX) $(CFLAGS) -o $@ $^
+	$(CXX) -o $@ $^ $(CFLAGS)
 
 RTrevcomp: RTrevcomp.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS)
 
 clean:
 	$(RM) *.o

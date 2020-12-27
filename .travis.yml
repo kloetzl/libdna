@@ -8,12 +8,14 @@ compiler: gcc
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get -y install meson ninja-build catch2
+  - sudo apt-get -y install meson ninja-build
 
 script:
 - cd $TRAVIS_BUILD_DIR
 - meson --prefix=/tmp builddir -Dwith-tests=true
-- meson -C builddir compile
-- meson -C builddir test
-- meson -C builddir install
-- PREFIX=/tmp make -C rttest check
+- cd builddir
+- ninja
+- meson test
+- meson install
+- cd $TRAVIS_BUILD_DIR
+- PREFIX=/tmp PKG_CONFIG_PATH=/tmp/lib/x86_64-linux-gnu/pkgconfig LD_LIBRARY_PATH=/tmp/lib/x86_64-linux-gnu make -C rttest check
