@@ -112,47 +112,52 @@ pkg.generate(
 
 ###################################################
 # Tests
+# meson setup builddir_wtests -Dwith-tests=true
 
-catch2_dep = dependency('catch2', fallback: ['catch2', 'catch2_dep'])
+if get_option('with-tests')
 
-testlib = static_library('Tmain', 'test/Tmain.cxx',
-    include_directories: incdir,
-    cpp_args : ['-O2'],
-    install: false,
-    dependencies: catch2_dep
-)
+    catch2_dep = dependency('catch2', fallback: ['catch2', 'catch2_dep'])
 
-nativetests = ['Tdna4_pack_2bits', 'Tdna4_revcomp']
-foreach Tname : nativetests
-    Texe = executable(Tname,
-        'test/' + Tname + '.cxx',
-        link_with: [testlib, libdna],
-        install: false,
-        build_by_default: false,
+    testlib = static_library('Tmain', 'test/Tmain.cxx',
         include_directories: incdir,
-        cpp_args: ['-march=native'],
+        cpp_args : ['-O2'],
+        install: false,
         dependencies: catch2_dep
     )
-    test(Tname, Texe)
-endforeach
 
-plaintests = [
-    'Tdnax_pack_4bits',
-    'Tdnax_revcomp',
-    'Tsimple',
-    'Ttranslate'
-]
-foreach Tname : plaintests
-    Texe = executable(Tname,
-        'test/' + Tname + '.cxx',
-        link_with: [testlib, libdna],
-        install: false,
-        build_by_default: false,
-        include_directories: incdir,
-        dependencies: catch2_dep
-    )
-    test(Tname, Texe)
-endforeach
+    nativetests = ['Tdna4_pack_2bits', 'Tdna4_revcomp']
+    foreach Tname : nativetests
+        Texe = executable(Tname,
+            'test/' + Tname + '.cxx',
+            link_with: [testlib, libdna],
+            install: false,
+            build_by_default: false,
+            include_directories: incdir,
+            cpp_args: ['-march=native'],
+            dependencies: catch2_dep
+        )
+        test(Tname, Texe)
+    endforeach
+
+    plaintests = [
+        'Tdnax_pack_4bits',
+        'Tdnax_revcomp',
+        'Tsimple',
+        'Ttranslate'
+    ]
+    foreach Tname : plaintests
+        Texe = executable(Tname,
+            'test/' + Tname + '.cxx',
+            link_with: [testlib, libdna],
+            install: false,
+            build_by_default: false,
+            include_directories: incdir,
+            dependencies: catch2_dep
+        )
+        test(Tname, Texe)
+    endforeach
+
+endif
 
 ###################################################
 # Benchmarks
