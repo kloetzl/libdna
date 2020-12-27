@@ -1,5 +1,6 @@
-PKG_CONFIG_PATH?=/usr/local/lib/pkgconfig
-LD_LIBRARY_PATH?=/usr/local/lib
+PREFIX?=/usr/local
+PKG_CONFIG_PATH?=$(PREFIX)/lib/pkgconfig
+LD_LIBRARY_PATH?=$(PREFIX)/lib
 LIBDNA_CFLAGS?=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --libs --cflags libdna)
 CFLAGS+=$(LIBDNA_CFLAGS)
 CXXFLAGS+=$(LIBDNA_CFLAGS) -std=c++17

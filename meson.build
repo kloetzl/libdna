@@ -105,7 +105,7 @@ libdna_dep = declare_dependency(include_directories : 'include',
 pkg = import('pkgconfig')
 pkg.generate(
     libraries : libdna,
-    subdirs : 'kloetzl',
+    subdirs : ['.', 'kloetzl'],
     name : 'libdna',
     description : 'Essential Functions for DNA Manipulation'
 )

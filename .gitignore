@@ -3,15 +3,9 @@
 *.a
 *.so
 *.so.*
-
-# benchmarks
-compare
-compare_rev
-count
-mismatch
-pack
-replace
-revcomp
+RT*
+B*
+T*
 
 # meson files
 subprojects/Catch2-*
