@@ -15,4 +15,4 @@ subprojects/benchmark-*
 # perf
 perf.data*
 
-builddir
+builddir*
