@@ -276,14 +276,17 @@ revcomp_then_count_mismatches(
 }
 
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
-BENCHMARK_CAPTURE(bench, xoreq, xoreq);
+
 #ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, xoreq_avx2, xoreq_avx2);
 #endif
+
 #ifdef __SSE4_2__
+BENCHMARK_CAPTURE(bench, xoreq, xoreq);
 BENCHMARK_CAPTURE(bench, xorshuffle, xorshuffle);
 BENCHMARK_CAPTURE(bench, shuffle, shuffle);
 #endif
+
 BENCHMARK_CAPTURE(bench, base_rev, base_rev);
 BENCHMARK_CAPTURE(
 	bench, revcomp_then_count_mismatches, revcomp_then_count_mismatches);

@@ -507,8 +507,11 @@ BENCHMARK(k80_twiddle2);
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
 // BENCHMARK_CAPTURE(bench, dna4_evodist_jc_generic, dna4_evodist_jc_generic);
 BENCHMARK_CAPTURE(bench, base, base);
+
+#ifdef __SSE2__
 BENCHMARK_CAPTURE(bench, intrinsics_sse2, intrinsics_sse2);
 BENCHMARK_CAPTURE(bench, intrinsics_sse2_two, intrinsics_sse2_two);
+#endif
 
 #ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, intrinsics_avx2, intrinsics_avx2);

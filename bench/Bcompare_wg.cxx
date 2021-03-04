@@ -93,6 +93,7 @@ base(const char *begin, const char *end, const char *other, size_t *gaps)
 	return substitutions;
 }
 
+#ifdef __SSE2__
 size_t
 intrinsics_sse(
 	const char *begin, const char *end, const char *other, size_t *gaps)
@@ -200,6 +201,7 @@ intrinsics_sse_crazy(
 	if (gapptr) *gapptr = length - local_total;
 	return substitutions;
 }
+#endif
 
 #ifdef __AVX2__
 

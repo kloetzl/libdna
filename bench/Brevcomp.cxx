@@ -182,7 +182,8 @@ shuffle_avx2(const char *begin, const char *end, char *__restrict dest)
 }
 #endif
 
-static __attribute__((target_clones("avx2", "sse2", "default"))) char *
+// __attribute__((target_clones("avx2", "sse2", "default")))
+static char *
 twiddle(const char *begin, const char *end, char *__restrict dest)
 {
 	assert(begin != NULL);

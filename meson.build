@@ -26,26 +26,31 @@ configure_file(
 
 incdir = include_directories('include', 'bench', 'test', 'src')
 
-sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
-sse42lib = static_library('sse42lib', sse42files,
-    include_directories: incdir,
-    pic: true,
-    c_args : ['-O3', '-mpopcnt', '-msse4.2', '-fvisibility=hidden']
-)
+isaspecificlibs = []
+if host_machine.cpu_family() == 'x86_64'
+    sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
+    sse42lib = static_library('sse42lib', sse42files,
+        include_directories: incdir,
+        pic: true,
+        c_args : ['-O3', '-mpopcnt', '-msse4.2', '-fvisibility=hidden']
+    )
 
-avx2files = ['src/dna4_count_mismatches_avx2.c', 'src/dna4_revcomp_avx2.c']
-avx2lib = static_library('avx2lib', avx2files,
-    include_directories: incdir,
-    pic: true,
-    c_args : ['-O3', '-mpopcnt', '-mavx2', '-fvisibility=hidden']
-)
+    avx2files = ['src/dna4_count_mismatches_avx2.c', 'src/dna4_revcomp_avx2.c']
+    avx2lib = static_library('avx2lib', avx2files,
+        include_directories: incdir,
+        pic: true,
+        c_args : ['-O3', '-mpopcnt', '-mavx2', '-fvisibility=hidden']
+    )
 
-avx512files = ['src/dna4_count_mismatches_avx512.c']
-avx512lib = static_library('avx512lib', avx512files,
-    include_directories: incdir,
-    pic: true,
-    c_args : ['-O3', '-mpopcnt', '-mavx512bw', '-mavx512vl', '-fvisibility=hidden']
-)
+    avx512files = ['src/dna4_count_mismatches_avx512.c']
+    avx512lib = static_library('avx512lib', avx512files,
+        include_directories: incdir,
+        pic: true,
+        c_args : ['-O3', '-mpopcnt', '-mavx512bw', '-mavx512vl', '-fvisibility=hidden']
+    )
+
+    isaspecificlibs = [sse42lib, avx2lib, avx512lib]
+endif
 
 genericfiles = [
     'src/dna4_count_mismatches.c',
@@ -71,7 +76,7 @@ genericfiles = [
 libdna = library('dna', ['include/dna.h', genericfiles],
     include_directories : incdir,
     soversion: '0',
-    link_with: [sse42lib, avx2lib, avx512lib],
+    link_with: isaspecificlibs,
     pic: true,
     c_args : ['-O2', '-fvisibility=hidden'],
     install: true

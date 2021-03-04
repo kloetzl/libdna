@@ -31,6 +31,7 @@ DNA_LOCAL
 dna4_revcomp_fn *
 dna4_revcomp_select(void)
 {
+#ifdef __x86_64
 	// As ifunc resolvers are called before any constructors run, we explicitly
 	// have to initialize the cpu model detector.
 	// https://gcc.gnu.org/onlinedocs/gcc/x86-Built-in-Functions.html
@@ -43,6 +44,9 @@ dna4_revcomp_select(void)
 	} else {
 		return dna4_revcomp_generic;
 	}
+#else
+	return dna4_revcomp_generic;
+#endif
 }
 
 #if CAN_IFUNC && __has_attribute(ifunc)
