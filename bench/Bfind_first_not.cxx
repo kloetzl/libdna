@@ -3,10 +3,13 @@
 #include <cstdlib>
 #include <cstring>
 #include <dna.h>
+#include <random>
+
+#ifdef __SSE2__
 #include <emmintrin.h>
 #include <immintrin.h>
-#include <random>
 #include <smmintrin.h>
+#endif
 
 static const size_t LENGTH = 1000000;
 
@@ -45,6 +48,7 @@ table_based(const char *begin, const char *end)
 	return dnax_find_first_not_of(dnax_to_dna4_table, begin, end);
 }
 
+#ifdef __SSE4_2__
 /*
 
 A: 0100 0001
@@ -141,8 +145,10 @@ shuffle_fast(const char *begin, const char *end)
 	return table_based(begin + capped_length, end);
 }
 
-BENCHMARK_CAPTURE(bench, table_based, table_based);
 BENCHMARK_CAPTURE(bench, shuffle_complex, shuffle_complex);
 BENCHMARK_CAPTURE(bench, shuffle_fast, shuffle_fast);
+#endif
+
+BENCHMARK_CAPTURE(bench, table_based, table_based);
 
 BENCHMARK_MAIN();

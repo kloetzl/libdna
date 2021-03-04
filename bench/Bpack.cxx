@@ -3,10 +3,13 @@
 #include <cstdlib>
 #include <cstring>
 #include <dna.h>
+#include <random>
+
+#ifdef __SSE2__
 #include <emmintrin.h>
 #include <immintrin.h>
-#include <random>
 #include <tmmintrin.h>
+#endif
 
 static const size_t LENGTH = 100000;
 static const size_t K = 20;
@@ -157,6 +160,8 @@ printshort(const char *addr, size_t nbytes)
 	fprintf(stderr, "%s\n", buf);
 }
 
+#ifdef __SSE2__
+
 static size_t
 pack_simd_unordered(const char *kmer, size_t K)
 {
@@ -295,6 +300,8 @@ pack_simd_avx2(const char *kmer, size_t K)
 	return return_value;
 }
 
+#endif
+
 static size_t
 pack_table(const char *kmer, size_t K)
 {
@@ -316,9 +323,6 @@ pack_table(const char *kmer, size_t K)
 }
 
 BENCHMARK_CAPTURE(bench_template, dna4_pack, dna4_pack);
-BENCHMARK_CAPTURE(bench_template, pack_simd_avx2, pack_simd_avx2);
-BENCHMARK_CAPTURE(bench_template, pack_simd_unordered, pack_simd_unordered);
-BENCHMARK_CAPTURE(bench_template, pack_simd_unordered2, pack_simd_unordered2);
 BENCHMARK_CAPTURE(bench_template, pack_simple, pack_simple);
 BENCHMARK_CAPTURE(bench_template, pack_table, pack_table);
 BENCHMARK_CAPTURE(bench_template, pack_twiddle, pack_twiddle);
@@ -327,6 +331,12 @@ BENCHMARK_CAPTURE(
 	bench_template,
 	pack_twiddle_length_unordered,
 	pack_twiddle_length_unordered);
+
+#ifdef __SSE2__
+BENCHMARK_CAPTURE(bench_template, pack_simd_avx2, pack_simd_avx2);
+BENCHMARK_CAPTURE(bench_template, pack_simd_unordered, pack_simd_unordered);
+BENCHMARK_CAPTURE(bench_template, pack_simd_unordered2, pack_simd_unordered2);
+#endif
 
 static void
 libdnax_pack(benchmark::State &state)

@@ -3,12 +3,16 @@
 #include <cstdlib>
 #include <cstring>
 #include <dna.h>
+#include <random>
+
+#ifdef __SSE2__
 #include <emmintrin.h>
 #include <immintrin.h>
-#include <random>
 #include <smmintrin.h>
+#endif
 
 static const size_t LENGTH = 1000003;
+static const size_t MISALIGN_REV = 1;
 
 size_t seed = 1729;
 size_t invrate;
@@ -21,11 +25,11 @@ void
 bench(benchmark::State &state, Pack_fn fn)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
-	char *reverse = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1 + MISALIGN_REV);
 	gen(forward, LENGTH);
 
 	for (auto _ : state) {
-		fn(forward, forward + LENGTH, reverse);
+		fn(forward, forward + LENGTH, reverse + MISALIGN_REV);
 		benchmark::DoNotOptimize(reverse);
 	}
 
@@ -246,6 +250,165 @@ twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
 
 	return dest + length;
 }
+
+void
+twiddle_16_sse42(const char *from, char *__restrict to)
+{
+	typedef __m128i vec_type;
+
+	size_t vec_bytes = sizeof(vec_type);
+
+	const vec_type all0 = _mm_set1_epi8(0);
+	const vec_type all2 = _mm_set1_epi8(2);
+	const vec_type all4 = _mm_set1_epi8(4);
+	const vec_type all21 = _mm_set1_epi8(21);
+	const vec_type revmask =
+		_mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+	vec_type chunk;
+	memcpy(&chunk, from, vec_bytes);
+
+	const vec_type reversed = _mm_shuffle_epi8(chunk, revmask);
+	const vec_type check = _mm_and_si128(reversed, all2);
+	const vec_type is_zero = _mm_cmpeq_epi8(check, all0);
+	const vec_type blended_mask = _mm_blendv_epi8(all4, all21, is_zero);
+	const vec_type xored = _mm_xor_si128(blended_mask, reversed);
+
+	memcpy(to, &xored, vec_bytes);
+}
+
+void
+shuffle_16_sse42(const char *from, char *__restrict to)
+{
+	typedef __m128i vec_type;
+
+	size_t vec_bytes = sizeof(vec_type);
+
+	const vec_type revmask =
+		_mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+	const vec_type nibblecode = _mm_setr_epi8(
+		'0', 'T', '2', 'G', 'A', '5', '6', 'C', '8', '9', 'a', 'b', 'c', 'd',
+		'e', 'f');
+
+	vec_type chunk;
+	memcpy(&chunk, from, vec_bytes);
+
+	const vec_type reversed = _mm_shuffle_epi8(chunk, revmask);
+	const vec_type mapped = _mm_shuffle_epi8(nibblecode, reversed);
+
+	memcpy(to, &mapped, vec_bytes);
+}
+
+char *
+twiddle_double_sse42(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef __m128i vec_type;
+
+	size_t stride = 3;
+	size_t vec_bytes = sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+	vec_length -= vec_length % stride;
+	assert(length >= vec_bytes);
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset += stride) {
+
+		const char *from = end - (vec_offset + 1) * vec_bytes;
+		char *to = dest + vec_offset * vec_bytes;
+
+		twiddle_16_sse42(from, to);
+		twiddle_16_sse42(from - vec_bytes, to + vec_bytes);
+		twiddle_16_sse42(from - vec_bytes * 2, to + vec_bytes * 2);
+		// twiddle_16_sse42(from - vec_bytes * 3, to + vec_bytes * 3);
+	}
+
+	// problematic for size < vec_bytes!
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i += vec_bytes) {
+		twiddle_16_sse42(begin + i, dest + length - vec_bytes - i);
+	}
+
+	return dest + length;
+}
+
+char *
+shuffle_double_sse42(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef __m128i vec_type;
+
+	size_t stride = 2;
+	size_t vec_bytes = sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+	vec_length -= vec_length % stride;
+	assert(length >= vec_bytes);
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset += stride) {
+
+		const char *from = end - (vec_offset + 1) * vec_bytes;
+		char *to = dest + vec_offset * vec_bytes;
+
+		shuffle_16_sse42(from, to);
+		shuffle_16_sse42(from - vec_bytes, to + vec_bytes);
+		// shuffle_16_sse42(from - vec_bytes * 2, to + vec_bytes * 2);
+		// shuffle_16_sse42(from - vec_bytes * 3, to + vec_bytes * 3);
+	}
+
+	// problematic for size < vec_bytes!
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i += vec_bytes) {
+		shuffle_16_sse42(begin + i, dest + length - vec_bytes - i);
+	}
+
+	return dest + length;
+}
+
+char *
+mixed_double_sse42(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef __m128i vec_type;
+
+	size_t stride = 4;
+	size_t vec_bytes = sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+	vec_length -= vec_length % stride;
+	assert(length >= vec_bytes);
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset += stride) {
+
+		const char *from = end - (vec_offset + 1) * vec_bytes;
+		char *to = dest + vec_offset * vec_bytes;
+
+		shuffle_16_sse42(from, to);
+		twiddle_16_sse42(from - vec_bytes, to + vec_bytes);
+		shuffle_16_sse42(from - vec_bytes * 2, to + vec_bytes * 2);
+		twiddle_16_sse42(from - vec_bytes * 3, to + vec_bytes * 3);
+	}
+
+	// problematic for size < vec_bytes!
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i += vec_bytes) {
+		shuffle_16_sse42(begin + i, dest + length - vec_bytes - i);
+	}
+
+	return dest + length;
+}
 #endif
 
 #ifdef __AVX2__
@@ -436,11 +599,13 @@ static void
 dnax_revcomp(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
-	char *reverse = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1 + MISALIGN_REV);
 	gen(forward, LENGTH);
 
 	while (state.KeepRunning()) {
-		dnax_revcomp(dnax_revcomp_table, forward, forward + LENGTH, reverse);
+		dnax_revcomp(
+			dnax_revcomp_table, forward, forward + LENGTH,
+			reverse + MISALIGN_REV);
 		benchmark::DoNotOptimize(reverse);
 	}
 
@@ -453,11 +618,13 @@ static void
 dnax_replace(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
-	char *reverse = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1 + MISALIGN_REV);
 	gen(forward, LENGTH);
 
 	while (state.KeepRunning()) {
-		dnax_replace(dnax_revcomp_table, forward, forward + LENGTH, reverse);
+		dnax_replace(
+			dnax_revcomp_table, forward, forward + LENGTH,
+			reverse + MISALIGN_REV);
 		benchmark::DoNotOptimize(reverse);
 	}
 
@@ -491,12 +658,12 @@ static void
 bwa_bench(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
-	char *reverse = (char *)malloc(LENGTH + 1);
+	char *reverse = (char *)malloc(LENGTH + 1 + MISALIGN_REV);
 	gen(forward, LENGTH);
 	bwa_encode(forward, forward + LENGTH);
 
 	for (auto _ : state) {
-		bwa_revcomp(forward, forward + LENGTH, reverse);
+		bwa_revcomp(forward, forward + LENGTH, reverse + MISALIGN_REV);
 		benchmark::DoNotOptimize(reverse);
 	}
 
@@ -512,6 +679,9 @@ BENCHMARK_CAPTURE(bench, twiddle, twiddle);
 BENCHMARK_CAPTURE(bench, subtract, subtract);
 #ifdef __SSE4_2__
 BENCHMARK_CAPTURE(bench, twiddle_sse42, twiddle_sse42);
+BENCHMARK_CAPTURE(bench, twiddle_double_sse42, twiddle_double_sse42);
+BENCHMARK_CAPTURE(bench, shuffle_double_sse42, shuffle_double_sse42);
+BENCHMARK_CAPTURE(bench, mixed_double_sse42, mixed_double_sse42);
 BENCHMARK_CAPTURE(bench, shuffle, shuffle);
 #endif
 #ifdef __AVX2__

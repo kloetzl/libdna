@@ -3,10 +3,13 @@
 #include <cstdlib>
 #include <cstring>
 #include <dna.h>
+#include <iostream>
+
+#ifdef __SSE2__
 #include <emmintrin.h>
 #include <immintrin.h>
-#include <iostream>
 #include <nmmintrin.h>
+#endif
 
 static const size_t LENGTH = 1000000;
 

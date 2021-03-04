@@ -5,10 +5,13 @@
 #include <cstdlib>
 #include <cstring>
 #include <dna.h>
+#include <random>
+
+#ifdef __SSE2__
 #include <emmintrin.h>
 #include <immintrin.h>
-#include <random>
 #include <smmintrin.h>
+#endif
 
 static const size_t LENGTH = 1000000;
 
@@ -46,6 +49,7 @@ table_based(const char *begin, const char *end, char *dest)
 	return dnax_replace(dnax_to_dna4_table, begin, end, dest);
 }
 
+#ifdef __SSE4_2__
 /*
 
 A: 0100 0001
@@ -186,8 +190,10 @@ smalltable(const char *begin, const char *end, char *dest)
 	return table_based(begin + capped_length, end, dest + pos);
 }
 
-BENCHMARK_CAPTURE(bench, table_based, table_based);
 BENCHMARK_CAPTURE(bench, despace, despace);
 BENCHMARK_CAPTURE(bench, smalltable, smalltable);
+#endif
+
+BENCHMARK_CAPTURE(bench, table_based, table_based);
 
 BENCHMARK_MAIN();

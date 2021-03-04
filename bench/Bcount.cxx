@@ -3,10 +3,13 @@
 #include <cstdlib>
 #include <cstring>
 #include <dna.h>
+#include <iostream>
+
+#ifdef __SSE2__
 #include <emmintrin.h>
 #include <immintrin.h>
-#include <iostream>
 #include <nmmintrin.h>
+#endif
 
 static const size_t LENGTH = 1000000;
 
@@ -50,6 +53,7 @@ BENCHMARK(libdna4_gc_content);
 
 #define UNLIKELY(X) __builtin_expect((X), 0)
 
+#ifdef __AVX2__
 double
 popcnt(const char *begin, const char *end)
 {
@@ -98,5 +102,6 @@ popcnt(benchmark::State &state)
 	free(forward);
 }
 BENCHMARK(popcnt);
+#endif
 
 BENCHMARK_MAIN();
