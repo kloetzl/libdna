@@ -201,6 +201,164 @@ twiddle(const char *begin, const char *end, char *__restrict dest)
 	return dest + length;
 }
 
+#ifdef __ARM_NEON
+
+#include <arm_neon.h>
+
+void
+twiddle_16_neon(const char *from, char *__restrict to)
+{
+	typedef uint8x16_t vec_type;
+
+	size_t vec_bytes = sizeof(vec_type);
+
+	const vec_type all0 = vdupq_n_u8(0);
+	const vec_type all2 = vdupq_n_u8(2);
+	const vec_type all4 = vdupq_n_u8(4);
+	const vec_type all21 = vdupq_n_u8(21);
+	const static unsigned char revdata[16] = {0, 1, 2,  3,  4,  5,  6,  7,
+											  8, 9, 10, 11, 12, 13, 14, 15};
+	const vec_type revmask = vld1q_u8(revdata);
+
+	vec_type chunk;
+	memcpy(&chunk, from, vec_bytes);
+
+	const vec_type reversed = vqtbl1q_u8(chunk, revmask);
+	const vec_type check = vandq_u8(reversed, all2);
+	const vec_type is_zero = vceqq_u8(check, all0);
+	const vec_type blended_mask = vbslq_u8(all4, all21, is_zero);
+	const vec_type xored = veorq_u8(blended_mask, reversed);
+
+	memcpy(to, &xored, vec_bytes);
+}
+
+char *
+twiddle_neon(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef uint8x16_t vec_type;
+
+	size_t stride = 1;
+	size_t vec_bytes = 16; // sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+	vec_length -= vec_length % stride;
+	assert(length >= vec_bytes);
+
+	const vec_type all0 = vdupq_n_u8(0);
+	const vec_type all2 = vdupq_n_u8(2);
+	const vec_type all4 = vdupq_n_u8(4);
+	const vec_type all21 = vdupq_n_u8(21);
+	const static unsigned char revdata[16] = {0, 1, 2,  3,  4,  5,  6,  7,
+											  8, 9, 10, 11, 12, 13, 14, 15};
+	const vec_type revmask = vld1q_u8(revdata);
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset += stride) {
+
+		const char *from = end - (vec_offset + 1) * vec_bytes;
+		char *to = dest + vec_offset * vec_bytes;
+
+		vec_type chunk;
+		memcpy(&chunk, from, vec_bytes);
+
+		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
+		const vec_type check = vandq_u8(reversed, all2);
+		const vec_type is_zero = vceqq_u8(check, all0);
+		const vec_type blended_mask = vbslq_u8(all4, all21, is_zero);
+		const vec_type xored = veorq_u8(blended_mask, reversed);
+
+		memcpy(to, &xored, vec_bytes);
+		// twiddle_16_neon(from - vec_bytes, to + vec_bytes);
+	}
+
+	// problematic for size < vec_bytes!
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i += vec_bytes) {
+		twiddle_16_neon(begin + i, dest + length - vec_bytes - i);
+	}
+
+	return dest + length;
+}
+
+inline void
+shuffle_16_neon(const char *from, char *__restrict to)
+{
+	typedef uint8x16_t vec_type;
+
+	size_t vec_bytes = sizeof(vec_type);
+
+	const unsigned char revdata[16] = {0, 1, 2,  3,  4,  5,  6,  7,
+									   8, 9, 10, 11, 12, 13, 14, 15};
+	const vec_type revmask = vld1q_u8(revdata);
+	const static unsigned char nibbledata[16] = {'0', 'T', '2', 'G', 'A', '5',
+												 '6', 'C', '8', '9', 'a', 'b',
+												 'c', 'd', 'e', 'f'};
+	const vec_type nibblecode = vld1q_u8(nibbledata);
+
+	vec_type chunk;
+	memcpy(&chunk, from, vec_bytes);
+
+	const vec_type reversed = vqtbl1q_u8(chunk, revmask);
+	// TODO: clear higher bits?
+	const vec_type xored = vqtbl1q_u8(nibblecode, reversed);
+
+	memcpy(to, &xored, vec_bytes);
+}
+
+char *
+shuffle_neon(const char *begin, const char *end, char *__restrict dest)
+{
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+	typedef uint8x16_t vec_type;
+
+	size_t stride = 1;
+	size_t vec_bytes = 16; // sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+	vec_length -= vec_length % stride;
+	assert(length >= vec_bytes);
+
+	const unsigned char revdata[16] = {0, 1, 2,  3,  4,  5,  6,  7,
+									   8, 9, 10, 11, 12, 13, 14, 15};
+	const vec_type revmask = vld1q_u8(revdata);
+	const static unsigned char nibbledata[16] = {'0', 'T', '2', 'G', 'A', '5',
+												 '6', 'C', '8', '9', 'a', 'b',
+												 'c', 'd', 'e', 'f'};
+	const vec_type nibblecode = vld1q_u8(nibbledata);
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset += stride) {
+
+		const char *from = end - (vec_offset + 1) * vec_bytes;
+		char *to = dest + vec_offset * vec_bytes;
+
+		//      shuffle_16_neon(from - vec_bytes, to + vec_bytes);
+		vec_type chunk;
+		memcpy(&chunk, from, vec_bytes);
+
+		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
+		// TODO: clear higher bits?
+		const vec_type xored = vqtbl1q_u8(nibblecode, reversed);
+
+		memcpy(to, &xored, vec_bytes);
+	}
+
+	// problematic for size < vec_bytes!
+	for (size_t i = 0; i < length - vec_offset * vec_bytes; i += vec_bytes) {
+		twiddle_16_neon(begin + i, dest + length - vec_bytes - i);
+	}
+
+	return dest + length;
+}
+#endif
+
 #ifdef __SSE4_2__
 char *
 twiddle_sse42(const char *begin, const char *end, char *__restrict dest)
@@ -688,6 +846,10 @@ BENCHMARK_CAPTURE(bench, shuffle, shuffle);
 #ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, twiddle_avx2, twiddle_avx2);
 BENCHMARK_CAPTURE(bench, shuffle_avx2, shuffle_avx2);
+#endif
+#ifdef __ARM_NEON
+BENCHMARK_CAPTURE(bench, twiddle_neon, twiddle_neon);
+BENCHMARK_CAPTURE(bench, shuffle_neon, shuffle_neon);
 #endif
 
 BENCHMARK_MAIN();
