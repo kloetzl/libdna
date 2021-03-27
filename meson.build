@@ -26,8 +26,31 @@ configure_file(
 
 incdir = include_directories('include', 'bench', 'test', 'src')
 
+genericfiles = [
+    'src/dna4_count_mismatches.c',
+    # 'src/dna4_count_mismatches_revcomp.c',
+    'src/dna4_pack_2bits.c',
+    'src/dna4_revcomp.c',
+    'src/dna4_unpack_2bits.c',
+    'src/dna_internal.h',
+    'src/dna_version.c',
+    'src/dnax_count.c',
+    'src/dnax_extract_dna4.c',
+    'src/dnax_find_first_mismatch.c',
+    'src/dnax_find_first_not_of.c',
+    'src/dnax_find_first_of.c',
+    'src/dnax_pack_4bits.c',
+    'src/dnax_replace.c',
+    'src/dnax_revcomp.c',
+    'src/dnax_translate.c',
+    'src/dnax_unpack_4bits.c',
+    'src/utils.h'
+]
+
 isaspecificlibs = []
 if host_machine.cpu_family() == 'x86_64'
+    genericfiles += ['src/dna4_revcomp_x86.c']
+
     sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
     sse42lib = static_library('sse42lib', sse42files,
         include_directories: incdir,
@@ -51,27 +74,6 @@ if host_machine.cpu_family() == 'x86_64'
 
     isaspecificlibs = [sse42lib, avx2lib, avx512lib]
 endif
-
-genericfiles = [
-    'src/dna4_count_mismatches.c',
-    # 'src/dna4_count_mismatches_revcomp.c',
-    'src/dna4_pack_2bits.c',
-    'src/dna4_revcomp.c',
-    'src/dna4_unpack_2bits.c',
-    'src/dna_internal.h',
-    'src/dna_version.c',
-    'src/dnax_count.c',
-    'src/dnax_extract_dna4.c',
-    'src/dnax_find_first_mismatch.c',
-    'src/dnax_find_first_not_of.c',
-    'src/dnax_find_first_of.c',
-    'src/dnax_pack_4bits.c',
-    'src/dnax_replace.c',
-    'src/dnax_revcomp.c',
-    'src/dnax_translate.c',
-    'src/dnax_unpack_4bits.c',
-    'src/utils.h'
-]
 
 libdna = library('dna', ['include/dna.h', genericfiles],
     include_directories : incdir,
