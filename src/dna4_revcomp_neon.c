@@ -37,7 +37,7 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 	const vec_type all4 = vdupq_n_u8(4);
 	const vec_type all21 = vdupq_n_u8(21);
 	static const unsigned char revdata[16] = //
-		{15, 14, 13, 12, 10, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+		{15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 	const vec_type revmask = vld1q_u8(revdata);
 
 	size_t vec_offset = 0;
