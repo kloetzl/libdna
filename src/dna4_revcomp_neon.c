@@ -36,8 +36,8 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 	const vec_type all2 = vdupq_n_u8(2);
 	const vec_type all4 = vdupq_n_u8(4);
 	const vec_type all21 = vdupq_n_u8(21);
-	static const unsigned char revdata[16] = {0, 1, 2,  3,  4,  5,  6,  7,
-											  8, 9, 10, 11, 12, 13, 14, 15};
+	static const unsigned char revdata[16] = //
+		{15, 14, 13, 12, 10, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 	const vec_type revmask = vld1q_u8(revdata);
 
 	size_t vec_offset = 0;
@@ -52,7 +52,7 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
 		const vec_type check = vandq_u8(reversed, all2);
 		const vec_type is_zero = vceqq_u8(check, all0);
-		const vec_type blended_mask = vbslq_u8(all4, all21, is_zero);
+		const vec_type blended_mask = vbslq_u8(is_zero, all21, all4);
 		const vec_type xored = veorq_u8(blended_mask, reversed);
 
 		memcpy(to, &xored, vec_bytes);
@@ -70,7 +70,7 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
 		const vec_type check = vandq_u8(reversed, all2);
 		const vec_type is_zero = vceqq_u8(check, all0);
-		const vec_type blended_mask = vbslq_u8(all4, all21, is_zero);
+		const vec_type blended_mask = vbslq_u8(is_zero, all21, all4);
 		const vec_type xored = veorq_u8(blended_mask, reversed);
 
 		memcpy(to, &xored, vec_bytes);
