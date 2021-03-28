@@ -75,10 +75,21 @@ if host_machine.cpu_family() == 'x86_64'
     isaspecificlibs = [sse42lib, avx2lib, avx512lib]
 endif
 
+if host_machine.cpu_family() == 'aarch64'
+    neonfiles = ['src/dna4_revcomp_neon.c']
+    neonlib = static_library('neonlib', neonfiles,
+        include_directories: incdir,
+        pic: true,
+        c_args : ['-O3', '-fvisibility=hidden']
+    )
+
+    isaspecificlibs = [neonlib]
+endif
+
 libdna = library('dna', ['include/dna.h', genericfiles],
     include_directories : incdir,
     soversion: '0',
-    link_with: isaspecificlibs,
+    link_whole: isaspecificlibs,
     pic: true,
     c_args : ['-O2', '-fvisibility=hidden'],
     install: true
