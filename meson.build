@@ -158,6 +158,7 @@ if get_option('with-tests')
     endforeach
 
     plaintests = [
+        'Tcompare',
         'Tdnax_pack_4bits',
         'Tdnax_revcomp',
         'Tsimple',
