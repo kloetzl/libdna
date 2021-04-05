@@ -1,5 +1,6 @@
 #include <benchmark/benchmark.h>
 #include <cstdlib>
+#include <cstring>
 #include <dna>
 #include <random>
 #include <seqan3/alphabet/nucleotide/dna4.hpp>
