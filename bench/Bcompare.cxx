@@ -17,6 +17,8 @@ static const size_t LENGTH = 1000000;
 size_t seed = 1729;
 size_t invrate = 100;
 
+#define UNLIKELY(X) __builtin_expect((X), 0)
+
 extern void
 gen(char *str, size_t length);
 

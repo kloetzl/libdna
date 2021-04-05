@@ -56,8 +56,7 @@ TEST_CASE("Long strings")
 	size_t mismatches = dna4::count_mismatches(longsubject, longquery);
 	REQUIRE(mismatches == (1 * multiplier));
 
-	mismatches = dna4_count_mismatches(dna::begin(longsubject), dna::end(longsubject), dna::begin(longquery));
+	mismatches = dna4_count_mismatches(
+		dna::begin(longsubject), dna::end(longsubject), dna::begin(longquery));
 	REQUIRE(mismatches == (1 * multiplier));
 }
-
-
