@@ -92,6 +92,48 @@ base(const char *begin, const char *end, const char *other)
 	return substitutions;
 }
 
+#ifdef __ARM_NEON
+
+#include <arm_neon.h>
+
+size_t
+neon(const char *begin, const char *end, const char *other)
+{
+	size_t substitutions = 0;
+	size_t length = end - begin;
+	size_t offset = 0;
+
+	typedef uint8x16_t vec_type;
+	size_t vec_size = sizeof(vec_type);
+	size_t vec_length = length / vec_size;
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset++) {
+		vec_type b;
+		memcpy(&b, begin + vec_offset * vec_size, vec_size);
+		vec_type o;
+		memcpy(&o, other + vec_offset * vec_size, vec_size);
+
+		const vec_type eq = vceqq_u8(b, o);
+		const vec_type all1 = vdupq_n_u8(1);
+		const vec_type check = vandq_u8(eq, all1);
+		char popcount = vaddvq_u8(check);
+
+		substitutions += vec_size - popcount;
+	}
+
+	offset = vec_offset * vec_size;
+	for (; offset < length; offset++) {
+		if (UNLIKELY(begin[offset] != other[offset])) {
+			substitutions++;
+		}
+	}
+
+	return substitutions;
+}
+
+#endif
+
 #ifdef __SSE2__
 
 double

@@ -49,7 +49,7 @@ genericfiles = [
 
 isaspecificlibs = []
 if host_machine.cpu_family() == 'x86_64'
-    genericfiles += ['src/dna4_revcomp_x86.c']
+    genericfiles += ['src/dna4_revcomp_x86.c', 'src/dna4_count_mismatches_x86.c']
 
     sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
     sse42lib = static_library('sse42lib', sse42files,
@@ -76,7 +76,7 @@ if host_machine.cpu_family() == 'x86_64'
 endif
 
 if host_machine.cpu_family() == 'aarch64'
-    neonfiles = ['src/dna4_revcomp_neon.c']
+    neonfiles = ['src/dna4_revcomp_neon.c', 'src/dna4_count_mismatches_neon.c']
     neonlib = static_library('neonlib', neonfiles,
         include_directories: incdir,
         pic: true,
