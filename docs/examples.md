@@ -39,7 +39,7 @@ process_canonical_kmers(
 
 # Compute GC content
 
-This code shows how to compute the GC content of a sequence. Note that is counts Cs, Gs, and Ss that is either G or C. Also lower case letters are allowed.
+This code shows how to compute the GC content of a sequence. Note that it counts Cs, Gs, and Ss that is either G or C. Also lower case letters are allowed.
 
 ```C++
 #include <kloetzl/dna>
