@@ -49,9 +49,9 @@ genericfiles = [
 
 isaspecificlibs = []
 if host_machine.cpu_family() == 'x86_64'
-    genericfiles += ['src/dna4_revcomp_x86.c', 'src/dna4_count_mismatches_x86.c']
+    genericfiles += ['src/dna4_count_mismatches_x86.c', 'src/dna4_revcomp_x86.c', 'src/dnax_extract_dna4_x86.c']
 
-    sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c']
+    sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c', 'src/dnax_extract_dna4_sse42.c']
     sse42lib = static_library('sse42lib', sse42files,
         include_directories: incdir,
         pic: true,
@@ -162,7 +162,8 @@ if get_option('with-tests')
         'Tdnax_pack_4bits',
         'Tdnax_revcomp',
         'Tsimple',
-        'Ttranslate'
+        'Ttranslate',
+        'Tdnax_extract_dna4'
     ]
     foreach Tname : plaintests
         Texe = executable(Tname,
@@ -197,7 +198,6 @@ if get_option('with-benchmarks')
         'Bcompare',
         'Bcompare_wg',
         'Bcompare_rev',
-        'Bfind_first_not',
         'Bmismatch',
         'Brevcomp',
         'Bstrconstr'

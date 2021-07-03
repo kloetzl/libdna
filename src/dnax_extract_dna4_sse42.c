@@ -1,128 +1,22 @@
-#include "despace_tables.h"
-
-#include <algorithm>
-#include <benchmark/benchmark.h>
-#include <cstdlib>
-#include <cstring>
-#include <dna.h>
-#include <random>
-
-#ifdef __SSE2__
-#include <emmintrin.h>
-#include <immintrin.h>
-#include <smmintrin.h>
-#endif
-
-static const size_t LENGTH = 1000000;
-
-size_t seed = 1729;
-size_t invrate;
-size_t mutrate = 101;
-
-extern void
-gen(char *str, size_t length);
-
-template <class Pack_fn>
-void
-bench(benchmark::State &state, Pack_fn fn)
-{
-	char *forward = (char *)malloc(LENGTH + 1);
-	gen(forward, LENGTH);
-	char *dest = (char *)malloc(LENGTH + 1);
-
-	for (size_t i = 0; i < LENGTH; i += mutrate) {
-		forward[i] = '_';
-	}
-
-	for (auto _ : state) {
-		auto marker = fn(forward, forward + LENGTH, dest);
-		benchmark::DoNotOptimize(marker);
-	}
-
-	free(forward);
-	free(dest);
-}
-
-static char *
-table_based(const char *begin, const char *end, char *dest)
-{
-	return dnax_replace(dnax_to_dna4_table, begin, end, dest);
-}
-
-char *
-xto4(const char *begin, const char *end, char *dest)
-{
-	assert(begin != NULL);
-	assert(end != NULL);
-	assert(dest != NULL);
-	assert(begin <= end);
-	// dest == begin is allowed
-
-	for (; begin < end; begin++) {
-		char c = *begin & 0xdf;
-		// char c = toupper(*begin);
-		if (c == 'A' || c == 'C' || c == 'G' || c == 'T') {
-			*dest++ = c;
-		}
-	}
-
-	return dest;
-}
-
-#ifdef __SSE4_2__
-/*
-
-A: 0100 0001
-C: 0100 0011
-G: 0100 0111
-T: 0101 0100
-U: 0101 0101
-
+/**
+ * SPDX-License-Identifier: MIT
+ * Copyright 2021 (C) Fabian Klötzl
  */
-static char *
-despace(const char *begin, const char *end, char *dest)
-{
-	typedef __m128i vec_type;
-	size_t vec_size = sizeof(vec_type);
-	size_t capped_length = (end - begin) & ~(vec_size - 1);
-	size_t pos = 0;
 
-	vec_type allT = _mm_set1_epi8('T');
-	vec_type mask_low_nibble = _mm_setr_epi8(
-		1, 'A', 0, 'C', 'T', /*U*/ 'U', 0, 'G', 0, 0, 0, 0, 0, 0, 0, 0);
-	for (size_t i = 0; i < capped_length; i += vec_size) {
-		vec_type chunk;
-		memcpy(&chunk, begin + i, vec_size);
+#include "dna.h"
+#include "dna_internal.h"
+#include "utils.h"
 
-		// fprintf(stderr, "%16.16s\n", &chunk);
+#include <assert.h>
+#include <emmintrin.h>
+#include <nmmintrin.h>
+#include <stdio.h>
+#include <string.h>
+#include <tmmintrin.h>
 
-		vec_type v1 = _mm_shuffle_epi8(mask_low_nibble, chunk);
-		chunk = _mm_and_si128(chunk, _mm_set1_epi8(0x5f)); // uppercase
-		vec_type v4 = _mm_cmpeq_epi8(v1, chunk);
-
-		// fprintf(stderr, "%16.16s\n", &chunk);
-		// fprintf(stderr, "%16.16s\n", &v4);
-
-		chunk = _mm_min_epu8(allT, chunk); // U → T
-
-		uint64_t mask16 = (~_mm_movemask_epi8(v4)) & 0xffff;
-		vec_type x = _mm_shuffle_epi8(
-			chunk, *((__m128i *)despace_mask16 + (mask16 & 0x7fff)));
-
-		// fprintf(stderr, "%16.16s\n", &x);
-
-		memcpy(dest + pos, &x, 16);
-		pos += 16 - _mm_popcnt_u64(mask16);
-
-		// fprintf(stderr, "\n");
-	}
-
-	// finalize
-	return table_based(begin + capped_length, end, dest + pos);
-}
-
-static char *
-smalltable(const char *begin, const char *end, char *dest)
+DNA_LOCAL
+char *
+dnax_extract_dna4_sse42(const char *begin, const char *end, char *dest)
 {
 	typedef __m128i vec_type;
 	size_t vec_size = sizeof(vec_type);
@@ -184,10 +78,10 @@ smalltable(const char *begin, const char *end, char *dest)
 		memcpy(&chunk, begin + i, vec_size);
 
 		vec_type v1 = _mm_shuffle_epi8(mask_low_nibble, chunk);
-		chunk = _mm_and_si128(chunk, _mm_set1_epi8(~32 /*0x5f*/)); // uppercase
+		chunk = _mm_and_si128(
+			chunk, _mm_set1_epi8((unsigned char)(0xdf))); // uppercase
 
 		vec_type v4 = _mm_cmpeq_epi8(v1, chunk);
-
 		chunk = _mm_min_epu8(allT, chunk); // U → T
 		vec_type chunk_hi = _mm_unpackhi_epi64(chunk, chunk);
 
@@ -207,15 +101,5 @@ smalltable(const char *begin, const char *end, char *dest)
 	}
 
 	// finalize
-	return table_based(begin + capped_length, end, dest + pos);
+	return dnax_extract_dna4_generic(begin + capped_length, end, dest + pos);
 }
-
-BENCHMARK_CAPTURE(bench, despace, despace);
-BENCHMARK_CAPTURE(bench, smalltable, smalltable);
-#endif
-
-BENCHMARK_CAPTURE(bench, dnax_extract_dna4, dnax_extract_dna4);
-BENCHMARK_CAPTURE(bench, table_based, table_based);
-BENCHMARK_CAPTURE(bench, xto4, xto4);
-
-BENCHMARK_MAIN();

@@ -7,19 +7,6 @@
 #include <string.h>
 #include <string>
 
-auto
-repeat(std::string in, int count)
-{
-	auto ret = std::string{};
-	ret.reserve(in.size() * count);
-
-	for (int i = 0; i < count; i++) {
-		ret += in;
-	}
-
-	return ret;
-}
-
 TEST_CASE("Basic revcomp checks")
 {
 	const char str[] = "ACGTACGTACGT";

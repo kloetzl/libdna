@@ -11,7 +11,7 @@ dnax_extract_dna4 \- convert to dna4
 .fi
 
 .SH DESCRIPTION
-The \fBdnax_extract_dna4\fR() converts lower case characters to upper case and only keeps ACGT. The input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The result is stored at \fIdest\fR.
+The \fBdnax_extract_dna4\fR() converts lower case characters to upper case and only keeps ACGT. It also converts U and u to T. The input string is delimited by \fIbegin\fR and \fIend\fR (exclusive). The result is stored at \fIdest\fR.
 
 .SH RETURN VALUE
 The return value points one byte past the last character written. You may want to write a null byte there.

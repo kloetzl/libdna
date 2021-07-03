@@ -63,6 +63,16 @@ dna4_revcomp_sse42(const char *begin, const char *end, char *dest);
 char *
 dna4_revcomp_avx2(const char *begin, const char *end, char *dest);
 
+// CPU specific extract
+typedef char *(
+	dnax_extract_dna4_fn)(const char *begin, const char *end, char *dest);
+
+char *
+dnax_extract_dna4_generic(const char *begin, const char *end, char *dest);
+
+char *
+dnax_extract_dna4_sse42(const char *begin, const char *end, char *dest);
+
 #ifdef __cplusplus
 }
 #endif

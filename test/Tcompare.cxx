@@ -9,19 +9,6 @@
 
 using namespace std::string_literals;
 
-auto
-repeat(std::string in, int count)
-{
-	auto ret = std::string{};
-	ret.reserve(in.size() * count);
-
-	for (int i = 0; i < count; i++) {
-		ret += in;
-	}
-
-	return ret;
-}
-
 TEST_CASE("Some simple checks")
 {
 	const auto subject = "AACGTACGT"s;
