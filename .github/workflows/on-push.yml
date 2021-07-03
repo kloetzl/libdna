@@ -1,0 +1,56 @@
+name: Build and Test
+on: [push]
+jobs:
+  Plain-Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+      - name: Install meson
+        run: |
+          sudo apt install meson
+      - name: Build
+        run: |
+          meson setup builddir
+      - name: Compile
+        working-directory: builddir
+        run: |
+          ninja
+  With-Unit-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+      - name: Install meson
+        run: |
+          sudo apt install meson
+      - name: Build
+        run: |
+          meson builddir -Dwith-tests=true
+      - name: Compile
+        working-directory: builddir
+        run: |
+          ninja
+      - name: Run tests
+        working-directory: builddir
+        run: |
+          ninja test
+  Test-Install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+      - name: Install meson
+        run: |
+          sudo apt install meson
+      - name: Build
+        run: |
+          meson --prefix=$RUNNER_TEMP builddir
+      - name: Compile and install
+        working-directory: builddir
+        run: |
+          ninja
+          PREFIX=$RUNNER_TEMP ninja install
+      - name: Run post-install tests
+        run: |
+          PREFIX=$RUNNER_TEMP PKG_CONFIG_PATH=$RUNNER_TEMP/lib/x86_64-linux-gnu/pkgconfig LD_LIBRARY_PATH=$RUNNER_TEMP/lib/x86_64-linux-gnu make -C rttest check
