@@ -200,7 +200,8 @@ if get_option('with-benchmarks')
         'Bcompare_rev',
         'Bmismatch',
         'Brevcomp',
-        'Bstrconstr'
+        'Bstrconstr',
+        'Btranslate'
     ]
     foreach Bname : plainbench
         Bexe = executable(Bname, 'bench/' + Bname + '.cxx',
