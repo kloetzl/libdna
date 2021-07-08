@@ -1,8 +1,58 @@
 #include "Tcommon.h"
 
 #include <catch2/catch.hpp>
+#include <cstring>
 #include <dna.h>
 #include <string>
+
+template <typename FN>
+std::string
+make_small_table(FN translate)
+{
+	auto table = std::string();
+
+	char triplet[4] = {0};
+	auto tcag = std::string("TCAG");
+
+	for (char n0 : tcag) {
+		for (char n2 : tcag) {
+			for (char n1 : tcag) {
+				triplet[0] = n0;
+				triplet[1] = n1;
+				triplet[2] = n2;
+
+				char aa;
+				translate(triplet, triplet + 3, &aa);
+				table += aa;
+			}
+			table += '\n';
+		}
+	}
+
+	return table;
+}
+
+static std::string ref_small_table = {
+	"FSYC\n" //
+	"FSYC\n" //
+	"LS**\n" //
+	"LS*W\n" //
+	//
+	"LPHR\n" //
+	"LPHR\n" //
+	"LPQR\n" //
+	"LPQR\n" //
+	//
+	"ITNS\n" //
+	"ITNS\n" //
+	"ITKR\n" //
+	"MTKR\n" //
+	//
+	"VADG\n" //
+	"VADG\n" //
+	"VAEG\n" //
+	"VAEG\n" //
+};
 
 TEST_CASE("Some simple checks")
 {
@@ -13,6 +63,9 @@ TEST_CASE("Some simple checks")
 	*ptr = 0;
 
 	REQUIRE(std::string(aa) == "KNKNTTTT");
+
+	INFO("No triplet")
+	REQUIRE(dnax::translate("A---A") == "");
 
 	delete[] aa;
 }
@@ -55,6 +108,14 @@ TEST_CASE("Compact table")
 		auto amino_acid_end = dnax_translate(
 			dna::begin(std::get<2>(code)), dna::end(std::get<2>(code)), buffer);
 		auto amino_acid = std::string(buffer, amino_acid_end - buffer);
+
+		INFO(std::get<2>(code));
 		REQUIRE(amino_acid == std::get<1>(code));
 	}
+}
+
+TEST_CASE("Small table")
+{
+	std::string small_table = make_small_table(dnax_translate);
+	REQUIRE(ref_small_table == small_table);
 }
