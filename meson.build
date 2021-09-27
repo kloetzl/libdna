@@ -1,5 +1,5 @@
 project('libdna', 'c', 'cpp',
-    version : '1.0',
+    version : '1.1',
     license : 'MIT',
     default_options : ['warning_level=3', 'c_std=gnu11', 'cpp_std=c++17',
         'b_ndebug=if-release', 'buildtype=release']

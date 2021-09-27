@@ -52,5 +52,5 @@ Don't forget to link with `-ldna`.
 
 # License
 
-Copyright © 2018 - 2020 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
+Copyright © 2018 - 2021 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
 MIT License

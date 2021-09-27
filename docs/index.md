@@ -19,5 +19,5 @@ Libdna requires the Meson buildsystem but no other dependencies.
 
 # License
 
-Copyright © 2018 - 2020 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
+Copyright © 2018 - 2021 Fabian Klötzl <kloetzl@evolbio.mpg.de>  
 MIT License

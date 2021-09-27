@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2019-2020 © Fabian Klötzl
+ * Copyright 2019-2021 © Fabian Klötzl
  */
 
 #include <inttypes.h>
