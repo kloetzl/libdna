@@ -9,7 +9,9 @@ nav:
 - C API: 'capi.md'
 - C++ API: 'cxxapi.md'
 - Why libdna is better than X: 'betterthanx.md'
-- Examples: 'examples.md'
+- Examples:
+  - snippets: 'snippets.md'
+  - FASTA parsing: 'fasta.md'
 - Functions:
   - dna4_count_mismatches: 'dna4_count_mismatches.3.md'
   - dna4_pack_2bits: 'dna4_pack_2bits.3.md'

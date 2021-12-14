@@ -47,7 +47,7 @@ This code shows how to compute the GC content of a sequence. Note that it counts
 double
 gc_content(const std::string &str)
 {
-	auto counts = dna::count(str);
+	auto counts = dnax::count(str);
 	auto gc = counts['G'] + counts['C'] + counts['S'] + counts['g'] +
 			  counts['c'] + counts['s'];
 	return (double)gc / str.size();

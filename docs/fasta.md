@@ -1,3 +1,10 @@
+# FASTA Parsing
+
+Parsing a FASTA file can be done using the standard C library. The following shows the basic code with some rudimentary error handling. It also demonstrate the interaction between standard functions and `libdna`.
+
+First we include a bunch of headers and set up the basic data structure.
+
+```C
 #include <assert.h>
 #include <dna.h>
 #include <err.h>
@@ -15,7 +22,11 @@ struct sequence {
 struct parser {
 	FILE *file;
 };
+```
 
+Even though not strictly necessary in this case it makes sense to wrap the `FILE` in a distinct struct. For instance, we could use it to keep track of the line number to enable better error diagnostics, later. For not let us just initialize the parser given a file path. Also any valid and non-empty FASTA has to start with a `>`.
+
+```C
 int
 parser_init(const char *file_name, struct parser *parser)
 {
@@ -30,7 +41,11 @@ parser_init(const char *file_name, struct parser *parser)
 
 	return 0;
 }
+```
 
+We can now parse the sequence from the FASTA file. To this end we leverage the `getdelim` function. It reads from the input until it finds the delimiter. So we can use `\n` to read the entire header. (I leave it to the reader to strip the name from the comment.) In a second call to `getdelim` we use `>` to read up to the next sequence, if one exists.
+
+```C
 int
 parse_seq(struct parser *parser, struct sequence *seq)
 {
@@ -59,7 +74,11 @@ parse_seq(struct parser *parser, struct sequence *seq)
 
 	return 0;
 }
+```
 
+We need some housekeeping functions to simplify our calling code.
+
+```C
 int
 parse_hasmoredata(const struct parser *parser)
 {
@@ -80,7 +99,11 @@ parser_close(struct parser *parser)
 {
 	fclose(parser->file);
 }
+```
 
+For now let's just compute the GC content of a sequence.
+
+```C
 double
 gc_content(const char *begin, const char *end)
 {
@@ -91,7 +114,11 @@ gc_content(const char *begin, const char *end)
 				counts['c'] + counts['s'];
 	return (double)gc / length;
 }
+```
 
+The resulting program shall iterate over all its arguments. Each argument is a FASTA file. For each file print all the record names followed by their GC content. Afterwards, resources are freed again.
+
+```C
 int
 main(int argc, const char **argv)
 {
@@ -118,3 +145,4 @@ main(int argc, const char **argv)
 		parser_close(&parser);
 	}
 }
+```
