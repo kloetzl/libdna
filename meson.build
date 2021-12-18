@@ -42,6 +42,7 @@ genericfiles = [
     'src/dnax_pack_4bits.c',
     'src/dnax_replace.c',
     'src/dnax_revcomp.c',
+    'src/dnax_tables.c',
     'src/dnax_translate.c',
     'src/dnax_unpack_4bits.c',
     'src/utils.h'
