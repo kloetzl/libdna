@@ -28,7 +28,7 @@ incdir = include_directories('include', 'bench', 'test', 'src')
 
 genericfiles = [
     'src/dna4_count_mismatches.c',
-    # 'src/dna4_count_mismatches_revcomp.c',
+    'src/dna4_count_mismatches_rev.c',
     'src/dna4_pack_2bits.c',
     'src/dna4_revcomp.c',
     'src/dna4_unpack_2bits.c',
@@ -49,16 +49,30 @@ genericfiles = [
 
 isaspecificlibs = []
 if host_machine.cpu_family() == 'x86_64'
-    genericfiles += ['src/dna4_count_mismatches_x86.c', 'src/dna4_revcomp_x86.c', 'src/dnax_extract_dna4_x86.c']
+    genericfiles += [
+        'src/dna4_count_mismatches_x86.c',
+        'src/dna4_count_mismatches_rev_x86.c',
+        'src/dna4_revcomp_x86.c',
+        'src/dnax_extract_dna4_x86.c'
+    ]
 
-    sse42files = ['src/dna4_count_mismatches_sse42.c', 'src/dna4_revcomp_sse42.c', 'src/dnax_extract_dna4_sse42.c']
+    sse42files = [
+        'src/dna4_count_mismatches_sse42.c',
+        'src/dna4_count_mismatches_rev_sse42.c',
+        'src/dna4_revcomp_sse42.c',
+        'src/dnax_extract_dna4_sse42.c'
+    ]
     sse42lib = static_library('sse42lib', sse42files,
         include_directories: incdir,
         pic: true,
         c_args : ['-O3', '-mpopcnt', '-msse4.2', '-fvisibility=hidden']
     )
 
-    avx2files = ['src/dna4_count_mismatches_avx2.c', 'src/dna4_revcomp_avx2.c']
+    avx2files = [
+        'src/dna4_count_mismatches_avx2.c',
+        'src/dna4_count_mismatches_rev_avx2.c',
+        'src/dna4_revcomp_avx2.c'
+    ]
     avx2lib = static_library('avx2lib', avx2files,
         include_directories: incdir,
         pic: true,
