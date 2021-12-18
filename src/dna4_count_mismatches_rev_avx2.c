@@ -59,7 +59,7 @@ dna4_count_mismatches_rev_avx2(
 
 	for (; offset < length; offset++) {
 		int val = begin[offset] ^ other[length - 1 - offset];
-		if ((val ^ 6) != 4) {
+		if ((val & 6) != 4) {
 			substitutions++;
 		}
 	}

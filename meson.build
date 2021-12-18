@@ -173,6 +173,7 @@ if get_option('with-tests')
 
     plaintests = [
         'Tcompare',
+        'Tcount_mismatches_rev',
         'Tdnax_pack_4bits',
         'Tdnax_revcomp',
         'Tsimple',

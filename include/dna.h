@@ -20,6 +20,10 @@ dna_version(void);
 extern size_t
 dna4_count_mismatches(const char *begin, const char *end, const char *other);
 
+extern size_t
+dna4_count_mismatches_rev(
+	const char *begin, const char *end, const char *other);
+
 extern char *
 dna4_revcomp(const char *begin, const char *end, char *dest);
 

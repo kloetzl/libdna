@@ -25,7 +25,7 @@ dna4_count_mismatches_rev_generic(
 
 	for (; i < length; i++) {
 		int val = begin[i] ^ other[length - i - 1];
-		if (UNLIKELY((val & 6) == 4)) {
+		if (UNLIKELY((val & 6) != 4)) {
 			mismatches++;
 		}
 	}
