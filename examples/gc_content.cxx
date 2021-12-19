@@ -1,4 +1,4 @@
-#include <kloetzl/dna>
+#include <dna>
 
 double
 gc_content(const std::string &str)
@@ -7,4 +7,10 @@ gc_content(const std::string &str)
 	auto gc = counts['G'] + counts['C'] + counts['S'] + counts['g'] +
 			  counts['c'] + counts['s'];
 	return (double)gc / str.size();
+}
+
+int main()
+{
+	double gc = gc_content("ACGT");
+	return gc == 0.5;
 }
