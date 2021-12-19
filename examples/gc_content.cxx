@@ -12,5 +12,5 @@ gc_content(const std::string &str)
 int main()
 {
 	double gc = gc_content("ACGT");
-	return gc == 0.5;
+	return gc != 0.5; // 0 means success
 }
