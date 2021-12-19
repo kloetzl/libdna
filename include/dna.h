@@ -69,7 +69,7 @@ dnax_find_first_not_of(const char *table, const char *begin, const char *end);
 
 extern const char dnax_revcomp_table[];
 extern const char dnax_to_dna4_table[];
-extern const char dnax_table[];
+extern const char dnax_iupac_codes[];
 
 #ifdef __cplusplus
 }

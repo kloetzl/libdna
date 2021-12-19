@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2020 (C) Fabian Klötzl
+ * Copyright 2018 - 2021 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -30,37 +30,6 @@ is_T(char c);
 static int
 is_Y(char c);
 
-/*
-function generate_table() {
-	var a = [];
-	a.length = 256;
-	a.fill(-1);
-
-	var b = "acgtuwsmkrybdhvnACGTUWSMKRYBDHVN";
-	for (var i = 0; i < b.length; i++) {
-		a[b.charCodeAt(i)] = 1;
-	}
-
-	return a.join();
-}
-*/
-
-static const char iupac_codes[] = {
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, 1,  1,  1,  1,  -1, -1, 1,  1,  -1, -1, 1,
-	-1, 1,  1,  -1, -1, -1, 1,  1,  1,  1,  1,  1,  -1, 1,  -1, -1, -1, -1, -1,
-	-1, -1, 1,  1,  1,  1,  -1, -1, 1,  1,  -1, -1, 1,  -1, 1,  1,  -1, -1, -1,
-	1,  1,  1,  1,  1,  1,  -1, 1,  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1};
-
 DNA_PUBLIC
 char *
 dnax_translate(const char *begin, const char *end, char *dest)
@@ -74,13 +43,13 @@ dnax_translate(const char *begin, const char *end, char *dest)
 
 	while (ptr < end) {
 		// skip gaps and non-nucleotide codes
-		const char *ccp = dnax_find_first_of(iupac_codes, ptr, end);
+		const char *ccp = dnax_find_first_of(dnax_iupac_codes, ptr, end);
 		if (ccp == end) break;
 
-		const char *ddp = dnax_find_first_of(iupac_codes, ccp + 1, end);
+		const char *ddp = dnax_find_first_of(dnax_iupac_codes, ccp + 1, end);
 		if (ddp == end) break;
 
-		const char *eep = dnax_find_first_of(iupac_codes, ddp + 1, end);
+		const char *eep = dnax_find_first_of(dnax_iupac_codes, ddp + 1, end);
 		if (eep == end) break;
 
 		int code = 'X';
