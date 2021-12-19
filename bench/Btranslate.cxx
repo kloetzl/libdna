@@ -457,10 +457,50 @@ hybrid(const char *begin, const char *end, char *dest)
 	return dest;
 }
 
+void
+table(benchmark::State &state)
+{
+	char *dna = (char *)malloc(LENGTH + 1);
+	char *aa = (char *)malloc(LENGTH + 1);
+	gen(dna, LENGTH);
+
+	static const size_t max_code = 1 << (4 * 4);
+	char table[max_code];
+
+	char triplet[4];
+	for (uint64_t code = 0; code < max_code; code++) {
+		unsigned char bcode[2];
+		memcpy(bcode, &code, 2);
+
+		dnax_unpack_4bits(bcode, bcode + 2, triplet);
+		char aa;
+		dnax_translate(triplet, triplet + 3, &aa);
+		table[code] = aa;
+	}
+
+	for (auto _ : state) {
+		for (size_t i = 0; i < LENGTH; i += 3) {
+			unsigned char bcode[2];
+			dnax_pack_4bits(dna + i, dna + i + 3, bcode);
+			uint16_t code;
+			memcpy(&code, bcode, 2);
+			aa[i / 3] = table[code];
+		}
+
+		benchmark::DoNotOptimize(aa);
+	}
+
+	benchmark::DoNotOptimize(aa);
+
+	free(aa);
+	free(dna);
+}
+
 BENCHMARK_CAPTURE(bench, libdnax_replace, libdnax_replace);
 BENCHMARK_CAPTURE(bench, dnax_translate, dnax_translate);
 BENCHMARK_CAPTURE(bench, hybrid, hybrid);
 BENCHMARK_CAPTURE(bench, mapToA, mapToA);
 BENCHMARK_CAPTURE(bench, mapToA_fast, mapToA_fast);
+BENCHMARK(table);
 
 BENCHMARK_MAIN();
