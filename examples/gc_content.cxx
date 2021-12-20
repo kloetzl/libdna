@@ -1,4 +1,4 @@
-#include <dna>
+#include <dna.hpp>
 
 double
 gc_content(const std::string &str)

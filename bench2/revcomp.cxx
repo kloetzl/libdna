@@ -1,7 +1,7 @@
 #include <benchmark/benchmark.h>
 #include <cstdlib>
 #include <cstring>
-#include <dna>
+#include <dna.hpp>
 #include <random>
 #include <seqan3/alphabet/nucleotide/dna4.hpp>
 #include <seqan3/alphabet/nucleotide/dna5.hpp>

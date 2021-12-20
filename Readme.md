@@ -34,7 +34,7 @@ int main()
 In C++ things are even simpler thanks to a thin wrapper.
 
 ```C++
-#include <kloetzl/dna>
+#include <kloetzl/dna.hpp>
 
 int main()
 {

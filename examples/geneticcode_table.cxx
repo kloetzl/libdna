@@ -1,4 +1,4 @@
-#include <dna>
+#include <dna.hpp>
 #include <iostream>
 #include <string>
 

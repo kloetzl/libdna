@@ -110,7 +110,7 @@ libdna = library('dna', ['include/dna.h', genericfiles],
     install: true
 )
 
-install_headers('include/dna.h', 'include/dna', subdir: 'kloetzl')
+install_headers('include/dna.h', 'include/dna.hpp', subdir: 'kloetzl')
 install_man([
     'man/dna4_count_mismatches.3',
     'man/dna4_pack_2bits.3',

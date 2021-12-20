@@ -1,4 +1,4 @@
-#include <kloetzl/dna>
+#include <kloetzl/dna.hpp>
 #include <stdio.h>
 
 int

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dna>
+#include <dna.hpp>
 #include <string>
 
 auto

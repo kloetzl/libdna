@@ -1,7 +1,7 @@
 # C++ API
 
 ```C
-#include <kloetzl/dna>
+#include <kloetzl/dna.hpp>
 ```
 
 The C++17 API is a thin wrapper around the C functions. While the old functions are still available, it sorts them into namespaces and provides more convenient versions. Below are the prototypes of these functions. The `dna` namespace further provides a few utility functions for handling strings.
