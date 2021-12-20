@@ -29,6 +29,7 @@ incdir = include_directories('include', 'bench', 'test', 'src')
 genericfiles = [
     'src/dna4_count_mismatches.c',
     'src/dna4_count_mismatches_rev.c',
+    'src/dna4_fill_random.c',
     'src/dna4_pack_2bits.c',
     'src/dna4_revcomp.c',
     'src/dna4_unpack_2bits.c',
