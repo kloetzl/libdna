@@ -194,14 +194,14 @@ if get_option('with-tests')
         test(Tname, Texe)
     endforeach
 
-    examples = [
-        'fasta.c',
-        'gc_content.cxx',
-        'geneticcode_table.cxx'
-    ]
-    foreach example : examples
+    examples = {
+        'fasta': 'fasta.c',
+        'gc_content': 'gc_content.cxx',
+        'geneticcode_table': 'geneticcode_table.cxx'
+    }
+    foreach example, file_name : examples
         exe = executable(example,
-            'examples/' + example,
+            'examples/' + file_name,
             link_with: [libdna],
             install: false,
             build_by_default: false,
