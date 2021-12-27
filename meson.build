@@ -231,6 +231,7 @@ if get_option('with-benchmarks')
         'Bcompare',
         'Bcompare_wg',
         'Bcompare_rev',
+        'Bfill_random',
         'Bmismatch',
         'Brevcomp',
         'Bstrconstr',
