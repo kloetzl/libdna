@@ -23,17 +23,6 @@ static const auto two_mers = std::vector<std::pair<char, char>>{
 	{'C', 'G'}, {'C', 'T'}, {'G', 'A'}, {'G', 'C'}, {'G', 'G'}, {'G', 'T'},
 	{'T', 'A'}, {'T', 'C'}, {'T', 'G'}, {'T', 'T'}};
 
-// inline void dna4_fill_random(char *begin, char *end, uint32_t seed)
-// {
-// 	char *it = begin;
-// 	for (; it < end; it++) {
-// 		*it++ = 'A';
-// 		*it++ = 'C';
-// 		*it++ = 'G';
-// 		*it = 'T';
-// 	}
-// }
-
 class chi2
 {
   public:
@@ -60,14 +49,11 @@ class chi2
 		double Y = 0.0;
 		double N = 0.0;
 		for (auto [key, count] : counts) {
-			// std::cerr << key.first << "," << key.second << ": " << count
-			// 		  << std::endl;
 			Y += count * count;
 			N += count;
 		}
 
 		double V = Y * categories.size() / N - N;
-		// std::cerr << V << " " << Y << "\n";
 
 		auto thresholds = std::vector<std::tuple<double, double, double>>{
 			{0.00016, 3.841, 6.635}, {0.02010, 5.991, 9.210},
@@ -273,14 +259,11 @@ TEST_CASE("χ2 seed 2mer")
 	for (int i = 0; i < runs; i++) {
 		auto buffer1 = std::string(N, '\0');
 		auto buffer2 = std::string(N, '\0');
-		// std::cerr << seed << " " << seed + 1 << " " << squirrel3(seed,
-		// NOISE4)
-		// 		  << " " << squirrel3(seed + 1, NOISE4) << std::endl;
+
 		dna4_fill_random(dna::begin(buffer1), dna::end(buffer1), seed++);
 		dna4_fill_random(dna::begin(buffer2), dna::end(buffer2), seed);
 
 		printf("%80.80s\n", buffer1.c_str());
-		// printf("%80.80s\n", buffer2.c_str());
 
 		auto kmers = std::vector<std::pair<char, char>>{};
 		std::transform(
