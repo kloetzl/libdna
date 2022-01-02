@@ -178,6 +178,7 @@ if get_option('with-tests')
         'Tcount_mismatches_rev',
         'Tdnax_pack_4bits',
         'Tdnax_revcomp',
+        'Tfill_random',
         'Tsimple',
         'Ttranslate',
         'Tdnax_extract_dna4'

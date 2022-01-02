@@ -31,9 +31,9 @@ squirrel3(uint32_t n, uint32_t seed)
 	n += seed;
 	n ^= n >> 8;
 	n += NOISE2;
-	n ^= n << 8;
+	n ^= n << 13;
 	n *= NOISE3;
-	n ^= n >> 8;
+	n ^= n >> 17;
 	return n;
 }
 
