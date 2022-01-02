@@ -58,7 +58,7 @@ rng(benchmark::State &state)
 {
 	char *forward = (char *)malloc(LENGTH + 1);
 
-	const char *ACGT = "ACGT";
+	const char ACGT[4] = {'A', 'C', 'G', 'T'};
 	auto base_dist = std::uniform_int_distribution<int>{0, 3};
 
 	auto fill = [&](char *begin, char *end, size_t seed) {
@@ -83,10 +83,10 @@ void
 squirrel3_generic(char *begin, char *end, size_t seed)
 {
 	size_t length = end - begin;
-	const char *ACGT = "ACGT";
+	char ACGT[4] = {'A', 'C', 'G', 'T'};
 
 	size_t i = 0;
-	for (; i < length; i += 4) {
+	for (; i < (length & ~3); i += 4) {
 		uint32_t noise = squirrel3(i, seed);
 
 		char buffer[4]; // TODO: is this the correct byte order?
@@ -112,11 +112,73 @@ squirrel3_generic(char *begin, char *end, size_t seed)
 
 #ifdef __SSE4_2__
 
-typedef __m256i vec_type;
+typedef __m128i vec_type;
 
 static inline vec_type
 chunk_squirrel3(uint32_t n, uint32_t seed)
 {
+
+	vec_type offset = _mm_setr_epi32(0, 1, 2, 3);
+	vec_type chunk_n = _mm_set1_epi32(n);
+	vec_type chunk_seed = _mm_set1_epi32(seed);
+	vec_type chunk_noise1 = _mm_set1_epi32(NOISE1);
+	vec_type chunk_noise2 = _mm_set1_epi32(NOISE2);
+	vec_type chunk_noise3 = _mm_set1_epi32(NOISE3);
+
+	vec_type chunk = _mm_add_epi32(chunk_n, offset);
+	chunk = _mm_mullo_epi32(chunk, chunk_noise1);
+	chunk = _mm_add_epi32(chunk, chunk_seed);
+	chunk = _mm_xor_si128(chunk, _mm_srli_epi32(chunk, 8));
+	chunk = _mm_add_epi32(chunk, chunk_noise2);
+	chunk = _mm_xor_si128(chunk, _mm_slli_epi32(chunk, 13));
+	chunk = _mm_mullo_epi32(chunk, chunk_noise3);
+	chunk = _mm_xor_si128(chunk, _mm_srli_epi32(chunk, 17));
+
+	return chunk;
+}
+
+static void
+squirrel3_sse42(char *begin, char *end, size_t seed)
+{
+	vec_type nibblecode = _mm_setr_epi8(
+		'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C',
+		'G', 'T');
+
+	assert(begin != NULL);
+	assert(end != NULL);
+	assert(dest != NULL);
+	assert(begin <= end);
+
+	size_t length = end - begin;
+
+	size_t vec_bytes = sizeof(vec_type);
+	size_t vec_length = length / vec_bytes;
+
+	size_t vec_offset = 0;
+	for (; vec_offset < vec_length; vec_offset++) {
+
+		char *to = begin + vec_offset * vec_bytes;
+		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type mapped = _mm_shuffle_epi8(nibblecode, chunk);
+		memcpy(to, &mapped, vec_bytes);
+	}
+
+	size_t rest = length - vec_offset * vec_bytes;
+	if (rest) {
+		char *to = begin + vec_offset * vec_bytes;
+		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type mapped = _mm_shuffle_epi8(nibblecode, chunk);
+		memcpy(to, &mapped, rest);
+	}
+}
+#endif
+
+#ifdef __AVX2__
+
+static inline __m256i
+large_chunk_squirrel3(uint32_t n, uint32_t seed)
+{
+	typedef __m256i vec_type;
 
 	vec_type offset = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
 	vec_type chunk_n = _mm256_set1_epi32(n);
@@ -130,9 +192,9 @@ chunk_squirrel3(uint32_t n, uint32_t seed)
 	chunk = _mm256_add_epi32(chunk, chunk_seed);
 	chunk = _mm256_xor_si256(chunk, _mm256_srli_epi32(chunk, 8));
 	chunk = _mm256_add_epi32(chunk, chunk_noise2);
-	chunk = _mm256_xor_si256(chunk, _mm256_slli_epi32(chunk, 8));
+	chunk = _mm256_xor_si256(chunk, _mm256_slli_epi32(chunk, 13));
 	chunk = _mm256_mullo_epi32(chunk, chunk_noise3);
-	chunk = _mm256_xor_si256(chunk, _mm256_srli_epi32(chunk, 8));
+	chunk = _mm256_xor_si256(chunk, _mm256_srli_epi32(chunk, 17));
 
 	return chunk;
 }
@@ -140,6 +202,8 @@ chunk_squirrel3(uint32_t n, uint32_t seed)
 static void
 squirrel3_avx2(char *begin, char *end, size_t seed)
 {
+	typedef __m256i vec_type;
+
 	vec_type nibblecode = _mm256_setr_epi8(
 		'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C',
 		'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T',
@@ -159,7 +223,7 @@ squirrel3_avx2(char *begin, char *end, size_t seed)
 	for (; vec_offset < vec_length; vec_offset++) {
 
 		char *to = begin + vec_offset * vec_bytes;
-		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type chunk = large_chunk_squirrel3(vec_offset * vec_bytes, seed);
 		vec_type mapped = _mm256_shuffle_epi8(nibblecode, chunk);
 		memcpy(to, &mapped, vec_bytes);
 	}
@@ -167,7 +231,7 @@ squirrel3_avx2(char *begin, char *end, size_t seed)
 	size_t rest = length - vec_offset * vec_bytes;
 	if (rest) {
 		char *to = begin + vec_offset * vec_bytes;
-		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type chunk = large_chunk_squirrel3(vec_offset * vec_bytes, seed);
 		vec_type mapped = _mm256_shuffle_epi8(nibblecode, chunk);
 		memcpy(to, &mapped, rest);
 	}
@@ -179,6 +243,10 @@ BENCHMARK_CAPTURE(bench, dna4_fill_random, dna4_fill_random);
 BENCHMARK_CAPTURE(bench, squirrel3_generic, squirrel3_generic);
 
 #ifdef __SSE4_2__
+BENCHMARK_CAPTURE(bench, squirrel3_sse42, squirrel3_sse42);
+#endif
+
+#ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, squirrel3_avx2, squirrel3_avx2);
 #endif
 
