@@ -24,6 +24,9 @@ configure_file(
     }
 )
 
+has_native = cc.has_argument('-march=native')
+native_flag = has_native ? '-march=native' : ''
+
 incdir = include_directories('include', 'bench', 'test', 'src')
 
 genericfiles = [
@@ -167,7 +170,7 @@ if get_option('with-tests')
             install: false,
             build_by_default: false,
             include_directories: incdir,
-            cpp_args: ['-march=native'],
+            cpp_args: [native_flag],
             dependencies: catch2_dep
         )
         test(Tname, Texe)
@@ -245,7 +248,7 @@ if get_option('with-benchmarks')
             build_by_default: true,
             include_directories: incdir,
             dependencies: libbenchmark,
-            cpp_args: ['-Ofast', '-march=native']
+            cpp_args: ['-Ofast', native_flag]
         )
         benchmark(Bname, Bexe)
     endforeach
@@ -256,7 +259,7 @@ if get_option('with-benchmarks')
         build_by_default: true,
         include_directories: incdir,
         dependencies: libbenchmark,
-        cpp_args: ['-Ofast', '-march=native']
+        cpp_args: ['-Ofast', native_flag]
     )
 
     benchmark('Bdnax_to_dna4', Bdnax_to_dna4)
