@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2021 (C) Fabian Klötzl
+ * Copyright 2021 - 2022 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -10,6 +10,9 @@
 #include <arm_neon.h>
 #include <assert.h>
 #include <string.h>
+
+// On Arm there is no need for dispatching. Hence we can drop the _neon suffix
+// from the function name.
 
 DNA_PUBLIC
 char *
@@ -78,3 +81,10 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 
 	return dest + length;
 }
+
+// This alias exists only for debugging purposes.
+
+DNA_LOCAL
+char *
+dna4_revcomp_neon(const char *begin, const char *end, char *__restrict dest)
+	__attribute__((alias("dna4_revcomp")));
