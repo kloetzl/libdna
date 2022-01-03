@@ -69,13 +69,36 @@ rc(const std::string &forward)
 	return reverse;
 }
 
-#ifdef EXPOSE_INTERNALS
+template <function_type fn> struct functor {
+	std::string operator()(const std::string &forward) const
+	{
+		auto reverse = std::string(forward.size(), 0);
+		auto end =
+			fn(dna::begin(forward), dna::end(forward), dna::begin(reverse));
+		reverse.erase(end - dna::begin(reverse));
+		return reverse;
+	}
+};
 
+#ifdef EXPOSE_INTERNALS
 const auto revcomp_generic = rc<dna4_revcomp_generic>;
+using revcomp_functor_generic = functor<dna4_revcomp_generic>;
+
+#ifdef __x86_64
 const auto revcomp_sse42 = rc<dna4_revcomp_sse42>;
 const auto revcomp_avx2 = rc<dna4_revcomp_avx2>;
 
+using revcomp_functor_sse42 = functor<dna4_revcomp_sse42>;
+using revcomp_functor_avx2 = functor<dna4_revcomp_avx2>;
 #endif
+
+#ifdef __ARM_NEON
+const auto revcomp_neon = rc<dna4_revcomp_neon>;
+
+using revcomp_functor_neon = functor<dna4_revcomp_neon>;
+#endif
+
+#endif // EXPOSE_INTERNALS
 
 } // namespace dna4
 
@@ -109,61 +132,39 @@ TEST_CASE("Different lengths")
 
 #ifdef EXPOSE_INTERNALS
 
-TEST_CASE("Various Generic")
-{
-	auto str = "TACGATCGATCGAAAGCTAGTTCGCCCCGAGATA"s;
-	auto rcstr = dna4::revcomp_generic(str);
-	REQUIRE(rcstr == "TATCTCGGGGCGAACTAGCTTTCGATCGATCGTA");
-	REQUIRE(dna4::revcomp_generic(rcstr) == str);
-
-	for (int k = 0; k < 100; k++) {
-		REQUIRE(dna4::revcomp_generic(repeat("A", k)) == repeat("T", k));
-		REQUIRE(dna4::revcomp_generic(repeat("C", k)) == repeat("G", k));
-		REQUIRE(dna4::revcomp_generic(repeat("G", k)) == repeat("C", k));
-		REQUIRE(dna4::revcomp_generic(repeat("T", k)) == repeat("A", k));
-		REQUIRE(dna4::revcomp_generic(repeat("ACGT", k)) == repeat("ACGT", k));
-	}
-}
-
-#ifdef __SSE4_2__
-TEST_CASE("Various SSE42")
-{
-	auto str = "TACGATCGATCGAAAGCTAGTTCGCCCCGAGATA"s;
-	auto rcstr = dna4::revcomp_sse42(str);
-	REQUIRE(rcstr == "TATCTCGGGGCGAACTAGCTTTCGATCGATCGTA");
-	REQUIRE(dna4::revcomp_sse42(rcstr) == str);
-
-	for (int k = 0; k < 100; k++) {
-		REQUIRE(dna4::revcomp_sse42(repeat("A", k)) == repeat("T", k));
-		REQUIRE(dna4::revcomp_sse42(repeat("C", k)) == repeat("G", k));
-		REQUIRE(dna4::revcomp_sse42(repeat("G", k)) == repeat("C", k));
-		REQUIRE(dna4::revcomp_sse42(repeat("T", k)) == repeat("A", k));
-		REQUIRE(dna4::revcomp_sse42(repeat("ACGT", k)) == repeat("ACGT", k));
-	}
-}
+using MyTypes = std::tuple<
+#ifdef __x86_64
+	dna4::revcomp_functor_sse42,
+	dna4::revcomp_functor_avx2,
 #endif
+#ifdef __ARM_NEON
+	dna4::revcomp_functor_neon,
+#endif
+	dna4::revcomp_functor_generic>;
 
-#ifdef __AVX2__
-TEST_CASE("Various AVX2")
+TEMPLATE_LIST_TEST_CASE(
+	"Check ISA specific implementations", "[template][list]", MyTypes)
 {
+	auto revcomp = TestType();
+
 	auto str = "TACGATCGATCGAAAGCTAGTTCGCCCCGAGATA"s;
-	auto rcstr = dna4::revcomp_avx2(str);
+	auto rcstr = revcomp(str);
 	REQUIRE(rcstr == "TATCTCGGGGCGAACTAGCTTTCGATCGATCGTA");
-	REQUIRE(dna4::revcomp_avx2(rcstr) == str);
+	REQUIRE(revcomp(rcstr) == str);
 
 	for (int k = 0; k < 100; k++) {
-		REQUIRE(dna4::revcomp_avx2(repeat("A", k)) == repeat("T", k));
-		REQUIRE(dna4::revcomp_avx2(repeat("C", k)) == repeat("G", k));
-		REQUIRE(dna4::revcomp_avx2(repeat("G", k)) == repeat("C", k));
-		REQUIRE(dna4::revcomp_avx2(repeat("T", k)) == repeat("A", k));
-		REQUIRE(dna4::revcomp_avx2(repeat("ACGT", k)) == repeat("ACGT", k));
+		REQUIRE(revcomp(repeat("A", k)) == repeat("T", k));
+		REQUIRE(revcomp(repeat("C", k)) == repeat("G", k));
+		REQUIRE(revcomp(repeat("G", k)) == repeat("C", k));
+		REQUIRE(revcomp(repeat("T", k)) == repeat("A", k));
+		REQUIRE(revcomp(repeat("ACGT", k)) == repeat("ACGT", k));
 	}
 }
-#endif
 
 TEST_CASE("Dispatch")
 {
 	// The test should be compiled and executed with -march=native.
+#ifdef __x86_64
 #ifdef __AVX2__
 	REQUIRE(&dna4_revcomp == &dna4_revcomp_avx2);
 #else
@@ -172,6 +173,15 @@ TEST_CASE("Dispatch")
 #else
 	REQUIRE(&dna4_revcomp == &dna4_revcomp_generic);
 #endif
+#endif
+#endif
+
+#ifdef __ARM_NEON
+	REQUIRE(&dna4_revcomp == &dna4_revcomp_neon);
+#endif
+
+#if !defined(__x86_64) && !defined(__ARM_NEON)
+	REQUIRE(&dna4_revcomp == &dna4_revcomp_generic);
 #endif
 }
 
