@@ -1,6 +1,6 @@
 SHELL=zsh
 
-.PHONY: clean format
+.PHONY: format
 
 exportedsymbols:
 	nm builddir/libdna.so | awk '$$2 ~ /R|T/' > $@
@@ -11,7 +11,11 @@ format:
 	clang-format -i test/*.cxx
 	clang-format -i rttest/*.c rttest/*.c
 
-clean:
-	$(MAKE) -C src clean
-	$(MAKE) -C bench clean
-	setopt null_glob; $(RM) -rf *.o dna_test *.a *.so
+builddir:
+	meson $@
+
+builddir_wtests:
+	meson $@ -Dwith-tests=true --buildtype=debugoptimized
+
+builddir_wbench:
+	meson $@ -Dwith-benchmarks=true

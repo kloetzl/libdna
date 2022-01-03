@@ -4,8 +4,7 @@
 *.so
 *.so.*
 RT*
-B*
-T*
+exportedsymbols
 
 # meson files
 subprojects/Catch2-*
