@@ -5,6 +5,7 @@
 #include <dna.h>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 
 namespace std
 {
