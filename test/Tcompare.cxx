@@ -7,28 +7,6 @@
 #include <string.h>
 #include <string>
 
-namespace dna4
-{
-using function_type = size_t(const char *, const char *, const char *);
-
-template <function_type fn>
-size_t
-cm(std::string_view s1, std::string_view s2)
-{
-	return fn(dna::begin(s1), dna::end(s1), dna::begin(s2));
-}
-
-#ifdef EXPOSE_INTERNALS
-
-const auto count_mismatches_generic = cm<dna4_count_mismatches_generic>;
-const auto count_mismatches_sse2 = cm<dna4_count_mismatches_sse2>;
-const auto count_mismatches_avx2 = cm<dna4_count_mismatches_avx2>;
-const auto count_mismatches_avx512 = cm<dna4_count_mismatches_avx512>;
-
-#endif
-
-} // namespace dna4
-
 using namespace std::string_literals;
 
 TEST_CASE("Some simple checks")
@@ -71,41 +49,51 @@ TEST_CASE("Long strings")
 }
 
 #ifdef EXPOSE_INTERNALS
+// The following tests should only be executed when host and target machine are
+// the same. Ie. not cross-compilation. Also it expects --march=native if
+// available.
 
-TEST_CASE("Various Generic")
-{
-	const auto subject = "AACGTACGT"s;
-	const auto query = "AACGTACCT"s;
+using function_type = size_t(const char *, const char *, const char *);
 
-	const auto multipliers = {1, 2, 3, 4, 10, 20, 100};
-	for (size_t multiplier : multipliers) {
-		const auto longsubject = repeat(subject, multiplier);
-		const auto longquery = repeat(query, multiplier);
-		REQUIRE(
-			dna4::count_mismatches_generic(longsubject, longquery) ==
-			multiplier);
+template <function_type fn> struct functor {
+	size_t operator()(std::string_view s1, std::string_view s2) const
+	{
+		return fn(dna::begin(s1), dna::end(s1), dna::begin(s2));
 	}
-}
+};
 
-#ifdef __SSE4_2__
-TEST_CASE("Various SSE42")
-{
-	const auto subject = "AACGTACGT"s;
-	const auto query = "AACGTACCT"s;
+using count_mismatches_functor_generic = functor<dna4_count_mismatches_generic>;
 
-	const auto multipliers = {1, 2, 3, 4, 10, 20, 100};
-	for (size_t multiplier : multipliers) {
-		const auto longsubject = repeat(subject, multiplier);
-		const auto longquery = repeat(query, multiplier);
-		REQUIRE(
-			dna4::count_mismatches_sse2(longsubject, longquery) == multiplier);
-	}
-}
+#ifdef __x86_64
+using count_mismatches_functor_sse2 = functor<dna4_count_mismatches_sse2>;
+using count_mismatches_functor_avx2 = functor<dna4_count_mismatches_avx2>;
+using count_mismatches_functor_avx512 = functor<dna4_count_mismatches_avx512>;
 #endif
 
+#ifdef __ARM_NEON
+using count_mismatches_functor_neon = functor<dna4_count_mismatches_neon>;
+#endif
+
+using MyTypes = std::tuple<
+#if defined(__AVX512BW__) && defined(__AVX5125VL)
+	count_mismatches_functor_avx512,
+#endif
 #ifdef __AVX2__
-TEST_CASE("Various AVX2")
+	count_mismatches_functor_avx2,
+#endif
+#ifdef __SSE4_2__
+	count_mismatches_functor_sse2,
+#endif
+#ifdef __ARM_NEON
+	count_mismatches_functor_neon,
+#endif
+	count_mismatches_functor_generic>;
+
+TEMPLATE_LIST_TEST_CASE(
+	"Check ISA specific implementations", "[template][list]", MyTypes)
 {
+	auto count_mismatches = TestType();
+
 	const auto subject = "AACGTACGT"s;
 	const auto query = "AACGTACCT"s;
 
@@ -113,23 +101,31 @@ TEST_CASE("Various AVX2")
 	for (size_t multiplier : multipliers) {
 		const auto longsubject = repeat(subject, multiplier);
 		const auto longquery = repeat(query, multiplier);
-		REQUIRE(
-			dna4::count_mismatches_avx2(longsubject, longquery) == multiplier);
+		REQUIRE(count_mismatches(longsubject, longquery) == multiplier);
 	}
 }
-#endif
 
 TEST_CASE("Dispatch")
 {
 	// The test should be compiled and executed with -march=native.
-#ifdef __AVX2__
+#ifdef __x86_64
+#if defined(__AVX512BW__) && defined(__AVX5125VL)
+	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx512);
+#elif defined(__AVX2__)
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx2);
-#else
-#ifdef __SSE4_2__
+#elif defined(__SSE4_2__)
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_sse2);
 #else
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_generic);
 #endif
+#endif
+
+#ifdef __ARM_NEON
+	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_neon);
+#endif
+
+#if !defined(__x86_64) && !defined(__ARM_NEON)
+	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_generic);
 #endif
 }
 
