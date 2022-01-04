@@ -35,66 +35,34 @@ extern "C" {
 typedef size_t(dna4_count_mismatches_fn)(
 	const char *begin, const char *end, const char *other);
 
-size_t
-dna4_count_mismatches_generic(
-	const char *begin, const char *end, const char *other);
-
-size_t
-dna4_count_mismatches_sse2(
-	const char *begin, const char *end, const char *other);
-
-size_t
-dna4_count_mismatches_avx2(
-	const char *begin, const char *end, const char *other);
-
-size_t
-dna4_count_mismatches_avx512(
-	const char *begin, const char *end, const char *other);
-
-size_t
-dna4_count_mismatches_neon(
-	const char *begin, const char *end, const char *other);
+dna4_count_mismatches_fn dna4_count_mismatches_generic;
+dna4_count_mismatches_fn dna4_count_mismatches_sse2;
+dna4_count_mismatches_fn dna4_count_mismatches_avx2;
+dna4_count_mismatches_fn dna4_count_mismatches_avx512;
+dna4_count_mismatches_fn dna4_count_mismatches_neon;
 
 // CPU specific rc mismatch count
 typedef size_t(dna4_count_mismatches_rev_fn)(
 	const char *begin, const char *end, const char *other);
 
-size_t
-dna4_count_mismatches_rev_generic(
-	const char *begin, const char *end, const char *other);
-
-size_t
-dna4_count_mismatches_rev_sse2(
-	const char *begin, const char *end, const char *other);
-
-size_t
-dna4_count_mismatches_rev_avx2(
-	const char *begin, const char *end, const char *other);
+dna4_count_mismatches_rev_fn dna4_count_mismatches_rev_generic;
+dna4_count_mismatches_rev_fn dna4_count_mismatches_rev_sse2;
+dna4_count_mismatches_rev_fn dna4_count_mismatches_rev_avx2;
 
 // CPU specific revcomp
 typedef char *(dna4_revcomp_fn)(const char *begin, const char *end, char *dest);
 
-char *
-dna4_revcomp_generic(const char *begin, const char *end, char *dest);
-
-char *
-dna4_revcomp_sse42(const char *begin, const char *end, char *dest);
-
-char *
-dna4_revcomp_avx2(const char *begin, const char *end, char *dest);
-
-char *
-dna4_revcomp_neon(const char *begin, const char *end, char *dest);
+dna4_revcomp_fn dna4_revcomp_generic;
+dna4_revcomp_fn dna4_revcomp_sse42;
+dna4_revcomp_fn dna4_revcomp_avx2;
+dna4_revcomp_fn dna4_revcomp_neon;
 
 // CPU specific extract
 typedef char *(
 	dnax_extract_dna4_fn)(const char *begin, const char *end, char *dest);
 
-char *
-dnax_extract_dna4_generic(const char *begin, const char *end, char *dest);
-
-char *
-dnax_extract_dna4_sse42(const char *begin, const char *end, char *dest);
+dnax_extract_dna4_fn dnax_extract_dna4_generic;
+dnax_extract_dna4_fn dnax_extract_dna4_sse42;
 
 #ifdef __cplusplus
 }
