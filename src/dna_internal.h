@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2019-2021 © Fabian Klötzl
+ * Copyright 2019 - 2022 © Fabian Klötzl
  */
 
 #include "config.h"
@@ -51,7 +51,11 @@ size_t
 dna4_count_mismatches_avx512(
 	const char *begin, const char *end, const char *other);
 
-// CPU specific mismatch count
+size_t
+dna4_count_mismatches_neon(
+	const char *begin, const char *end, const char *other);
+
+// CPU specific rc mismatch count
 typedef size_t(dna4_count_mismatches_rev_fn)(
 	const char *begin, const char *end, const char *other);
 
