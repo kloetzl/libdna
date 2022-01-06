@@ -105,28 +105,4 @@ TEMPLATE_LIST_TEST_CASE(
 	}
 }
 
-TEST_CASE("Dispatch")
-{
-	// The test should be compiled and executed with -march=native.
-#ifdef __x86_64
-#if defined(__AVX512BW__) && defined(__AVX5125VL)
-	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx512);
-#elif defined(__AVX2__)
-	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx2);
-#elif defined(__SSE4_2__)
-	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_sse2);
-#else
-	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_generic);
-#endif
-#endif
-
-#ifdef __ARM_NEON
-	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_neon);
-#endif
-
-#if !defined(__x86_64) && !defined(__ARM_NEON)
-	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_generic);
-#endif
-}
-
 #endif

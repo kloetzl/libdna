@@ -162,7 +162,7 @@ if get_option('with-tests')
         dependencies: catch2_dep
     )
 
-    nativetests = ['Tdna4_pack_2bits', 'Tdna4_revcomp', 'Tcompare']
+    nativetests = ['Tifunc']
     foreach Tname : nativetests
         Texe = executable(Tname,
             'test/' + Tname + '.cxx',
@@ -177,13 +177,16 @@ if get_option('with-tests')
     endforeach
 
     plaintests = [
+        'Tcompare',
         'Tcount_mismatches_rev',
+        'Tdna4_pack_2bits',
+        'Tdna4_revcomp',
+        'Tdnax_extract_dna4',
         'Tdnax_pack_4bits',
         'Tdnax_revcomp',
         'Tfill_random',
         'Tsimple',
-        'Ttranslate',
-        'Tdnax_extract_dna4'
+        'Ttranslate'
     ]
     foreach Tname : plaintests
         Texe = executable(Tname,

@@ -161,28 +161,4 @@ TEMPLATE_LIST_TEST_CASE(
 	}
 }
 
-TEST_CASE("Dispatch")
-{
-	// The test should be compiled and executed with -march=native.
-#ifdef __x86_64
-#ifdef __AVX2__
-	REQUIRE(&dna4_revcomp == &dna4_revcomp_avx2);
-#else
-#ifdef __SSE4_2__
-	REQUIRE(&dna4_revcomp == &dna4_revcomp_sse42);
-#else
-	REQUIRE(&dna4_revcomp == &dna4_revcomp_generic);
-#endif
-#endif
-#endif
-
-#ifdef __ARM_NEON
-	REQUIRE(&dna4_revcomp == &dna4_revcomp_neon);
-#endif
-
-#if !defined(__x86_64) && !defined(__ARM_NEON)
-	REQUIRE(&dna4_revcomp == &dna4_revcomp_generic);
-#endif
-}
-
 #endif
