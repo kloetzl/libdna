@@ -3,9 +3,9 @@
  * Copyright 2018 - 2022 (C) Fabian Klötzl
  */
 
+#include "config.h"
 #include "dna.h"
 #include "dna_internal.h"
-#include "utils.h"
 
 #include <assert.h>
 
@@ -44,7 +44,6 @@ dnax_extract_dna4_macho(void)
 	__asm__(".symbol_resolver _dnax_extract_dna4");
 	return (void *)dnax_extract_dna4_select();
 }
-
 
 #else
 

@@ -3,9 +3,9 @@
  * Copyright 2021 - 2022 (C) Fabian Klötzl
  */
 
+#include "config.h"
 #include "dna.h"
 #include "dna_internal.h"
-#include "utils.h"
 
 #include <assert.h>
 
