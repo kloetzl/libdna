@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2021 (C) Fabian Klötzl
+ * Copyright 2018 - 2022 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -31,6 +31,20 @@ DNA_PUBLIC
 char *
 dnax_extract_dna4(const char *begin, const char *end, char *dest)
 	__attribute__((ifunc("dnax_extract_dna4_select")));
+
+#elif defined(__APPLE__)
+
+void *
+dnax_extract_dna4_macho(void) __asm__("_dnax_extract_dna4");
+
+DNA_LOCAL
+void *
+dnax_extract_dna4_macho(void)
+{
+	__asm__(".symbol_resolver _dnax_extract_dna4");
+	return (void *)dnax_extract_dna4_select();
+}
+
 
 #else
 

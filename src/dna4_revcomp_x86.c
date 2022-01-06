@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018-2020 (C) Fabian Klötzl
+ * Copyright 2018 - 2022 (C) Fabian Klötzl
  */
 
 #include "config.h"
@@ -33,6 +33,19 @@ DNA_PUBLIC
 char *
 dna4_revcomp(const char *begin, const char *end, char *dest)
 	__attribute__((ifunc("dna4_revcomp_select")));
+
+#elif defined(__APPLE__)
+
+void *
+dna4_revcomp_macho(void) __asm__("_dna4_revcomp");
+
+DNA_LOCAL
+void *
+dna4_revcomp_macho(void)
+{
+	__asm__(".symbol_resolver _dna4_revcomp");
+	return (void *)dna4_revcomp_select();
+}
 
 #else
 

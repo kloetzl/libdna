@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2021 (C) Fabian Klötzl
+ * Copyright 2021 - 2022 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -33,6 +33,19 @@ DNA_PUBLIC
 size_t
 dna4_count_mismatches_rev(const char *begin, const char *end, const char *other)
 	__attribute__((ifunc("dna4_count_mismatches_rev_select")));
+
+#elif defined(__APPLE__)
+
+void *
+dna4_count_mismatches_rev_macho(void) __asm__("_dna4_count_mismatches_rev");
+
+DNA_LOCAL
+void *
+dna4_count_mismatches_rev_macho(void)
+{
+	__asm__(".symbol_resolver _dna4_count_mismatches_rev");
+	return (void *)dna4_count_mismatches_rev_select();
+}
 
 #else
 
