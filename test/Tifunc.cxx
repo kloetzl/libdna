@@ -23,7 +23,8 @@ TEST_CASE("dna4_count_mismatches")
 #endif
 
 #ifdef __ARM_NEON
-	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_neon);
+	// there is no separate *_neon function
+	REQUIRE(&dna4_count_mismatches != &dna4_count_mismatches_generic);
 #endif
 
 #if !defined(__x86_64) && !defined(__ARM_NEON)
@@ -46,7 +47,8 @@ TEST_CASE("dna4_revcomp")
 #endif
 
 #ifdef __ARM_NEON
-	REQUIRE(&dna4_revcomp == &dna4_revcomp_neon);
+	// there is no separate *_neon function
+	REQUIRE(&dna4_revcomp != &dna4_revcomp_generic);
 #endif
 
 #if !defined(__x86_64) && !defined(__ARM_NEON)
