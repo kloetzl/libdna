@@ -11,6 +11,19 @@
 TEST_CASE("dna4_count_mismatches")
 {
 #ifdef __x86_64
+
+	printf("%p dna4_count_mismatches\n", (void *)&dna4_count_mismatches);
+	printf(
+		"%p dna4_count_mismatches_avx512\n",
+		(void *)&dna4_count_mismatches_avx512);
+	printf(
+		"%p dna4_count_mismatches_avx2\n", (void *)&dna4_count_mismatches_avx2);
+	printf(
+		"%p dna4_count_mismatches_sse2\n", (void *)&dna4_count_mismatches_sse2);
+	printf(
+		"%p dna4_count_mismatches_generic\n",
+		(void *)&dna4_count_mismatches_generic);
+
 #if defined(__AVX512BW__) && defined(__AVX5125VL__)
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx512);
 #elif defined(__AVX2__)
@@ -35,6 +48,12 @@ TEST_CASE("dna4_count_mismatches")
 TEST_CASE("dna4_revcomp")
 {
 #ifdef __x86_64
+
+	printf("%p dna4_revcomp\n", (void *)&dna4_revcomp);
+	printf("%p dna4_revcomp_avx2\n", (void *)&dna4_revcomp_avx2);
+	printf("%p dna4_revcomp_sse42\n", (void *)&dna4_revcomp_sse42);
+	printf("%p dna4_revcomp_generic\n", (void *)&dna4_revcomp_generic);
+
 #ifdef __AVX2__
 	REQUIRE(&dna4_revcomp == &dna4_revcomp_avx2);
 #else
