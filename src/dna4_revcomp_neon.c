@@ -81,10 +81,3 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 
 	return dest + length;
 }
-
-// This alias exists only for debugging purposes.
-
-DNA_LOCAL
-char *
-dna4_revcomp_neon(const char *begin, const char *end, char *__restrict dest)
-	__attribute__((alias("dna4_revcomp")));

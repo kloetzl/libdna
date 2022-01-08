@@ -50,11 +50,3 @@ dna4_count_mismatches(const char *begin, const char *end, const char *other)
 
 	return substitutions;
 }
-
-// This alias exists only for debugging purposes.
-
-DNA_LOCAL
-size_t
-dna4_count_mismatches_neon(
-	const char *begin, const char *end, const char *other)
-	__attribute__((alias("dna4_count_mismatches")));
