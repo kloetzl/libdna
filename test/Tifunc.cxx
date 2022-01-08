@@ -11,7 +11,7 @@
 TEST_CASE("dna4_count_mismatches")
 {
 #ifdef __x86_64
-#if defined(__AVX512BW__) && defined(__AVX5125VL)
+#if defined(__AVX512BW__) && defined(__AVX5125VL__)
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx512);
 #elif defined(__AVX2__)
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx2);
