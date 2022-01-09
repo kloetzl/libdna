@@ -568,4 +568,8 @@ BENCHMARK_CAPTURE(bench, intrinsics_mask256_avx512, intrinsics_mask256_avx512);
 BENCHMARK_CAPTURE(bench, intrinsics_mask512_avx512, intrinsics_mask512_avx512);
 #endif
 
+#ifdef __ARM_NEON
+BENCHMARK_CAPTURE(bench, neon, neon);
+#endif
+
 BENCHMARK_MAIN();
