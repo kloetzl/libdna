@@ -92,12 +92,6 @@ using revcomp_functor_sse42 = functor<dna4_revcomp_sse42>;
 using revcomp_functor_avx2 = functor<dna4_revcomp_avx2>;
 #endif
 
-#ifdef __ARM_NEON
-const auto revcomp_neon = rc<dna4_revcomp_neon>;
-
-using revcomp_functor_neon = functor<dna4_revcomp_neon>;
-#endif
-
 #endif // EXPOSE_INTERNALS
 
 } // namespace dna4
@@ -136,9 +130,6 @@ using MyTypes = std::tuple<
 #ifdef __x86_64
 	dna4::revcomp_functor_sse42,
 	dna4::revcomp_functor_avx2,
-#endif
-#ifdef __ARM_NEON
-	dna4::revcomp_functor_neon,
 #endif
 	dna4::revcomp_functor_generic>;
 

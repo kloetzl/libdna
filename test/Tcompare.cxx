@@ -83,10 +83,6 @@ using count_mismatches_functor_avx2 = functor<dna4_count_mismatches_avx2>;
 using count_mismatches_functor_avx512 = functor<dna4_count_mismatches_avx512>;
 #endif
 
-#ifdef __ARM_NEON
-using count_mismatches_functor_neon = functor<dna4_count_mismatches_neon>;
-#endif
-
 using MyTypes = std::tuple<
 #if defined(__AVX512BW__) && defined(__AVX512VL__)
 	count_mismatches_functor_avx512,
@@ -96,9 +92,6 @@ using MyTypes = std::tuple<
 #endif
 #ifdef __SSE4_2__
 	count_mismatches_functor_sse2,
-#endif
-#ifdef __ARM_NEON
-	count_mismatches_functor_neon,
 #endif
 	count_mismatches_functor_generic>;
 
