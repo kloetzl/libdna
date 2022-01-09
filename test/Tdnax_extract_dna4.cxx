@@ -39,6 +39,18 @@ TEST_CASE("Long checks")
 	REQUIRE(dnax::extract_dna4(spaced) == repeat("ACGT", 5));
 }
 
+TEST_CASE("All positions")
+{
+	auto before = repeat("A", 123);
+
+	for (size_t i = 0; i < 123; i++) {
+		REQUIRE(dnax::extract_dna4(before) == repeat("A", 123 - i));
+		before[i] = 'X';
+	}
+
+	REQUIRE(dnax::extract_dna4(before) == "");
+}
+
 TEST_CASE("All chars")
 {
 	std::string all = std::string(256, 0);
