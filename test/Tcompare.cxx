@@ -88,7 +88,7 @@ using count_mismatches_functor_neon = functor<dna4_count_mismatches_neon>;
 #endif
 
 using MyTypes = std::tuple<
-#if defined(__AVX512BW__) && defined(__AVX5125VL__)
+#if defined(__AVX512BW__) && defined(__AVX512VL__)
 	count_mismatches_functor_avx512,
 #endif
 #ifdef __AVX2__

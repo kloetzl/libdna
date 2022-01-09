@@ -24,7 +24,7 @@ TEST_CASE("dna4_count_mismatches")
 		"%p dna4_count_mismatches_generic\n",
 		(void *)&dna4_count_mismatches_generic);
 
-#if defined(__AVX512BW__) && defined(__AVX5125VL__)
+#if defined(__AVX512BW__) && defined(__AVX512VL__)
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx512);
 #elif defined(__AVX2__)
 	REQUIRE(&dna4_count_mismatches == &dna4_count_mismatches_avx2);
