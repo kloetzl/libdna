@@ -48,6 +48,19 @@ TEST_CASE("Long strings")
 	REQUIRE(mismatches == (1 * multiplier));
 }
 
+TEST_CASE("Test positions")
+{
+	const auto strA = repeat("A", 123);
+	auto strB = strA;
+
+	for (size_t i = 0; i < 123; i++) {
+		REQUIRE(dna4::count_mismatches(strA, strB) == i);
+		strB[i] = 'C';
+	}
+
+	REQUIRE(dna4::count_mismatches(strA, strB) == 123);
+}
+
 #ifdef EXPOSE_INTERNALS
 // The following tests should only be executed when host and target machine are
 // the same. Ie. not cross-compilation. Also it expects --march=native if
