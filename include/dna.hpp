@@ -103,7 +103,8 @@ auto
 pack_4bits(std::string_view str)
 {
 	auto ret = std::vector<unsigned char>((str.size() + 1) / 2, '\0');
-	auto encoded = dnax_pack_4bits(dna::cbegin(str), dna::cend(str), ret.data());
+	auto encoded =
+		dnax_pack_4bits(dna::cbegin(str), dna::cend(str), ret.data());
 	auto bytes = (encoded + 1) / 2;
 	ret.erase(ret.begin() + bytes, ret.end());
 	return ret;
