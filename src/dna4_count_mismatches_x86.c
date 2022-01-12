@@ -42,7 +42,7 @@ dna4_count_mismatches(const char *begin, const char *end, const char *other)
 void *
 dna4_count_mismatches_macho(void) __asm__("_dna4_count_mismatches");
 
-DNA_LOCAL
+DNA_PUBLIC
 void *
 dna4_count_mismatches_macho(void)
 {

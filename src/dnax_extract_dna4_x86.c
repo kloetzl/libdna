@@ -37,7 +37,7 @@ dnax_extract_dna4(const char *begin, const char *end, char *dest)
 void *
 dnax_extract_dna4_macho(void) __asm__("_dnax_extract_dna4");
 
-DNA_LOCAL
+DNA_PUBLIC
 void *
 dnax_extract_dna4_macho(void)
 {

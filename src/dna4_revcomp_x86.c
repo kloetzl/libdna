@@ -39,7 +39,7 @@ dna4_revcomp(const char *begin, const char *end, char *dest)
 void *
 dna4_revcomp_macho(void) __asm__("_dna4_revcomp");
 
-DNA_LOCAL
+DNA_PUBLIC
 void *
 dna4_revcomp_macho(void)
 {
