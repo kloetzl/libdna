@@ -1,12 +1,21 @@
 SHELL=zsh
+UNAME_S := $(shell uname -s)
+
+LIBSUFFIX=so  # default
+ifeq ($(UNAME_S),Linux)
+LIBSUFFIX=so
+endif
+ifeq ($(UNAME_S),Darwin)
+LIBSUFFIX=dylib
+endif
 
 .PHONY: format
 
-exportedsymbols:
-	nm builddir/libdna.so | awk '$$2 ~ /R|T/' > $@
+exportedsymbols: builddir/libdna.${LIBSUFFIX}
+	nm $^ | awk '$$2 ~ /R|T/' > $@
 
 format:
-	clang-format -i src/*.h src/*.c include/*.h
+	clang-format -i src/*.h src/*.c include/*.h include/*.hpp
 	clang-format -i bench/*.cxx
 	clang-format -i test/*.cxx
 	clang-format -i rttest/*.c rttest/*.c
