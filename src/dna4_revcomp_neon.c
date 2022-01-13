@@ -33,7 +33,6 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 		return dna4_revcomp_generic(begin, end, dest);
 	}
 
-	const vec_type all0 = vdupq_n_u8(0);
 	const vec_type all2 = vdupq_n_u8(2);
 	const vec_type all4 = vdupq_n_u8(4);
 	const vec_type all21 = vdupq_n_u8(21);
@@ -47,15 +46,14 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 		const char *from = end - vec_offset * vec_bytes - vec_bytes;
 		char *to = dest + vec_offset * vec_bytes;
 
-		vec_type chunk;
-		memcpy(&chunk, from, vec_bytes);
+		vec_type chunk = vld1q_u8((const unsigned char *)from);
 
 		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
 		const vec_type is_zero = vtstq_u8(reversed, all2);
 		const vec_type blended_mask = vbslq_u8(is_zero, all4, all21);
 		const vec_type xored = veorq_u8(blended_mask, reversed);
 
-		memcpy(to, &xored, vec_bytes);
+		vst1q_u8((unsigned char *)to, xored);
 	}
 
 	// problematic for size < vec_bytes!
@@ -64,15 +62,14 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 		const char *from = begin + i;
 		char *to = dest + length - vec_bytes - i;
 
-		vec_type chunk;
-		memcpy(&chunk, from, vec_bytes);
+		vec_type chunk = vld1q_u8((const unsigned char *)from);
 
 		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
 		const vec_type is_zero = vtstq_u8(reversed, all2);
 		const vec_type blended_mask = vbslq_u8(is_zero, all4, all21);
 		const vec_type xored = veorq_u8(blended_mask, reversed);
 
-		memcpy(to, &xored, vec_bytes);
+		vst1q_u8((unsigned char *)to, xored);
 	}
 
 	return dest + length;
