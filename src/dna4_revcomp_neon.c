@@ -26,10 +26,8 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 	size_t length = end - begin;
 	typedef uint8x16_t vec_type;
 
-	size_t stride = 1;
-	size_t vec_bytes = 16; // sizeof(vec_type);
+	size_t vec_bytes = sizeof(vec_type);
 	size_t vec_length = length / vec_bytes;
-	vec_length -= vec_length % stride;
 
 	if (UNLIKELY(length < vec_bytes)) {
 		return dna4_revcomp_generic(begin, end, dest);
@@ -44,18 +42,17 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 	const vec_type revmask = vld1q_u8(revdata);
 
 	size_t vec_offset = 0;
-	for (; vec_offset < vec_length; vec_offset += stride) {
+	for (; vec_offset < vec_length; vec_offset++) {
 
-		const char *from = end - (vec_offset + 1) * vec_bytes;
+		const char *from = end - vec_offset * vec_bytes - vec_bytes;
 		char *to = dest + vec_offset * vec_bytes;
 
 		vec_type chunk;
 		memcpy(&chunk, from, vec_bytes);
 
 		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
-		const vec_type check = vandq_u8(reversed, all2);
-		const vec_type is_zero = vceqq_u8(check, all0);
-		const vec_type blended_mask = vbslq_u8(is_zero, all21, all4);
+		const vec_type is_zero = vtstq_u8(reversed, all2);
+		const vec_type blended_mask = vbslq_u8(is_zero, all4, all21);
 		const vec_type xored = veorq_u8(blended_mask, reversed);
 
 		memcpy(to, &xored, vec_bytes);
@@ -71,9 +68,8 @@ dna4_revcomp(const char *begin, const char *end, char *__restrict dest)
 		memcpy(&chunk, from, vec_bytes);
 
 		const vec_type reversed = vqtbl1q_u8(chunk, revmask);
-		const vec_type check = vandq_u8(reversed, all2);
-		const vec_type is_zero = vceqq_u8(check, all0);
-		const vec_type blended_mask = vbslq_u8(is_zero, all21, all4);
+		const vec_type is_zero = vtstq_u8(reversed, all2);
+		const vec_type blended_mask = vbslq_u8(is_zero, all4, all21);
 		const vec_type xored = veorq_u8(blended_mask, reversed);
 
 		memcpy(to, &xored, vec_bytes);
