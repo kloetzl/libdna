@@ -16,22 +16,6 @@
 
 typedef __m128i vec_type;
 
-static uint32_t NOISE1 =
-	0xb5297a4d; // 0b0110'1000'1110'0011'0001'1101'1010'0100
-static uint32_t NOISE2 =
-	0x68e31da4; // 0b1011'0101'0010'1001'0111'1010'0100'1101
-static uint32_t NOISE3 =
-	0x1b56c4e9; // 0b0001'1011'0101'0110'1100'0100'1110'1001
-
-static uint32_t NOISE4 = 0xaaea97a5; // determined by fair dice roll
-
-// extern const uint32_t NOISE1;
-// extern const uint32_t NOISE2;
-// extern const uint32_t NOISE3;
-// extern const uint32_t NOISE4;
-extern uint32_t
-squirrel3(uint32_t n, uint32_t seed);
-
 static inline vec_type
 chunk_squirrel3(uint32_t n, uint32_t seed)
 {

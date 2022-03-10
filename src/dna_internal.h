@@ -31,6 +31,15 @@
 extern "C" {
 #endif
 
+// Declarations for fill_random
+extern const uint32_t NOISE1;
+extern const uint32_t NOISE2;
+extern const uint32_t NOISE3;
+extern const uint32_t NOISE4;
+
+extern uint32_t
+squirrel3(uint32_t n, uint32_t seed);
+
 // CPU specific mismatch count
 typedef size_t(dna4_count_mismatches_fn)(
 	const char *begin, const char *end, const char *other);
@@ -62,6 +71,7 @@ typedef char *(
 dnax_extract_dna4_fn dnax_extract_dna4_generic;
 dnax_extract_dna4_fn dnax_extract_dna4_sse42;
 
+// CPU specific fill_random
 typedef void(dna4_fill_random_fn)(char *begin, char *end, uint32_t seed);
 dna4_fill_random_fn dna4_fill_random_sse42;
 dna4_fill_random_fn dna4_fill_random_generic;

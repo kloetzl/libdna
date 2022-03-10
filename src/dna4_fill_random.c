@@ -12,14 +12,14 @@
 
 // This noise function is based on a method by Squirrel Eiserloh.
 
-DNA_LOCAL uint32_t NOISE1 =
+DNA_LOCAL const uint32_t NOISE1 =
 	0xb5297a4d; // 0b0110'1000'1110'0011'0001'1101'1010'0100
-DNA_LOCAL uint32_t NOISE2 =
+DNA_LOCAL const uint32_t NOISE2 =
 	0x68e31da4; // 0b1011'0101'0010'1001'0111'1010'0100'1101
-DNA_LOCAL uint32_t NOISE3 =
+DNA_LOCAL const uint32_t NOISE3 =
 	0x1b56c4e9; // 0b0001'1011'0101'0110'1100'0100'1110'1001
 
-DNA_LOCAL uint32_t NOISE4 = 0xaaea97a5; // determined by fair dice roll
+DNA_LOCAL const uint32_t NOISE4 = 0xaaea97a5; // determined by fair dice roll
 
 DNA_LOCAL
 uint32_t
