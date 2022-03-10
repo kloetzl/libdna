@@ -27,6 +27,8 @@ namespace dna
 namespace dna4
 {
 	size_t count_mismatches(std::string_view s1, std::string_view s2);
+	size_t count_mismatches_rev(std::string_view s1, std::string_view s2);
+	std::string random(size_t length, uint32_t seed);
 	std::string revcomp(std::string_view str);
 	uint64_t pack_2bits(size_t k, std::string_view str);
 	std::string unpack_2bits(size_t k, uint64_t packed);
@@ -45,8 +47,8 @@ namespace dnax
 	std::array<size_t, 256> count(std::string_view str);
 	std::string extract_dna4(std::string_view str);
 	std::string replace(const char *table, std::string_view str);
-	std::string_view::size_type find_first_mismatch(std::string_view s1, const std::string_view &s2);
-	std::string_view::size_type find_first_of(const char *table, const std::string_view &str);
-	std::string_view::size_type find_first_not_of(const char *table, const std::string_view &str);
+	std::string_view::size_type find_first_mismatch(std::string_view s1, std::string_view s2);
+	std::string_view::size_type find_first_of(const char *table, std::string_view str);
+	std::string_view::size_type find_first_not_of(const char *table, std::string_view str);
 }
 ```

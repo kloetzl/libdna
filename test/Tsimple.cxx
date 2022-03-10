@@ -161,3 +161,13 @@ TEST_CASE("Example from dna4_fill_random manpage")
 	dna4_fill_random(buffer, buffer + 10, 23);
 	printf("%s\n", buffer);
 }
+
+TEST_CASE("Example from dna4_count_mismatches_rev manpage")
+{
+	const char seq1[] = "TAACCGCCCTTGGG";
+	const char seq2[] = "CCCAAGTGCGATTA";
+	size_t snps =
+		dna4_count_mismatches_rev(seq1, seq1 + sizeof(seq1) - 1, seq2);
+
+	REQUIRE(snps == 2);
+}

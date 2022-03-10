@@ -73,6 +73,14 @@ count_mismatches(std::string_view s1, std::string_view s2)
 		dna::cbegin(s1), dna::cend(s1), dna::cbegin(s2));
 }
 
+size_t
+count_mismatches_rev(std::string_view s1, std::string_view s2)
+{
+	// assume s1.size() == s2.size()
+	return dna4_count_mismatches_rev(
+		dna::cbegin(s1), dna::cend(s1), dna::cbegin(s2));
+}
+
 std::string
 random(size_t length, uint32_t seed)
 {

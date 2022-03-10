@@ -119,6 +119,8 @@ libdna = library('dna', ['include/dna.h', genericfiles],
 install_headers('include/dna.h', 'include/dna.hpp', subdir: 'kloetzl')
 install_man([
     'man/dna4_count_mismatches.3',
+    'man/dna4_count_mismatches_rev.3',
+    'man/dna4_fill_random.3',
     'man/dna4_pack_2bits.3',
     'man/dna4_revcomp.3',
     'man/dna4_unpack_2bits.3',
