@@ -14,6 +14,8 @@ nav:
   - FASTA parsing: 'fasta.md'
 - Functions:
   - dna4_count_mismatches: 'dna4_count_mismatches.3.md'
+  - dna4_count_mismatches_rev: 'dna4_count_mismatches_rev.3.md'
+  - dna4_fill_random: 'dna4_fill_random.3.md'
   - dna4_pack_2bits: 'dna4_pack_2bits.3.md'
   - dna4_revcomp: 'dna4_revcomp.3.md'
   - dna4_unpack_2bits: 'dna4_unpack_2bits.3.md'
