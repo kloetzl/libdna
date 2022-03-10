@@ -24,6 +24,8 @@ static uint32_t NOISE2 =
 static uint32_t NOISE3 =
 	0x1b56c4e9; // 0b0001'1011'0101'0110'1100'0100'1110'1001
 
+static uint32_t NOISE4 = 0xaaea97a5; // determined by fair dice roll
+
 static inline uint32_t
 squirrel3(uint32_t n, uint32_t seed)
 {
@@ -87,25 +89,25 @@ squirrel3_generic(char *begin, char *end, size_t seed)
 
 	size_t i = 0;
 	for (; i < (length & ~3); i += 4) {
-		uint32_t noise = squirrel3(i, seed);
+		uint32_t noise = squirrel3(i / 4, seed);
 
 		char buffer[4]; // TODO: is this the correct byte order?
-		buffer[0] = ACGT[(noise >> 24) & 3];
-		buffer[1] = ACGT[(noise >> 16) & 3];
-		buffer[2] = ACGT[(noise >> 8) & 3];
-		buffer[3] = ACGT[(noise >> 0) & 3];
+		buffer[0] = ACGT[(noise >> 0) & 3];
+		buffer[1] = ACGT[(noise >> 8) & 3];
+		buffer[2] = ACGT[(noise >> 16) & 3];
+		buffer[3] = ACGT[(noise >> 24) & 3];
 		memcpy(begin + i, buffer, sizeof(buffer));
 	}
 
 	size_t rest = length - i;
 	if (rest) {
-		uint32_t noise = squirrel3(i, seed);
+		uint32_t noise = squirrel3(i / 4, seed);
 
 		char buffer[4];
-		buffer[0] = ACGT[(noise >> 24) & 3];
-		buffer[1] = ACGT[(noise >> 16) & 3];
-		buffer[2] = ACGT[(noise >> 8) & 3];
-		buffer[3] = ACGT[(noise >> 0) & 3];
+		buffer[0] = ACGT[(noise >> 0) & 3];
+		buffer[1] = ACGT[(noise >> 8) & 3];
+		buffer[2] = ACGT[(noise >> 16) & 3];
+		buffer[3] = ACGT[(noise >> 24) & 3];
 		memcpy(begin + i, buffer, rest);
 	}
 }
@@ -144,10 +146,14 @@ squirrel3_sse42(char *begin, char *end, size_t seed)
 		'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C',
 		'G', 'T');
 
+	vec_type mask7f = _mm_set1_epi8(0x7f);
+
 	assert(begin != NULL);
 	assert(end != NULL);
 	assert(dest != NULL);
 	assert(begin <= end);
+
+	seed = squirrel3(seed, NOISE4);
 
 	size_t length = end - begin;
 
@@ -158,7 +164,8 @@ squirrel3_sse42(char *begin, char *end, size_t seed)
 	for (; vec_offset < vec_length; vec_offset++) {
 
 		char *to = begin + vec_offset * vec_bytes;
-		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes / 4, seed);
+		chunk = _mm_and_si128(chunk, mask7f);
 		vec_type mapped = _mm_shuffle_epi8(nibblecode, chunk);
 		memcpy(to, &mapped, vec_bytes);
 	}
@@ -166,7 +173,8 @@ squirrel3_sse42(char *begin, char *end, size_t seed)
 	size_t rest = length - vec_offset * vec_bytes;
 	if (rest) {
 		char *to = begin + vec_offset * vec_bytes;
-		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type chunk = chunk_squirrel3(vec_offset * vec_bytes / 4, seed);
+		chunk = _mm_and_si128(chunk, mask7f);
 		vec_type mapped = _mm_shuffle_epi8(nibblecode, chunk);
 		memcpy(to, &mapped, rest);
 	}
@@ -214,6 +222,10 @@ squirrel3_avx2(char *begin, char *end, size_t seed)
 	assert(dest != NULL);
 	assert(begin <= end);
 
+	seed = squirrel3(seed, NOISE4);
+
+	vec_type mask7f = _mm256_set1_epi8(0x7f);
+
 	size_t length = end - begin;
 
 	size_t vec_bytes = sizeof(vec_type);
@@ -221,9 +233,10 @@ squirrel3_avx2(char *begin, char *end, size_t seed)
 
 	size_t vec_offset = 0;
 	for (; vec_offset < vec_length; vec_offset++) {
-
 		char *to = begin + vec_offset * vec_bytes;
-		vec_type chunk = large_chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type chunk =
+			large_chunk_squirrel3(vec_offset * vec_bytes / 4, seed);
+		chunk = _mm256_and_si256(chunk, mask7f);
 		vec_type mapped = _mm256_shuffle_epi8(nibblecode, chunk);
 		memcpy(to, &mapped, vec_bytes);
 	}
@@ -231,7 +244,9 @@ squirrel3_avx2(char *begin, char *end, size_t seed)
 	size_t rest = length - vec_offset * vec_bytes;
 	if (rest) {
 		char *to = begin + vec_offset * vec_bytes;
-		vec_type chunk = large_chunk_squirrel3(vec_offset * vec_bytes, seed);
+		vec_type chunk =
+			large_chunk_squirrel3(vec_offset * vec_bytes / 4, seed);
+		chunk = _mm256_and_si256(chunk, mask7f);
 		vec_type mapped = _mm256_shuffle_epi8(nibblecode, chunk);
 		memcpy(to, &mapped, rest);
 	}
