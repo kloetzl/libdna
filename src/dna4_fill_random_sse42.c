@@ -67,7 +67,6 @@ dna4_fill_random_sse42(char *begin, char *end, uint32_t seed)
 
 	assert(begin != NULL);
 	assert(end != NULL);
-	assert(dest != NULL);
 	assert(begin <= end);
 
 	seed = squirrel3(seed, NOISE4);
