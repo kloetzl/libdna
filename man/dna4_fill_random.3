@@ -1,0 +1,26 @@
+.TH DNA4_FILL_RANDOM 3 2022-03-10 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dna4_fill_random \- fill a buffer with random nucleotides
+
+.SH SYNOPSIS
+.nf
+.B #include <kloetzl/dna.h>
+.PP
+.BI "void dna4_fill_random(char *" begin ", char *" end ", uint32_t " seed ");"
+.fi
+
+.SH DESCRIPTION
+
+The \fBdna4_fill_random\fR() function fills a buffer with random nucleotides (ACGT). A \fIseed\fR can be supplied to select a different random sequence. The buffer is delimited by \fIbegin\fR and \fIend\fR (exclusive). 
+
+
+.SH EXAMPLE
+.in +4
+.EX
+char buffer[11] = {0};
+dna4_fill_random(buffer, buffer + 10, 23);
+printf("%s\n", buffer);
+
+.SH SEE ALSO
+.BR iupac (7)

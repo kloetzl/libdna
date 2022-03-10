@@ -154,3 +154,10 @@ TEST_CASE("Example from dnax_find_first_not_of manpage")
 	const char *gap = dnax_find_first_not_of(table, str, str + 7);
 	REQUIRE(gap - str == 4);
 }
+
+TEST_CASE("Example from dna4_fill_random manpage")
+{
+	char buffer[11] = {0};
+	dna4_fill_random(buffer, buffer + 10, 23);
+	printf("%s\n", buffer);
+}
