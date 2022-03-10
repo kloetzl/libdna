@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2020 - 2021 © Fabian Klötzl
+ * Copyright 2020 - 2022 © Fabian Klötzl
  *
  * C++ convenience header
  */
@@ -71,6 +71,14 @@ count_mismatches(std::string_view s1, std::string_view s2)
 	// assume s1.size() == s2.size()
 	return dna4_count_mismatches(
 		dna::cbegin(s1), dna::cend(s1), dna::cbegin(s2));
+}
+
+std::string
+random(size_t length, uint32_t seed)
+{
+	auto ret = std::string(length, '\0');
+	dna4_fill_random(dna::begin(ret), dna::end(ret), seed);
+	return ret;
 }
 
 std::string

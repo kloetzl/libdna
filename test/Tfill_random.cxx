@@ -96,6 +96,10 @@ TEST_CASE("Some simple checks")
 	REQUIRE(memcmp(tiny, large, 5) == 0);
 	REQUIRE(memcmp(small, large, 25) == 0);
 
+	REQUIRE(dna4::random(5, seed) == tiny);
+	REQUIRE(dna4::random(25, seed) == small);
+	REQUIRE(dna4::random(10000, seed) == large);
+
 	free(tiny);
 	free(small);
 	free(large);
