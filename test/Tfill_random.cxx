@@ -89,6 +89,8 @@ TEST_CASE("Some simple checks")
 	dna4_fill_random(small, small + 25, seed);
 	dna4_fill_random(large, large + 10000, seed);
 	tiny[5] = small[25] = large[10000] = '\0';
+	std::cerr << tiny << std::endl;
+	std::cerr << small << std::endl;
 
 	REQUIRE(memcmp(tiny, small, 5) == 0);
 	REQUIRE(memcmp(tiny, large, 5) == 0);

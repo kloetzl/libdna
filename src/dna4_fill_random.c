@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2021-2022 (C) Fabian Klötzl
+ * Copyright 2021 - 2022 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -12,16 +12,17 @@
 
 // This noise function is based on a method by Squirrel Eiserloh.
 
-static uint32_t NOISE1 =
+DNA_LOCAL uint32_t NOISE1 =
 	0xb5297a4d; // 0b0110'1000'1110'0011'0001'1101'1010'0100
-static uint32_t NOISE2 =
+DNA_LOCAL uint32_t NOISE2 =
 	0x68e31da4; // 0b1011'0101'0010'1001'0111'1010'0100'1101
-static uint32_t NOISE3 =
+DNA_LOCAL uint32_t NOISE3 =
 	0x1b56c4e9; // 0b0001'1011'0101'0110'1100'0100'1110'1001
 
-static uint32_t NOISE4 = 0xaaea97a5; // determined by fair dice roll
+DNA_LOCAL uint32_t NOISE4 = 0xaaea97a5; // determined by fair dice roll
 
-static uint32_t
+DNA_LOCAL
+uint32_t
 squirrel3(uint32_t n, uint32_t seed)
 {
 	n *= NOISE1;
@@ -42,7 +43,7 @@ squirrel3(uint32_t n, uint32_t seed)
 
 DNA_PUBLIC
 void
-dna4_fill_random(char *dest, char *end, uint32_t seed)
+dna4_fill_random_generic(char *dest, char *end, uint32_t seed)
 {
 	assert(dest != NULL);
 	assert(end != NULL);
@@ -57,25 +58,34 @@ dna4_fill_random(char *dest, char *end, uint32_t seed)
 
 	size_t i = 0;
 	for (; i < (length & ~3); i += 4) {
-		uint32_t noise = squirrel3(i, seed);
+		uint32_t noise = squirrel3(i / 4, seed);
 
-		char buffer[4]; // TODO: is this the correct byte order?
-		buffer[0] = ACGT[(noise >> 24) & 3];
-		buffer[1] = ACGT[(noise >> 16) & 3];
-		buffer[2] = ACGT[(noise >> 8) & 3];
-		buffer[3] = ACGT[(noise >> 0) & 3];
+		char buffer[4];
+		buffer[0] = ACGT[(noise >> 0) & 3];
+		buffer[1] = ACGT[(noise >> 8) & 3];
+		buffer[2] = ACGT[(noise >> 16) & 3];
+		buffer[3] = ACGT[(noise >> 24) & 3];
 		memcpy(dest + i, buffer, sizeof(buffer));
 	}
 
 	size_t rest = length - i;
 	if (rest) {
-		uint32_t noise = squirrel3(i, seed);
+		uint32_t noise = squirrel3(i / 4, seed);
 
 		char buffer[4];
-		buffer[0] = ACGT[(noise >> 24) & 3];
-		buffer[1] = ACGT[(noise >> 16) & 3];
-		buffer[2] = ACGT[(noise >> 8) & 3];
-		buffer[3] = ACGT[(noise >> 0) & 3];
+		buffer[0] = ACGT[(noise >> 0) & 3];
+		buffer[1] = ACGT[(noise >> 8) & 3];
+		buffer[2] = ACGT[(noise >> 16) & 3];
+		buffer[3] = ACGT[(noise >> 24) & 3];
 		memcpy(dest + i, buffer, rest);
 	}
 }
+
+#if !defined(__x86_64)
+DNA_PUBLIC
+char *
+dna4_fill_random(const char *begin, const char *end, char *dest)
+{
+	return dna4_fill_random_generic(begin, end, dest);
+}
+#endif

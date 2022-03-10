@@ -57,6 +57,7 @@ if host_machine.cpu_family() == 'x86_64'
     genericfiles += [
         'src/dna4_count_mismatches_x86.c',
         'src/dna4_count_mismatches_rev_x86.c',
+        'src/dna4_fill_random_x86.c',
         'src/dna4_revcomp_x86.c',
         'src/dnax_extract_dna4_x86.c'
     ]
@@ -64,6 +65,7 @@ if host_machine.cpu_family() == 'x86_64'
     sse42files = [
         'src/dna4_count_mismatches_sse42.c',
         'src/dna4_count_mismatches_rev_sse42.c',
+        'src/dna4_fill_random_sse42.c',
         'src/dna4_revcomp_sse42.c',
         'src/dnax_extract_dna4_sse42.c'
     ]
