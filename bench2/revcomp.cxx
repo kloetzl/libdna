@@ -6,8 +6,9 @@
 #include <seqan3/alphabet/nucleotide/dna4.hpp>
 #include <seqan3/alphabet/nucleotide/dna5.hpp>
 #include <seqan3/core/debug_stream.hpp>
-#include <seqan3/range/views/all.hpp> // include all of SeqAn's views
-#include <seqan3/range/views/char_to.hpp>
+//#include <seqan3/range/views/all.hpp> // include all of SeqAn's views
+#include <seqan3/alphabet/views/char_to.hpp>
+#include <seqan3/alphabet/views/complement.hpp>
 #include <seqan3/std/ranges> // include all of the standard library's views
 
 static const size_t LENGTH = 1000003;
