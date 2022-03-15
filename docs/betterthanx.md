@@ -6,12 +6,12 @@ There are a number of great bioinformatics library out there. Some of the more p
 
 *libdna links dynamically.* Dynamic linking means that your program always uses the latest version of libdna currently installed on the machine. This has the advantage that libdna can change independently of your program code. For instance, whenever libdna receives a new optimization for a function or CPU your program gets that improvement without any code change.
 
-*libdna is fast.* Anyone can write a function that computes the reverse complement. However, using a switch statement is really slow, roughly eight times slower than using a simple lookup table. Performance matters when one deals with DNA where a string can be millions of nucleotides long. Hence, libdna uses optimized implementations sometimes down to assembly level. Thereby libdna is much faster than other tools. For instance, `dna4_revcomp` needs just two instructions to reverse and complement sixteen characters and is thus 80 times faster than a switch based approach.
+*libdna is fast.* Anyone can write a function that computes the reverse complement. However, using a switch statement is really slow, roughly eight times slower than using a simple lookup table. Performance matters when one deals with DNA where a string can be millions of nucleotides long. Hence, libdna uses optimized implementations sometimes down to assembly level. Thereby libdna is much faster than other tools. For instance, `dna4_revcomp` needs just two instructions to reverse and complement sixteen characters and is thus almost 8 times faster than the [table based approach in seqan3](https://github.com/seqan/seqan3/issues/1970).
 
 
 # Why libdna is worse than X
 
-*libdna is simple.* It might not have all the functionality you need. In particular it does not support every usecase anyone could ever need.
+*libdna is simple.* It might not have all the functionality you need. In particular it does not support every usecase anyone could ever have.
 
 *libdna links dynamically.* Dynamic libraries are slightly harder to use as dependencies than just copying a file into your project.
 
