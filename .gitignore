@@ -5,6 +5,7 @@
 *.so.*
 RT*
 exportedsymbols
+bench2/revcomp
 
 # meson files
 subprojects/Catch2-*
