@@ -208,7 +208,7 @@ if get_option('with-tests')
         'fasta': 'fasta.c',
         'gc_content': 'gc_content.cxx',
         'geneticcode_table': 'geneticcode_table.cxx',
-        'random': 'random.c'
+        'randomseq': 'random.c'
     }
     foreach example, file_name : examples
         exe = executable(example,
