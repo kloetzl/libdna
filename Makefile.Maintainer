@@ -18,7 +18,8 @@ format:
 	clang-format -i src/*.h src/*.c include/*.h include/*.hpp
 	clang-format -i bench/*.cxx
 	clang-format -i test/*.cxx
-	clang-format -i rttest/*.c rttest/*.c
+	clang-format -i rttest/*.c rttest/*.cxx
+	clang-format -i examples/*.c examples/*.cxx
 
 builddir:
 	meson $@

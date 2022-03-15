@@ -9,7 +9,8 @@ gc_content(const std::string &str)
 	return (double)gc / str.size();
 }
 
-int main()
+int
+main()
 {
 	double gc = gc_content("ACGT");
 	return gc != 0.5; // 0 means success

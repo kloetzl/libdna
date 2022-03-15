@@ -2,7 +2,8 @@
 #include <iostream>
 #include <string>
 
-int main()
+int
+main()
 {
 	char triplet[4] = {0};
 
@@ -13,11 +14,11 @@ int main()
 
 	table += prefix + header;
 
-	for (char n0: tcag) {
+	for (char n0 : tcag) {
 		for (size_t i = 0; i < tcag.size(); i++) {
 			char n2 = tcag[i];
 			table += i == 1 ? std::string(1, n0) + "  " : prefix;
-			for (char n1: tcag) {
+			for (char n1 : tcag) {
 				triplet[0] = n0;
 				triplet[1] = n1;
 				triplet[2] = n2;

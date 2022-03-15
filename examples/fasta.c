@@ -105,7 +105,8 @@ main(int argc, const char **argv)
 		while (parse_hasmoredata(&parser)) {
 			parse_seq(&parser, &seq);
 
-			// Do anything with the sequence. For instance, calculate GC content.
+			// Do anything with the sequence. For instance, calculate GC
+			// content.
 			printf(">%s\n", seq.name);
 			char *end =
 				dnax_extract_dna4(seq.data, seq.data + seq.data_len, seq.data);
