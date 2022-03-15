@@ -26,7 +26,7 @@ process_canonical_kmers(
 		const char *rc = revcomp + (start - begin);
 		for (; start < stop - k + 1; start++, rc++) {
 			int cmp = memcmp(start, rc, k);
-			process_fn(cmp < 0 ? start : rc, k);
+			callback(cmp < 0 ? start : rc, k);
 		}
 
 		// if stop is end computing stop + 1 is UB.
