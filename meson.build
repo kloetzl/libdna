@@ -78,6 +78,7 @@ if host_machine.cpu_family() == 'x86_64'
     avx2files = [
         'src/dna4_count_mismatches_avx2.c',
         'src/dna4_count_mismatches_rev_avx2.c',
+        'src/dna4_fill_random_avx2.c',
         'src/dna4_revcomp_avx2.c'
     ]
     avx2lib = static_library('avx2lib', avx2files,

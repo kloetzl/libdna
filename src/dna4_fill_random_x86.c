@@ -18,7 +18,9 @@ dna4_fill_random_select(void)
 	// https://gcc.gnu.org/onlinedocs/gcc/x86-Built-in-Functions.html
 	__builtin_cpu_init();
 
-	if (__builtin_cpu_supports("sse4.2")) {
+	if (__builtin_cpu_supports("avx2")) {
+		return dna4_fill_random_avx2;
+	} else if (__builtin_cpu_supports("sse4.2")) {
 		return dna4_fill_random_sse42;
 	} else {
 		return dna4_fill_random_generic;

@@ -73,6 +73,7 @@ dnax_extract_dna4_fn dnax_extract_dna4_sse42;
 
 // CPU specific fill_random
 typedef void(dna4_fill_random_fn)(char *begin, char *end, uint32_t seed);
+dna4_fill_random_fn dna4_fill_random_avx2;
 dna4_fill_random_fn dna4_fill_random_sse42;
 dna4_fill_random_fn dna4_fill_random_generic;
 
