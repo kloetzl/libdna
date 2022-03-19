@@ -55,7 +55,7 @@ typedef size_t(dna4_count_mismatches_rc_fn)(
 
 dna4_count_mismatches_rc_fn dna4_count_mismatches_rc_avx2;
 dna4_count_mismatches_rc_fn dna4_count_mismatches_rc_generic;
-dna4_count_mismatches_rc_fn dna4_count_mismatches_rc_sse2;
+dna4_count_mismatches_rc_fn dna4_count_mismatches_rc_sse42;
 
 // CPU specific revcomp
 typedef char *(dna4_revcomp_fn)(const char *begin, const char *end, char *dest);

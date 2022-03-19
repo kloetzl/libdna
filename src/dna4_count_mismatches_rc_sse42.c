@@ -14,7 +14,7 @@
 
 DNA_LOCAL
 size_t
-dna4_count_mismatches_rc_sse2(
+dna4_count_mismatches_rc_sse42(
 	const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;

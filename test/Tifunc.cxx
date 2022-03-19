@@ -76,21 +76,14 @@ TEST_CASE("dna4_revcomp")
 #endif
 }
 
-
 TEST_CASE("dna4_fill_random")
 {
 #ifdef __x86_64
 
 	printf("%p dna4_fill_random\n", (void *)&dna4_fill_random);
-	printf(
-		"%p dna4_fill_random_avx2\n",
-		(void *)&dna4_fill_random_avx2);
-	printf(
-		"%p dna4_fill_random_sse42\n",
-		(void *)&dna4_fill_random_sse42);
-	printf(
-		"%p dna4_fill_random_generic\n",
-		(void *)&dna4_fill_random_generic);
+	printf("%p dna4_fill_random_avx2\n", (void *)&dna4_fill_random_avx2);
+	printf("%p dna4_fill_random_sse42\n", (void *)&dna4_fill_random_sse42);
+	printf("%p dna4_fill_random_generic\n", (void *)&dna4_fill_random_generic);
 
 #if defined(__AVX2__)
 	REQUIRE(&dna4_fill_random == &dna4_fill_random_avx2);
@@ -106,7 +99,6 @@ TEST_CASE("dna4_fill_random")
 #endif
 }
 
-
 TEST_CASE("dna4_count_mismatches_rc")
 {
 #ifdef __x86_64
@@ -116,8 +108,8 @@ TEST_CASE("dna4_count_mismatches_rc")
 		"%p dna4_count_mismatches_rc_avx2\n",
 		(void *)&dna4_count_mismatches_rc_avx2);
 	printf(
-		"%p dna4_count_mismatches_rc_sse2\n",
-		(void *)&dna4_count_mismatches_rc_sse2);
+		"%p dna4_count_mismatches_rc_sse42\n",
+		(void *)&dna4_count_mismatches_rc_sse42);
 	printf(
 		"%p dna4_count_mismatches_rc_generic\n",
 		(void *)&dna4_count_mismatches_rc_generic);
@@ -125,7 +117,7 @@ TEST_CASE("dna4_count_mismatches_rc")
 #if defined(__AVX2__)
 	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_avx2);
 #elif defined(__SSE4_2__)
-	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_sse2);
+	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_sse42);
 #else
 	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_generic);
 #endif

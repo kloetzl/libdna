@@ -20,8 +20,8 @@ dna4_count_mismatches_rc_select(void)
 
 	if (__builtin_cpu_supports("avx2")) {
 		return dna4_count_mismatches_rc_avx2;
-	} else if (__builtin_cpu_supports("sse2")) {
-		return dna4_count_mismatches_rc_sse2;
+	} else if (__builtin_cpu_supports("sse4.2")) {
+		return dna4_count_mismatches_rc_sse42;
 	} else {
 		return dna4_count_mismatches_rc_generic;
 	}
