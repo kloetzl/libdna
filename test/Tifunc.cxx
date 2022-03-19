@@ -1,4 +1,5 @@
 #include "Tcommon.h"
+#include "config.h"
 #include "dna_internal.h"
 
 #include <catch2/catch.hpp>
@@ -72,6 +73,66 @@ TEST_CASE("dna4_revcomp")
 
 #if !defined(__x86_64) && !defined(__ARM_NEON)
 	REQUIRE(&dna4_revcomp == &dna4_revcomp_generic);
+#endif
+}
+
+
+TEST_CASE("dna4_fill_random")
+{
+#ifdef __x86_64
+
+	printf("%p dna4_fill_random\n", (void *)&dna4_fill_random);
+	printf(
+		"%p dna4_fill_random_avx2\n",
+		(void *)&dna4_fill_random_avx2);
+	printf(
+		"%p dna4_fill_random_sse42\n",
+		(void *)&dna4_fill_random_sse42);
+	printf(
+		"%p dna4_fill_random_generic\n",
+		(void *)&dna4_fill_random_generic);
+
+#if defined(__AVX2__)
+	REQUIRE(&dna4_fill_random == &dna4_fill_random_avx2);
+#elif defined(__SSE4_2__)
+	REQUIRE(&dna4_fill_random == &dna4_fill_random_sse42);
+#else
+	REQUIRE(&dna4_fill_random == &dna4_fill_random_generic);
+#endif
+#endif
+
+#if !defined(__x86_64)
+	REQUIRE(&dna4_fill_random == &dna4_fill_random_generic);
+#endif
+}
+
+
+TEST_CASE("dna4_count_mismatches_rc")
+{
+#ifdef __x86_64
+
+	printf("%p dna4_count_mismatches_rc\n", (void *)&dna4_count_mismatches_rc);
+	printf(
+		"%p dna4_count_mismatches_rc_avx2\n",
+		(void *)&dna4_count_mismatches_rc_avx2);
+	printf(
+		"%p dna4_count_mismatches_rc_sse2\n",
+		(void *)&dna4_count_mismatches_rc_sse2);
+	printf(
+		"%p dna4_count_mismatches_rc_generic\n",
+		(void *)&dna4_count_mismatches_rc_generic);
+
+#if defined(__AVX2__)
+	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_avx2);
+#elif defined(__SSE4_2__)
+	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_sse2);
+#else
+	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_generic);
+#endif
+#endif
+
+#if !defined(__x86_64)
+	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_generic);
 #endif
 }
 

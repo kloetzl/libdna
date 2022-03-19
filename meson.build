@@ -154,7 +154,7 @@ pkg.generate(
 
 ###################################################
 # Tests
-# meson setup builddir_wtests -Dwith-tests=true
+# meson setup builddir_wtests -Dwith-tests=true -Dbuildtype=debugoptimized
 
 if get_option('with-tests')
 
