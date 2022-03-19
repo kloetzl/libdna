@@ -1,10 +1,10 @@
-# dna4_count_mismatches_rev(3) - count the number of mismatching bytes in revcomp
+# dna4_count_mismatches_rc(3) - count the number of mismatching bytes in revcomp
 
 LIBDNA, 2022-03-10
 
     #include <kloetzl/dna.h>
 
-    size_t dna4_count_mismatches_rev(const char *begin, const char *end, const char *other);
+    size_t dna4_count_mismatches_rc(const char *begin, const char *end, const char *other);
 
 
 ## Description
@@ -28,7 +28,7 @@ Returns the number of mismatches of two string on opposite strands.
 
     const char seq1[] = "TAACCGCCCTTGGG";
     const char seq2[] = "CCCAAGTGCGATTA";
-    size_t snps = dna4_count_mismatches_rev(seq1, seq1 + sizeof(seq1) - 1, seq2);
+    size_t snps = dna4_count_mismatches_rc(seq1, seq1 + sizeof(seq1) - 1, seq2);
 
     assert(snps == 2);
 

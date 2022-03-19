@@ -326,7 +326,7 @@ revcomp_then_count_mismatches(
 }
 
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
-BENCHMARK_CAPTURE(bench, dna4_count_mismatches_rev, dna4_count_mismatches_rev);
+BENCHMARK_CAPTURE(bench, dna4_count_mismatches_rc, dna4_count_mismatches_rc);
 
 #ifdef __AVX2__
 BENCHMARK_CAPTURE(bench, xoreq_avx2, xoreq_avx2);

@@ -14,7 +14,7 @@ TEST_CASE("Some simple checks")
 	const auto subject = "AACGTACGT"s;
 	const auto query = "ACGTACGAT"s;
 
-	size_t mismatches = dna4_count_mismatches_rev(
+	size_t mismatches = dna4_count_mismatches_rc(
 		dna::begin(subject), dna::end(subject), dna::begin(query));
 	REQUIRE(mismatches == 1);
 
@@ -26,7 +26,7 @@ TEST_CASE("Some simple checks")
 		dnax_revcomp_table, dna::begin(query), dna::end(query),
 		dna::begin(rquery));
 
-	size_t rcmismatches = dna4_count_mismatches_rev(
+	size_t rcmismatches = dna4_count_mismatches_rc(
 		dna::begin(rsubject), dna::end(rsubject), dna::begin(rquery));
 	REQUIRE(rcmismatches == 1);
 }
@@ -40,7 +40,7 @@ TEST_CASE("Long strings")
 	const auto longsubject = repeat(subject, multiplier);
 	const auto longquery = repeat(query, multiplier);
 
-	auto mismatches = dna4_count_mismatches_rev(
+	auto mismatches = dna4_count_mismatches_rc(
 		dna::begin(longsubject), dna::end(longsubject), dna::begin(longquery));
 	REQUIRE(mismatches == (1 * multiplier));
 }

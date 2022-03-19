@@ -8,14 +8,12 @@
 #include "utils.h"
 
 #include <assert.h>
+#include <emmintrin.h>
+#include <immintrin.h>
+#include <smmintrin.h>
 #include <stdio.h>
 #include <string.h>
-#include <smmintrin.h>
-#include <emmintrin.h>
 #include <tmmintrin.h>
-#include <immintrin.h>
-
-
 
 typedef __m256i vec_type;
 

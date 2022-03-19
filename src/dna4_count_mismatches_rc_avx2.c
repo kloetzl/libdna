@@ -11,7 +11,7 @@
 #include <string.h>
 
 size_t
-dna4_count_mismatches_rev_avx2(
+dna4_count_mismatches_rc_avx2(
 	const char *begin, const char *end, const char *other)
 {
 	assert(begin != NULL);

@@ -50,12 +50,12 @@ dna4_count_mismatches_fn dna4_count_mismatches_generic;
 dna4_count_mismatches_fn dna4_count_mismatches_sse2;
 
 // CPU specific rc mismatch count
-typedef size_t(dna4_count_mismatches_rev_fn)(
+typedef size_t(dna4_count_mismatches_rc_fn)(
 	const char *begin, const char *end, const char *other);
 
-dna4_count_mismatches_rev_fn dna4_count_mismatches_rev_avx2;
-dna4_count_mismatches_rev_fn dna4_count_mismatches_rev_generic;
-dna4_count_mismatches_rev_fn dna4_count_mismatches_rev_sse2;
+dna4_count_mismatches_rc_fn dna4_count_mismatches_rc_avx2;
+dna4_count_mismatches_rc_fn dna4_count_mismatches_rc_generic;
+dna4_count_mismatches_rc_fn dna4_count_mismatches_rc_sse2;
 
 // CPU specific revcomp
 typedef char *(dna4_revcomp_fn)(const char *begin, const char *end, char *dest);

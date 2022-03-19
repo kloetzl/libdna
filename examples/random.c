@@ -4,8 +4,8 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <time.h>
+#include <unistd.h>
 
 int
 main(int argc, char *const *argv)
@@ -24,7 +24,6 @@ main(int argc, char *const *argv)
 			errx(EXIT_FAILURE, "Usage: %s [-l length] [-s seed]\n", argv[0]);
 		}
 	}
-
 
 	// allocate and generate random sequence
 	char *buffer = malloc(length);

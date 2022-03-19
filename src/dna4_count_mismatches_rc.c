@@ -11,7 +11,7 @@
 
 DNA_LOCAL
 size_t
-dna4_count_mismatches_rev_generic(
+dna4_count_mismatches_rc_generic(
 	const char *begin, const char *end, const char *other)
 {
 	assert(begin != NULL);
@@ -36,8 +36,8 @@ dna4_count_mismatches_rev_generic(
 #if !defined(__x86_64)
 DNA_PUBLIC
 size_t
-dna4_count_mismatches_rev(const char *begin, const char *end, const char *other)
+dna4_count_mismatches_rc(const char *begin, const char *end, const char *other)
 {
-	return dna4_count_mismatches_rev_generic(begin, end, other);
+	return dna4_count_mismatches_rc_generic(begin, end, other);
 }
 #endif

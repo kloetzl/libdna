@@ -31,7 +31,7 @@ incdir = include_directories('include', 'bench', 'test', 'src')
 
 genericfiles = [
     'src/dna4_count_mismatches.c',
-    'src/dna4_count_mismatches_rev.c',
+    'src/dna4_count_mismatches_rc.c',
     'src/dna4_fill_random.c',
     'src/dna4_pack_2bits.c',
     'src/dna4_revcomp.c',
@@ -56,7 +56,7 @@ isaspecificlibs = []
 if host_machine.cpu_family() == 'x86_64'
     genericfiles += [
         'src/dna4_count_mismatches_x86.c',
-        'src/dna4_count_mismatches_rev_x86.c',
+        'src/dna4_count_mismatches_rc_x86.c',
         'src/dna4_fill_random_x86.c',
         'src/dna4_revcomp_x86.c',
         'src/dnax_extract_dna4_x86.c'
@@ -64,7 +64,7 @@ if host_machine.cpu_family() == 'x86_64'
 
     sse42files = [
         'src/dna4_count_mismatches_sse42.c',
-        'src/dna4_count_mismatches_rev_sse42.c',
+        'src/dna4_count_mismatches_rc_sse42.c',
         'src/dna4_fill_random_sse42.c',
         'src/dna4_revcomp_sse42.c',
         'src/dnax_extract_dna4_sse42.c'
@@ -77,7 +77,7 @@ if host_machine.cpu_family() == 'x86_64'
 
     avx2files = [
         'src/dna4_count_mismatches_avx2.c',
-        'src/dna4_count_mismatches_rev_avx2.c',
+        'src/dna4_count_mismatches_rc_avx2.c',
         'src/dna4_fill_random_avx2.c',
         'src/dna4_revcomp_avx2.c'
     ]
@@ -120,7 +120,7 @@ libdna = library('dna', ['include/dna.h', genericfiles],
 install_headers('include/dna.h', 'include/dna.hpp', subdir: 'kloetzl')
 install_man([
     'man/dna4_count_mismatches.3',
-    'man/dna4_count_mismatches_rev.3',
+    'man/dna4_count_mismatches_rc.3',
     'man/dna4_fill_random.3',
     'man/dna4_pack_2bits.3',
     'man/dna4_revcomp.3',
@@ -183,7 +183,7 @@ if get_option('with-tests')
 
     plaintests = [
         'Tcompare',
-        'Tcount_mismatches_rev',
+        'Tcount_mismatches_rc',
         'Tdna4_pack_2bits',
         'Tdna4_revcomp',
         'Tdnax_extract_dna4',

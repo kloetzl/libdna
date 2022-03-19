@@ -21,8 +21,7 @@ extern size_t
 dna4_count_mismatches(const char *begin, const char *end, const char *other);
 
 extern size_t
-dna4_count_mismatches_rev(
-	const char *begin, const char *end, const char *other);
+dna4_count_mismatches_rc(const char *begin, const char *end, const char *other);
 
 extern void
 dna4_fill_random(char *dest, char *end, uint32_t seed);
