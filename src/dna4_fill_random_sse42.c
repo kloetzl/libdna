@@ -39,7 +39,7 @@ chunk_squirrel3(uint32_t n, uint32_t seed)
 	return chunk;
 }
 
-DNA_PUBLIC
+DNA_LOCAL
 void
 dna4_fill_random_sse42(char *begin, char *end, uint32_t seed)
 {

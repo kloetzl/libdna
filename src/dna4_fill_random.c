@@ -41,7 +41,7 @@ squirrel3(uint32_t n, uint32_t seed)
 	return n;
 }
 
-DNA_PUBLIC
+DNA_LOCAL
 void
 dna4_fill_random_generic(char *dest, char *end, uint32_t seed)
 {

@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2021 (C) Fabian Klötzl
+ * Copyright 2021 - 2022 (C) Fabian Klötzl
  */
 
 #include "dna.h"
