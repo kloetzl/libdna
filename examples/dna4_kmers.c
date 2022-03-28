@@ -2,7 +2,7 @@
 
 typedef void (*process_fn)(const char *, size_t);
 
-size_t
+void
 process_canonical_kmers(
 	const char *begin, const char *end, size_t k, process_fn callback)
 {
@@ -13,10 +13,10 @@ process_canonical_kmers(
 	revcomp[length] = '\0'; // for debugging purposes
 
 	// [start, stop) is an interval of only dna4 bases
-	const char *start = dna4_find_first_of(dnax_to_dna4_table, begin, end);
+	const char *start = dnax_find_first_of(dnax_to_dna4_table, begin, end);
 	while (start < end - k + 1) {
 		const char *stop =
-			dna4_find_first_not_of(dnax_to_dna4_table, start + 1, end);
+			dnax_find_first_not_of(dnax_to_dna4_table, start + 1, end);
 
 		const char *rc = revcomp + (start - begin);
 		for (; start < stop - k + 1; start++, rc++) {
@@ -25,7 +25,7 @@ process_canonical_kmers(
 		}
 
 		// if stop is end computing stop + 1 is UB.
-		start = dna4_find_first_of(dnax_to_dna4_table, stop, end);
+		start = dnax_find_first_of(dnax_to_dna4_table, stop, end);
 	}
 
 	free(revcomp);
