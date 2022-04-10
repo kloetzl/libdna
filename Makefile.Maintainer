@@ -9,7 +9,10 @@ ifeq ($(UNAME_S),Darwin)
 LIBSUFFIX=dylib
 endif
 
-.PHONY: format
+CPPFLAGS=-Iinclude
+CFLAGS=-O2
+
+.PHONY: format clean
 
 exportedsymbols: builddir/libdna.${LIBSUFFIX}
 	nm $^ | awk '$$2 ~ /R|T/' > $@
@@ -29,3 +32,9 @@ builddir_wtests:
 
 builddir_wbench:
 	meson $@ -Dwith-benchmarks=true
+
+drunken: examples/drunken.o
+	cc $^ -o $@ -Lbuilddir -ldna -lmurmurhash
+
+clean: 
+	$(RM) exportedsymbols drunken examples/drunken.o
