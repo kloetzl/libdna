@@ -13,6 +13,7 @@ nav:
   - Snippets: 'snippets.md'
   - FASTA parsing: 'fasta.md'
   - Generating random sequences: 'random.md'
+  - Visual Representation: 'drunken.md'
 - Functions:
   - dna4_count_mismatches: 'dna4_count_mismatches.3.md'
   - dna4_count_mismatches_rc: 'dna4_count_mismatches_rc.3.md'
