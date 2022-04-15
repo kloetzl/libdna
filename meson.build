@@ -27,9 +27,11 @@ configure_file(
 has_native = cc.has_argument('-march=native')
 native_flag = has_native ? '-march=native' : ''
 
-incdir = include_directories('include', 'bench', 'test', 'src')
+incdir = include_directories('include', 'include/kloetzl', 'bench', 'test', 'src')
 
 genericfiles = [
+    'include/kloetzl/dna.h',
+    'include/kloetzl/dna.hpp',
     'src/dna4_count_mismatches.c',
     'src/dna4_count_mismatches_rc.c',
     'src/dna4_fill_random.c',
@@ -108,7 +110,7 @@ if host_machine.cpu_family() == 'aarch64'
     isaspecificlibs = [neonlib]
 endif
 
-libdna = library('dna', ['include/dna.h', genericfiles],
+libdna = library('dna', [genericfiles],
     include_directories : incdir,
     soversion: '0',
     link_whole: isaspecificlibs,
@@ -117,7 +119,7 @@ libdna = library('dna', ['include/dna.h', genericfiles],
     install: true
 )
 
-install_headers('include/dna.h', 'include/dna.hpp', subdir: 'kloetzl')
+install_headers('include/kloetzl/dna.h', 'include/kloetzl/dna.hpp', subdir: 'kloetzl')
 install_man([
     'man/dna4_count_mismatches.3',
     'man/dna4_count_mismatches_rc.3',
@@ -147,7 +149,7 @@ libdna_dep = declare_dependency(include_directories : 'include',
 pkg = import('pkgconfig')
 pkg.generate(
     libraries : libdna,
-    subdirs : ['.', 'kloetzl'],
+    subdirs : ['kloetzl'],
     name : 'libdna',
     description : 'Essential Functions for DNA Manipulation'
 )

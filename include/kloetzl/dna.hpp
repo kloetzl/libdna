@@ -13,7 +13,7 @@
 
 #include <array>
 #include <cstddef>
-#include <dna.h>
+#include <kloetzl/dna.h>
 #include <string>
 #include <string_view>
 #include <vector>
