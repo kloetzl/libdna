@@ -11,9 +11,10 @@
 #error "This header requires C++17"
 #endif
 
+#include "dna.h"
+
 #include <array>
 #include <cstddef>
-#include <dna.h>
 #include <string>
 #include <string_view>
 #include <vector>
