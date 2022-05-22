@@ -735,6 +735,53 @@ twiddle_avx2_permute(const char *begin, const char *end, char *__restrict dest)
 }
 #endif
 
+template <class Pack_fn>
+void
+bench_std_string(benchmark::State &state, Pack_fn fn)
+{
+	auto forward = std::string(LENGTH, '\0');
+	gen((char *)forward.c_str(), LENGTH);
+
+	for (auto _ : state) {
+		auto reverse = fn(forward);
+		benchmark::DoNotOptimize(reverse);
+	}
+}
+
+static std::string
+std_string_table(std::string dna)
+{
+	static /*constexpr*/ char table[127];
+	table['A'] = 'T';
+	table['T'] = 'A';
+	table['G'] = 'C';
+	table['C'] = 'G';
+
+	std::reverse(dna.begin(), dna.end());
+	std::transform(dna.begin(), dna.end(), dna.begin(), [=](char c) {
+		return table[(int)c];
+	});
+
+	return dna;
+}
+
+static std::string
+std_string_table2(const std::string &forward)
+{
+	static /*constexpr*/ char table[127];
+	table['A'] = 'T';
+	table['T'] = 'A';
+	table['G'] = 'C';
+	table['C'] = 'G';
+
+	auto reverse = std::string(forward.size(), '\0');
+	std::transform(
+		forward.rbegin(), forward.rend(), reverse.begin(),
+		[=](char c) { return table[(int)c]; });
+
+	return reverse;
+}
+
 char *
 subtract(const char *begin, const char *end, char *__restrict dest)
 {
@@ -851,5 +898,8 @@ BENCHMARK_CAPTURE(bench, shuffle_avx2, shuffle_avx2);
 BENCHMARK_CAPTURE(bench, twiddle_neon, twiddle_neon);
 BENCHMARK_CAPTURE(bench, shuffle_neon, shuffle_neon);
 #endif
+
+BENCHMARK_CAPTURE(bench_std_string, table, std_string_table);
+BENCHMARK_CAPTURE(bench_std_string, table2, std_string_table2);
 
 BENCHMARK_MAIN();
