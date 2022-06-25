@@ -70,6 +70,48 @@ TEST_CASE("Some simple checks")
 	delete[] aa;
 }
 
+TEST_CASE("Some simple checks (lowercase)")
+{
+	auto mrna = std::string("aaa-aac-aag-aat-acaaccacgact");
+	char *aa = new char[mrna.size() / 3 + 10];
+
+	char *ptr = dnax_translate(mrna.data(), mrna.data() + mrna.size(), aa);
+	*ptr = 0;
+
+	REQUIRE(std::string(aa) == "KNKNTTTT");
+
+	INFO("No triplet")
+	REQUIRE(dnax::translate("a---a") == "");
+
+	delete[] aa;
+}
+
+TEST_CASE("case independance")
+{
+	auto acgt = std::string("acgt");
+	char triplet[4] = {0};
+
+	for (char n0 : acgt) {
+		for (char n2 : acgt) {
+			for (char n1 : acgt) {
+				triplet[0] = n0;
+				triplet[1] = n1;
+				triplet[2] = n2;
+
+				char aa;
+				dnax_translate(triplet, triplet + 3, &aa);
+				std::transform(
+					std::begin(triplet), std::end(triplet), std::begin(triplet),
+					[](unsigned char c) { return std::toupper(c); });
+				char AA;
+				dnax_translate(triplet, triplet + 3, &AA);
+				INFO(triplet)
+				REQUIRE(aa == AA);
+			}
+		}
+	}
+}
+
 TEST_CASE("Compact table")
 {
 	// the following table is not exhaustive.
