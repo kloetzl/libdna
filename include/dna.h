@@ -2,11 +2,12 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2019-2021 © Fabian Klötzl
+ * Copyright 2019-2022 © Fabian Klötzl
  */
 
 #include <inttypes.h>
 #include <stddef.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,9 +62,6 @@ extern char *
 dnax_replace(const char *table, const char *begin, const char *end, char *dest);
 
 extern char *
-dnax_find_first_mismatch(const char *begin, const char *end, const char *other);
-
-extern char *
 dnax_find_first_of(const char *table, const char *begin, const char *end);
 
 extern char *
@@ -72,6 +70,29 @@ dnax_find_first_not_of(const char *table, const char *begin, const char *end);
 extern const char dnax_revcomp_table[];
 extern const char dnax_to_dna4_table[];
 extern const char dnax_iupac_codes[];
+
+inline char *
+dnax_find_first_mismatch(const char *begin, const char *end, const char *other)
+{
+	size_t length = end - begin;
+	size_t i = 0;
+
+	const size_t chunk_size = 8;
+
+	size_t chunked_length = length - (length % chunk_size);
+	for (; i < chunked_length; i += chunk_size) {
+		int check = memcmp(begin + i, other + i, chunk_size);
+		if (check) {
+			break;
+		}
+	}
+
+	for (; i < length; i++) {
+		if (begin[i] != other[i]) break;
+	}
+
+	return (char *)begin + i;
+}
 
 #ifdef __cplusplus
 }
