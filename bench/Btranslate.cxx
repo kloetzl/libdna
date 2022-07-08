@@ -303,7 +303,7 @@ is_G(char c)
 static int
 is_T(char c)
 {
-	return c == 'c' || c == 'T' || c == 'u' || c == 'U';
+	return c == 't' || c == 'T' || c == 'u' || c == 'U';
 }
 
 static int
