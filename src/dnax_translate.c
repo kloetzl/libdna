@@ -99,11 +99,9 @@ const char nuclTo4Bits[] = {
 static int16_t
 pack_triplet(const char str[3])
 {
-	int16_t ret = nuclTo4Bits[(unsigned char)str[0]];
-	ret <<= 4;
-	ret |= nuclTo4Bits[(unsigned char)str[1]];
-	ret <<= 4;
-	ret |= nuclTo4Bits[(unsigned char)str[2]];
+	int16_t ret = nuclTo4Bits[(unsigned char)str[0]] << 8 |
+				  nuclTo4Bits[(unsigned char)str[1]] << 4 |
+				  nuclTo4Bits[(unsigned char)str[2]];
 
 	return ret;
 }
@@ -119,24 +117,35 @@ dnax_translate(const char *begin, const char *end, char *dest)
 
 	const char *ptr = begin;
 
-	while (ptr < end) {
+	while (ptr + 2 < end) {
 		// skip gaps and non-nucleotide codes
-		const char *ccp = dnax_find_first_of(dnax_iupac_codes, ptr, end);
-		if (ccp == end) break;
+		char triplet[4] = {0};
+		memcpy(triplet, ptr, 3);
 
-		const char *ddp = dnax_find_first_of(dnax_iupac_codes, ccp + 1, end);
-		if (ddp == end) break;
+		int16_t prePacked = pack_triplet(triplet);
+		int16_t index;
 
-		const char *eep = dnax_find_first_of(dnax_iupac_codes, ddp + 1, end);
-		if (eep == end) break;
+		if (__builtin_expect(prePacked < 0, 0)) {
+			// Rare case, the triplet contained a non-nucleotide char.
+			const char *ccp = dnax_find_first_of(nuclTo4Bits, ptr, end);
+			if (ccp == end) break;
 
-		char cc = *ccp;
-		char dd = *ddp;
-		char ee = *eep;
-		ptr = eep + 1;
+			const char *ddp = dnax_find_first_of(nuclTo4Bits, ccp + 1, end);
+			if (ddp == end) break;
 
-		char triplet[3] = {cc, dd, ee};
-		int16_t index = pack_triplet(triplet);
+			const char *eep = dnax_find_first_of(nuclTo4Bits, ddp + 1, end);
+			if (eep == end) break;
+			ptr = eep + 1;
+
+			triplet[0] = *ccp;
+			triplet[1] = *ddp;
+			triplet[2] = *eep;
+			index = pack_triplet(triplet);
+		} else {
+			ptr += 3;
+			index = prePacked;
+		}
+
 		int code = table4096[index];
 
 		*dest++ = code;
