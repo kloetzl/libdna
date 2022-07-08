@@ -62,9 +62,6 @@ extern char *
 dnax_replace(const char *table, const char *begin, const char *end, char *dest);
 
 extern char *
-dnax_find_first_of(const char *table, const char *begin, const char *end);
-
-extern char *
 dnax_find_first_not_of(const char *table, const char *begin, const char *end);
 
 extern const char dnax_revcomp_table[];
@@ -92,6 +89,23 @@ dnax_find_first_mismatch(const char *begin, const char *end, const char *other)
 	}
 
 	return (char *)begin + i;
+}
+
+inline char *
+dnax_find_first_of(
+	const char *table, const char *begin, const char *end)
+{
+	const unsigned char *ubegin = (const unsigned char *)begin;
+
+	size_t length = end - begin;
+	size_t i = 0;
+
+	for (; i < length; i++) {
+		signed char c = table[ubegin[i]];
+		if (c != -1) return (char *)begin + i;
+	}
+
+	return (char *)end;
 }
 
 #ifdef __cplusplus

@@ -6,9 +6,6 @@
 #include "dna.h"
 #include "dna_internal.h"
 
-#include <assert.h>
-#include <string.h>
-
 DNA_PUBLIC
 extern char *
 dnax_find_first_mismatch(const char *begin, const char *end, const char *other);
