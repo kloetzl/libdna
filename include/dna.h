@@ -92,8 +92,7 @@ dnax_find_first_mismatch(const char *begin, const char *end, const char *other)
 }
 
 inline char *
-dnax_find_first_of(
-	const char *table, const char *begin, const char *end)
+dnax_find_first_of(const char *table, const char *begin, const char *end)
 {
 	const unsigned char *ubegin = (const unsigned char *)begin;
 

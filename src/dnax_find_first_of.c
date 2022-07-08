@@ -8,5 +8,4 @@
 
 DNA_PUBLIC
 extern char *
-dnax_find_first_of(
-	const char *table, const char *begin, const char *end);
+dnax_find_first_of(const char *table, const char *begin, const char *end);

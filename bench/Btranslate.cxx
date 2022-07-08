@@ -135,7 +135,7 @@ ifelse(const char *begin, const char *end, char *dest)
 
 	const char *ptr = begin;
 
-	while (ptr + 3 < end) {
+	while (ptr + 2 < end) {
 		// skip gaps and non-nucleotide codes
 		char triplet[4] = {0};
 		memcpy(triplet, ptr, 3);
