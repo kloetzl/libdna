@@ -27,7 +27,7 @@ namespace dna
 namespace dna4
 {
 	size_t count_mismatches(std::string_view s1, std::string_view s2);
-	size_t count_mismatches_rev(std::string_view s1, std::string_view s2);
+	size_t count_mismatches_rc(std::string_view s1, std::string_view s2);
 	std::string random(size_t length, uint32_t seed);
 	std::string revcomp(std::string_view str);
 	uint64_t pack_2bits(size_t k, std::string_view str);
