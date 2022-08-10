@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <kloetzl/dna.hpp>
+#include <dna.hpp>
 #include <string_view>
 #include <vector>
 
