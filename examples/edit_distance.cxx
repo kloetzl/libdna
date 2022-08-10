@@ -29,12 +29,14 @@ edit_distance(std::string_view s1, std::string_view s2, ssize_t max)
 	return max + 1;
 }
 
+#include <iostream>
+
 int
 main(int argc, char **argv)
 {
-	assert(argc == 2);
-	std::string s1 = argv[1];
-	std::string s2 = argv[2];
+	std::string s1 = argc >= 2 ? argv[1] : "AATCC";
+	std::string s2 = argc >= 3 ? argv[2] : "GATCC";
+	std::cerr << s1 << ' ' << s2 << std::endl;
 
 	auto ed = edit_distance(s1, s2, 10);
 	printf("%zu\n", ed);
