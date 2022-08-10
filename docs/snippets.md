@@ -54,7 +54,7 @@ gc_content(const std::string &str)
 }
 ```
 
-# Compute LCP array using Kasai algorithm
+# Compute LCP array using Kasai's algorithm
 
 This algorithm computes the LCP array using the method from Kasai et al.
 
@@ -75,11 +75,47 @@ kasai(const char *T, const int *SA, const int *ISA, size_t n, int *LCP)
 		if (j <= 0) continue;
 
 		k = SA[j - 1];
-		char *ptr = dna4_first_mismatch(T + k + l, T + i + l);
+		char *ptr = dnax_find_first_mismatch(T + k + l, T + i + l);
 		l = ptr - T - k - l;
 
 		LCP[j] = l;
 		l = l ? l - 1 : 0;
 	}
+}
+```
+
+# Compute the edit distance
+
+Libdna provides `dna4_count_mismatches` to compute the Hamming distance between two string. Computing the Levenshtein or edit distance is a bit more complicated. The following code implements Myer's O(nd) algorithm in C++.
+
+```C++
+#include <kloetzl/dna.hpp>
+#include <string_view>
+#include <vector>
+
+size_t
+edit_distance(std::string_view s1, std::string_view s2, ssize_t max)
+{
+	std::vector<size_t> v(max * 2 + 2);
+	auto V = std::begin(v) + max + 1;
+
+	for (ssize_t D = 0; D <= max; D++) {
+		for (ssize_t k = -D; k <= D; k += 2) {
+			size_t x;
+			if (k == -D || (k != D && V[k - 1] < V[k + 1])) {
+				x = V[k + 1];
+			} else {
+				x = V[k - 1] + 1;
+			}
+			auto y = x - k;
+			auto mm = dnax::find_first_mismatch(s1.substr(x), s2.substr(y));
+			V[k] = x + mm;
+			if (x + mm >= s1.size() || y + mm >= s2.size()) {
+				return D;
+			}
+		}
+	}
+
+	return max + 1;
 }
 ```

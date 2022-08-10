@@ -206,9 +206,11 @@ if get_option('with-tests')
     endforeach
 
     examples = {
+        'edit_distance': 'edit_distance.cxx',
         'fasta': 'fasta.c',
         'gc_content': 'gc_content.cxx',
         'geneticcode_table': 'geneticcode_table.cxx',
+        'kasai': 'kasai.c',
         'randomseq': 'random.c'
     }
     foreach example, file_name : examples
