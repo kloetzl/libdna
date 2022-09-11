@@ -170,3 +170,13 @@ TEST_CASE("Example from dna4_count_mismatches_rc manpage")
 
 	REQUIRE(snps == 2);
 }
+
+TEST_CASE("Simple hash verification")
+{
+	for (uint64_t i = 0; i < 64; i++) {
+		uint64_t data = 1lu << i;
+		uint64_t hash = dna_ihash(data);
+		uint64_t inverse = dna_ihash_invert(hash);
+		REQUIRE(data == inverse);
+	}
+}

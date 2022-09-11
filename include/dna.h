@@ -16,6 +16,12 @@ extern "C" {
 extern int
 dna_version(void);
 
+extern uint64_t
+dna_ihash(uint64_t key);
+
+extern uint64_t
+dna_ihash_invert(uint64_t key);
+
 /// dna4 - only ACGT
 
 extern size_t

@@ -36,6 +36,8 @@ genericfiles = [
     'src/dna4_pack_2bits.c',
     'src/dna4_revcomp.c',
     'src/dna4_unpack_2bits.c',
+    'src/dna_ihash.c',
+    'src/dna_ihash_invert.c',
     'src/dna_internal.h',
     'src/dna_version.c',
     'src/dnax_count.c',
