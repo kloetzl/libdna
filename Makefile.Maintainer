@@ -20,7 +20,7 @@ exportedsymbols: builddir/libdna.${LIBSUFFIX}
 format:
 	clang-format -i src/*.h src/*.c include/*.h include/*.hpp
 	clang-format -i bench/*.cxx
-	clang-format -i test/*.cxx
+	clang-format -i test/*.cxx test/*.h
 	clang-format -i rttest/*.c rttest/*.cxx
 	clang-format -i examples/*.c examples/*.cxx
 

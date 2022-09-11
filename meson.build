@@ -191,6 +191,7 @@ if get_option('with-tests')
         'Tdnax_extract_dna4',
         'Tdnax_pack_4bits',
         'Tdnax_revcomp',
+        'Tihash',
         'Tfill_random',
         'Tsimple',
         'Ttranslate'
