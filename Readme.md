@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/kloetzl/libdna.svg?branch=master)](https://travis-ci.org/kloetzl/libdna)
 [![Documentation Status](https://readthedocs.org/projects/libdna/badge/?version=latest)](https://libdna.readthedocs.io/en/latest/?badge=latest)
 
-The aim of this project is to unify functionality commonly found in bioinformatics projects working on DNA. DNA, as opposed to RNA or amino acid sequences, are very long strings. Even bacterial genomes are easily a few megabyte in size. Thus, for efficient analysis the length has to be taken into account in the design of an application. To this end, libdna contains SIMD routines highly optimised for DNA strings. For some functions the library even choses the optimal implementation depending on the CPU at runtime.
+The aim of this project is to unify functionality commonly found in bioinformatics projects working on DNA. DNA, as opposed to RNA or amino acid sequences, are very long strings. Even bacterial genomes are easily a few megabyte in size. Thus, for efficient analysis the length has to be taken into account in the design of an application. To this end, libdna contains SIMD routines highly optimised for DNA strings. For some functions the library even chooses the optimal implementation depending on the CPU at runtime.
 
 # Installation
 
@@ -15,7 +15,7 @@ Libdna requires the [Meson](https://mesonbuild.com/) buildsystem. It is commonly
     meson compile
     meson install
 
-Contributor may also want to take a look at the `Makefile.Maintainer`. It contains handy shortcuts set up tests, benchmarks and other release related files.
+Contributors may also want to take a look at the `Makefile.Maintainer`. It contains handy shortcuts set up tests, benchmarks and other release related files.
 
 # How to use
 
