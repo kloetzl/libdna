@@ -115,7 +115,7 @@ libdna = library('dna', ['include/dna.h', genericfiles],
     soversion: '0',
     link_whole: isaspecificlibs,
     pic: true,
-    c_args : ['-O2', '-fvisibility=hidden'],
+    c_args : ['-O2', '-fvisibility=hidden', '-Wno-overlength-strings'],
     install: true
 )
 
