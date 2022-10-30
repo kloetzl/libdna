@@ -171,6 +171,15 @@ TEST_CASE("Example from dna4_count_mismatches_rc manpage")
 	REQUIRE(snps == 2);
 }
 
+std::pair<uint64_t, std::string>
+make_key(const std::string &str)
+{
+	uint64_t prefix = 0;
+	std::size_t prefix_length = std::min(sizeof(prefix), str.size());
+	std::memcpy(&prefix, str.data(), prefix_length);
+	return std::make_pair(dna::ihash(prefix), str.substr(prefix_length));
+}
+
 TEST_CASE("Simple hash verification")
 {
 	for (uint64_t i = 0; i < 64; i++) {
@@ -179,4 +188,12 @@ TEST_CASE("Simple hash verification")
 		uint64_t inverse = dna_ihash_invert(hash);
 		REQUIRE(data == inverse);
 	}
+
+	auto key = make_key("AACGTACC");
+	auto prefix = dna::ihash_invert(key.first);
+	char chars[9] = {0};
+	memcpy(&chars, &prefix, sizeof(prefix));
+
+	INFO(chars);
+	REQUIRE(strcmp(chars, "AACGTACC") == 0);
 }
