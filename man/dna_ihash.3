@@ -1,0 +1,31 @@
+.TH DNA_IHASH 3 2022-09-11 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dna_ihash \- invertible hash function
+
+.SH SYNOPSIS
+.nf
+.B #include <kloetzl/dna.h>
+.PP
+.BI "uint64_t dna_ihash(uint64_t " data ");"
+.fi
+
+.SH DESCRIPTION
+
+Traditionally, a hash table contains hashes and the associated values. If the table is huge, and the values are small, storing both hash and value can incur a memory overhead. The \fBdna_ihash\fR() invertible hash function provides a solution to this. If the hash is invertible it can be used to hold the hashed value, or at least parts thereof.
+
+Note that, as \fBdna_ihash\fR() is invertible by design, it is not safe for cryptography. Further, it is trivial to create prefix-collisions.
+
+.SH EXAMPLE
+.in +4
+.EX
+std::pair<uint64_t, std::string>
+make_key(const std::string& str) {
+	uint64_t prefix = 0;
+	std::size_t prefix_length = std::min(sizeof(prefix), str.size());
+	std::memcpy(&prefix, str.data(), prefix_length);
+	return std::make_pair(dna::ihash(prefix), str.substr(prefix_length));
+}
+
+.SH SEE ALSO
+.BR dna_ihash_invert (3)
