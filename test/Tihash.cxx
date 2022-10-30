@@ -14,6 +14,11 @@ TEST_CASE("Some simple checks")
 		uint64_t hash = dna_ihash(data);
 		uint64_t inverse = dna_ihash_invert(hash);
 		REQUIRE(data == inverse);
+
+		uint64_t hash_cxx = dna::ihash(data);
+		uint64_t inverse_cxx = dna::ihash_invert(hash_cxx);
+		REQUIRE(hash == hash_cxx);
+		REQUIRE(data == inverse_cxx);
 	}
 
 	REQUIRE(dna_ihash(0) != dna_ihash(1));

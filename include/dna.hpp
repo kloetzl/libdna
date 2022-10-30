@@ -62,6 +62,18 @@ version()
 {
 	return dna_version();
 }
+
+uint64_t
+ihash(uint64_t key)
+{
+	return dna_ihash(key);
+}
+
+uint64_t
+ihash_invert(uint64_t key)
+{
+	return dna_ihash_invert(key);
+}
 } // namespace dna
 
 namespace dna4
