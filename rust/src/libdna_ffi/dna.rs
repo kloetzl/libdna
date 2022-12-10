@@ -9,20 +9,17 @@ extern "C" {
 }
 
 pub fn version() -> i32 {
-    unsafe {
-        dna_version()
-    }
+    unsafe { dna_version() }
 }
 
 pub fn revcomp(forward: &str) -> String {
     let size = forward.len();
-    let mut ret = String::with_capacity(size);  // zero initalized?
+    let mut ret = String::with_capacity(size); // zero initalized?
     let begin = forward.as_ptr();
     let dest = ret.as_mut_ptr();
     unsafe {
         let end = begin.offset(size as isize);
         dna4_revcomp(begin, end, dest);
     }
-    return ret;
+    ret
 }
-
