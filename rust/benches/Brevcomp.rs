@@ -23,6 +23,14 @@ lazy_static! {
         }
         comp
     };
+
+    static ref ICOMPLEMENT: [i8; 256] = {
+        let mut comp = [0i8; 256];
+        for index in 0..255 {
+            comp[index] = COMPLEMENT[index] as i8
+        }
+        comp
+    };
 }
 
 #[inline]
@@ -50,7 +58,7 @@ fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| libdna_ffi::dna4::revcomp(&forward))
     });
     c.bench_function("dnax_revcomp", |b| {
-        b.iter(|| libdna_ffi::dnax::revcomp(&COMPLEMENT, &forward))
+        b.iter(|| libdna_ffi::dnax::revcomp(&ICOMPLEMENT, &forward))
     });
     c.bench_function("rust-bio", |b| {
         b.iter(|| bio::alphabets::dna::revcomp(forward.bytes()))
