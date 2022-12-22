@@ -8,15 +8,8 @@ use crate::libdna::native;
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::borrow::Borrow;
 
-const LENGTH: i32 = 1_000_000;
-
-fn repeat(pattern: &str, k: i32) -> String {
-    let mut s = pattern.to_string();
-    for _ in 0..k {
-        s.push_str(pattern);
-    }
-    s
-}
+// use odd length to mess with alignment
+const LENGTH: usize = 1_000_009;
 
 lazy_static! {
     static ref COMPLEMENT: [u8; 256] = {
@@ -50,11 +43,11 @@ where
 }
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let forward = repeat("ACGT", 1000000);
+    let forward = libdna_ffi::dna4::random(LENGTH, 1729);
 
     c.bench_function("native", |b| b.iter(|| native::revcomp(&forward)));
     c.bench_function("dna4_revcomp", |b| {
-        b.iter(|| libdna_ffi::dna::revcomp(&forward))
+        b.iter(|| libdna_ffi::dna4::revcomp(&forward))
     });
     c.bench_function("dnax_revcomp", |b| {
         b.iter(|| libdna_ffi::dnax::revcomp(&COMPLEMENT, &forward))
