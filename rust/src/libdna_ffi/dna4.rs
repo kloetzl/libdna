@@ -8,7 +8,14 @@ extern "C" {
         end: *const c_char,
         other: *const c_char,
     ) -> usize;
+    fn dna4_count_mismatches_rc(
+        begin: *const c_char,
+        end: *const c_char,
+        other: *const c_char,
+    ) -> usize;
     fn dna4_fill_random(dest: *mut c_char, end: *mut c_char, seed: u32);
+    fn dna4_pack_2bits(begin: *const c_char, k: usize) -> u64;
+    fn dna4_unpack_2bits(begin: *mut c_char, k: usize, packed: u64);
 }
 
 #[inline]
@@ -47,6 +54,15 @@ pub fn count_mismatches(forward: &str, other: &str) -> usize {
     }
 }
 
+pub fn count_mismatches_rc(forward: &str, other: &str) -> usize {
+    let begin = forward.as_ptr() as *const c_char;
+    let other = other.as_ptr() as *const c_char;
+    unsafe {
+        let end = begin.offset(forward.len() as isize) as *const c_char;
+        dna4_count_mismatches_rc(begin, end, other)
+    }
+}
+
 pub fn random(size: usize, seed: u32) -> String {
     create_and_overwrite(size, |ptr| {
         let dest = ptr as *mut c_char;
@@ -54,6 +70,25 @@ pub fn random(size: usize, seed: u32) -> String {
             dna4_fill_random(dest, dest.offset(size as isize), seed);
         }
         size
+    })
+}
+
+pub fn pack_2bits(forward: &str) -> u64 {
+    assert!(forward.len() <= 32);
+    unsafe {
+        let begin = forward.as_ptr() as *const c_char;
+        dna4_pack_2bits(begin, forward.len())
+    }
+}
+
+pub fn unpack_2bits(k: usize, packed: u64) -> String {
+    assert!(k <= 32);
+    create_and_overwrite(k, |ptr| {
+        let dest = ptr as *mut c_char;
+        unsafe {
+            dna4_unpack_2bits(dest, k, packed);
+            k
+        }
     })
 }
 
@@ -86,5 +121,16 @@ mod tests {
 
         let unrelated = random(10000, 24);
         assert!(large != unrelated);
+    }
+
+    #[test]
+    fn pack() {
+        let forward = "ACGTACGTTTCC";
+        let packed = pack_2bits(forward);
+
+        assert_eq!(packed, 0x1b1bf5);
+
+        let unpacked = unpack_2bits(forward.len(), packed);
+        assert_eq!(unpacked, forward);
     }
 }
