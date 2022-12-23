@@ -1,4 +1,4 @@
-use super::create_and_overwrite;
+use super::*;
 use std::os::raw::c_char;
 
 #[link(name = "dna")]
@@ -20,62 +20,43 @@ extern "C" {
 }
 
 pub fn revcomp(forward: &str) -> String {
-    let size = forward.len();
-    let begin = forward.as_ptr() as *const c_char;
-    let end = unsafe { begin.offset(size as isize) };
-    create_and_overwrite(size, |ptr| {
-        let dest = ptr as *mut c_char;
-        unsafe {
-            dna4_revcomp(begin, end, dest);
-        }
-        size
+    let (begin, end) = to_ptrs(forward);
+    create_string_and_overwrite(forward.len(), |dest| unsafe {
+        dna4_revcomp(begin, end, dest)
     })
 }
 
 pub fn count_mismatches(forward: &str, other: &str) -> usize {
-    let begin = forward.as_ptr() as *const c_char;
-    let other = other.as_ptr() as *const c_char;
-    unsafe {
-        let end = begin.offset(forward.len() as isize) as *const c_char;
-        dna4_count_mismatches(begin, end, other)
-    }
+    let (begin, end) = to_ptrs(forward);
+    let (other, _) = to_ptrs(other);
+    unsafe { dna4_count_mismatches(begin, end, other) }
 }
 
 pub fn count_mismatches_rc(forward: &str, other: &str) -> usize {
-    let begin = forward.as_ptr() as *const c_char;
-    let other = other.as_ptr() as *const c_char;
-    unsafe {
-        let end = begin.offset(forward.len() as isize) as *const c_char;
-        dna4_count_mismatches_rc(begin, end, other)
-    }
+    let (begin, end) = to_ptrs(forward);
+    let (other, _) = to_ptrs(other);
+    unsafe { dna4_count_mismatches_rc(begin, end, other) }
 }
 
 pub fn random(size: usize, seed: u32) -> String {
-    create_and_overwrite(size, |ptr| {
-        let dest = ptr as *mut c_char;
-        unsafe {
-            dna4_fill_random(dest, dest.offset(size as isize), seed);
-        }
-        size
+    create_string_and_overwrite(size, |dest| unsafe {
+        let dest_end = dest.offset(size as isize);
+        dna4_fill_random(dest, dest_end, seed);
+        dest_end
     })
 }
 
 pub fn pack_2bits(forward: &str) -> u64 {
     assert!(forward.len() <= 32);
-    unsafe {
-        let begin = forward.as_ptr() as *const c_char;
-        dna4_pack_2bits(begin, forward.len())
-    }
+    let (begin, _) = to_ptrs(forward);
+    unsafe { dna4_pack_2bits(begin, forward.len()) }
 }
 
 pub fn unpack_2bits(k: usize, packed: u64) -> String {
     assert!(k <= 32);
-    create_and_overwrite(k, |ptr| {
-        let dest = ptr as *mut c_char;
-        unsafe {
-            dna4_unpack_2bits(dest, k, packed);
-            k
-        }
+    create_string_and_overwrite(k, |dest| unsafe {
+        dna4_unpack_2bits(dest, k, packed);
+        dest.offset(k as isize)
     })
 }
 
