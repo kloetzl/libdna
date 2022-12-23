@@ -10,3 +10,7 @@ lazy_static = "*"
 [[bench]]
 name = "Brevcomp"
 harness = false
+
+[[bench]]
+name = "Bcount_mismatches"
+harness = false

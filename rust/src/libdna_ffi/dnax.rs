@@ -52,4 +52,17 @@ mod tests {
         let backward = revcomp(unsafe { &dnax_revcomp_table }, forward);
         assert_eq!(backward, "ACGTacgtACGT");
     }
+
+    #[test]
+    fn Ttranslate() {
+        let dna = "AUG!CTN";
+        let prot = translate(dna);
+        assert_eq!(prot, "ML");
+    }
+
+    #[test]
+    fn Textract() {
+        let forward = "AaC!GT";
+        assert_eq!(extract_dna4(forward), "AACGT");
+    }
 }
