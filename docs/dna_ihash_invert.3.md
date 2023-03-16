@@ -9,7 +9,7 @@ LIBDNA, 2023-03-16
 
 ## Description
 
-Invert a hash value previously created with \fBdna_ihash\fR(). This restores the data stored therein.
+Invert a hash value previously created with **dna\_ihash**(). This restores the data stored therein.
 
 
 ## Example

@@ -16,7 +16,7 @@ Note that, as **dna_ihash**() is invertible by design, it is not safe for crypto
 
 ## Example
 
-    std::pair&lt;uint64_t, std::string&gt;
+    std::pair<uint64_t, std::string>
     make_key(const std::string& str) {
         uint64_t prefix = 0;
         std::size_t prefix_length = std::min(sizeof(prefix), str.size());
