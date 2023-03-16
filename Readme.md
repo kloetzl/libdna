@@ -56,5 +56,5 @@ As the wrapper relies on automatic memory management which can incur a significa
 
 # License
 
-Copyright © 2018 - 2022 Fabian Klötzl <fabian-libdna@kloetzl.info>  
+Copyright © 2018 - 2023 Fabian Klötzl <fabian-libdna@kloetzl.info>  
 MIT License
