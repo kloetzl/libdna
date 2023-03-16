@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2021 (C) Fabian Klötzl
+ * Copyright 2018 - 2023 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -11,7 +11,7 @@
 
 DNA_LOCAL
 size_t
-dna4_count_mismatches_generic(
+dnax_count_mismatches_generic(
 	const char *begin, const char *end, const char *other)
 {
 	assert(begin != NULL);
@@ -35,8 +35,13 @@ dna4_count_mismatches_generic(
 #if !defined(__ARM_NEON) && !defined(__x86_64)
 DNA_PUBLIC
 size_t
-dna4_count_mismatches(const char *begin, const char *end, const char *other)
+dnax_count_mismatches(const char *begin, const char *end, const char *other)
 {
-	return dna4_count_mismatches_generic(begin, end, other);
+	return dnax_count_mismatches_generic(begin, end, other);
 }
 #endif
+
+// For compatibility with v1.3 and before
+DNA_PUBLIC
+extern size_t
+dna4_count_mismatches(const char *begin, const char *end, const char *other);

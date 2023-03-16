@@ -41,13 +41,13 @@ extern uint32_t
 squirrel3(uint32_t n, uint32_t seed);
 
 // CPU specific mismatch count
-typedef size_t(dna4_count_mismatches_fn)(
+typedef size_t(dnax_count_mismatches_fn)(
 	const char *begin, const char *end, const char *other);
 
-dna4_count_mismatches_fn dna4_count_mismatches_avx2;
-dna4_count_mismatches_fn dna4_count_mismatches_avx512;
-dna4_count_mismatches_fn dna4_count_mismatches_generic;
-dna4_count_mismatches_fn dna4_count_mismatches_sse2;
+dnax_count_mismatches_fn dnax_count_mismatches_avx2;
+dnax_count_mismatches_fn dnax_count_mismatches_avx512;
+dnax_count_mismatches_fn dnax_count_mismatches_generic;
+dnax_count_mismatches_fn dnax_count_mismatches_sse2;
 
 // CPU specific rc mismatch count
 typedef size_t(dna4_count_mismatches_rc_fn)(

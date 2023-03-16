@@ -35,5 +35,5 @@ Returns the number of mismatches of two string on opposite strands.
 
 ## See Also
 
-[dna4_count_mismatches](dna4_count_mismatches.3.md)
+[dnax_count_mismatches](dnax_count_mismatches.3.md)
 [dna4_revcomp](dna4_revcomp.3.md)

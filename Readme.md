@@ -34,7 +34,7 @@ int main()
 }
 ```
 
-In C++ things are even simpler thanks to a thin wrapper. Instead of raw pointers it uses `std::string_ref` and `std::string` to make the API more convenient.
+In C++ things are even simpler thanks to a thin wrapper. Instead of raw pointers it uses `std::string_view` and `std::string` to make the API more convenient.
 
 ```C++
 #include <kloetzl/dna.hpp>

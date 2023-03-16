@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2020 - 2022 © Fabian Klötzl
+ * Copyright 2020 - 2023 © Fabian Klötzl
  *
  * C++ convenience header
  */
@@ -78,11 +78,11 @@ ihash_invert(uint64_t key)
 
 namespace dna4
 {
-inline size_t
+__attribute__((deprecated)) inline size_t
 count_mismatches(std::string_view s1, std::string_view s2)
 {
 	// assume s1.size() == s2.size()
-	return dna4_count_mismatches(
+	return dnax_count_mismatches(
 		dna::cbegin(s1), dna::cend(s1), dna::cbegin(s2));
 }
 
@@ -127,6 +127,13 @@ unpack_2bits(size_t k, uint64_t packed)
 
 namespace dnax
 {
+inline size_t
+count_mismatches(std::string_view s1, std::string_view s2)
+{
+	// assume s1.size() == s2.size()
+	return dnax_count_mismatches(
+		dna::cbegin(s1), dna::cend(s1), dna::cbegin(s2));
+}
 
 inline auto
 pack_4bits(std::string_view str)

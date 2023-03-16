@@ -13,7 +13,7 @@ TEST_CASE("Some simple checks")
 	const auto subject = "AACGTACGT"s;
 	const auto query = "AACGTACCT"s;
 
-	size_t mismatches = dna4_count_mismatches(
+	size_t mismatches = dnax_count_mismatches(
 		dna::begin(subject), dna::end(subject), dna::begin(query));
 	REQUIRE(mismatches == 1);
 
@@ -25,16 +25,16 @@ TEST_CASE("Some simple checks")
 		dnax_revcomp_table, dna::begin(query), dna::end(query),
 		dna::begin(rquery));
 
-	size_t rcmismatches = dna4_count_mismatches(
+	size_t rcmismatches = dnax_count_mismatches(
 		dna::begin(rsubject), dna::end(rsubject), dna::begin(rquery));
 	REQUIRE(rcmismatches == 1);
 }
 
-TEST_CASE("Example from dna4_count_mismatches manpage")
+TEST_CASE("Example from dnax_count_mismatches manpage")
 {
 	const char seq1[] = "ACGTACGTACGT";
 	const char seq2[] = "ACGTTCGTACGA";
-	size_t snps = dna4_count_mismatches(seq1, seq1 + sizeof(seq1) - 1, seq2);
+	size_t snps = dnax_count_mismatches(seq1, seq1 + sizeof(seq1) - 1, seq2);
 
 	REQUIRE(snps == 2);
 }

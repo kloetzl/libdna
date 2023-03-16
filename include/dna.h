@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2019 - 2022 © Fabian Klötzl
+ * Copyright 2019 - 2023 © Fabian Klötzl
  */
 
 #include <inttypes.h>
@@ -25,9 +25,6 @@ dna_ihash_invert(uint64_t key);
 /// dna4 - only ACGT
 
 extern size_t
-dna4_count_mismatches(const char *begin, const char *end, const char *other);
-
-extern size_t
 dna4_count_mismatches_rc(const char *begin, const char *end, const char *other);
 
 extern void
@@ -44,6 +41,9 @@ dna4_unpack_2bits(char *begin, size_t k, uint64_t packed);
 
 /// dnax - Any ASCII char or UTF8 byte
 // -1 == skip
+
+extern size_t
+dnax_count_mismatches(const char *begin, const char *end, const char *other);
 
 extern size_t
 dnax_pack_4bits(const char *begin, const char *end, unsigned char *dest);
@@ -111,6 +111,14 @@ dnax_find_first_of(const char *table, const char *begin, const char *end)
 	}
 
 	return (char *)end;
+}
+
+/// deprecated
+
+__attribute__((deprecated)) inline size_t
+dna4_count_mismatches(const char *begin, const char *end, const char *other)
+{
+	return dnax_count_mismatches(begin, end, other);
 }
 
 #ifdef __cplusplus

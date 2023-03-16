@@ -475,7 +475,7 @@ intrinsics_avx512_crazy(
 }
 #endif
 
-BENCHMARK_CAPTURE(old_bench, dna4_count_mismatches, dna4_count_mismatches);
+BENCHMARK_CAPTURE(old_bench, dnax_count_mismatches, dnax_count_mismatches);
 BENCHMARK_CAPTURE(bench, base, base);
 #ifdef __SSE2__
 BENCHMARK_CAPTURE(bench, intrinsics_sse, intrinsics_sse);

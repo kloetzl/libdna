@@ -548,7 +548,7 @@ k80_twiddle2(benchmark::State &state)
 }
 BENCHMARK(k80_twiddle2);
 
-BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
+BENCHMARK_CAPTURE(bench, dnax_count_mismatches, dnax_count_mismatches);
 // BENCHMARK_CAPTURE(bench, dna4_evodist_jc_generic, dna4_evodist_jc_generic);
 BENCHMARK_CAPTURE(bench, base, base);
 

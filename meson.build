@@ -30,7 +30,6 @@ native_flag = has_native ? '-march=native' : ''
 incdir = include_directories('include', 'bench', 'test', 'src')
 
 genericfiles = [
-    'src/dna4_count_mismatches.c',
     'src/dna4_count_mismatches_rc.c',
     'src/dna4_fill_random.c',
     'src/dna4_pack_2bits.c',
@@ -41,6 +40,7 @@ genericfiles = [
     'src/dna_internal.h',
     'src/dna_version.c',
     'src/dnax_count.c',
+    'src/dnax_count_mismatches.c',
     'src/dnax_extract_dna4.c',
     'src/dnax_find_first_mismatch.c',
     'src/dnax_find_first_not_of.c',
@@ -57,18 +57,18 @@ genericfiles = [
 isaspecificlibs = []
 if host_machine.cpu_family() == 'x86_64'
     genericfiles += [
-        'src/dna4_count_mismatches_x86.c',
         'src/dna4_count_mismatches_rc_x86.c',
         'src/dna4_fill_random_x86.c',
         'src/dna4_revcomp_x86.c',
+        'src/dnax_count_mismatches_x86.c',
         'src/dnax_extract_dna4_x86.c'
     ]
 
     sse42files = [
-        'src/dna4_count_mismatches_sse42.c',
         'src/dna4_count_mismatches_rc_sse42.c',
         'src/dna4_fill_random_sse42.c',
         'src/dna4_revcomp_sse42.c',
+        'src/dnax_count_mismatches_sse42.c',
         'src/dnax_extract_dna4_sse42.c'
     ]
     sse42lib = static_library('sse42lib', sse42files,
@@ -78,10 +78,10 @@ if host_machine.cpu_family() == 'x86_64'
     )
 
     avx2files = [
-        'src/dna4_count_mismatches_avx2.c',
         'src/dna4_count_mismatches_rc_avx2.c',
         'src/dna4_fill_random_avx2.c',
-        'src/dna4_revcomp_avx2.c'
+        'src/dna4_revcomp_avx2.c',
+        'src/dnax_count_mismatches_avx2.c'
     ]
     avx2lib = static_library('avx2lib', avx2files,
         include_directories: incdir,
@@ -89,7 +89,7 @@ if host_machine.cpu_family() == 'x86_64'
         c_args : ['-O3', '-mpopcnt', '-mavx2', '-fvisibility=hidden']
     )
 
-    avx512files = ['src/dna4_count_mismatches_avx512.c']
+    avx512files = ['src/dnax_count_mismatches_avx512.c']
     avx512lib = static_library('avx512lib', avx512files,
         include_directories: incdir,
         pic: true,
@@ -100,7 +100,7 @@ if host_machine.cpu_family() == 'x86_64'
 endif
 
 if host_machine.cpu_family() == 'aarch64'
-    neonfiles = ['src/dna4_revcomp_neon.c', 'src/dna4_count_mismatches_neon.c']
+    neonfiles = ['src/dna4_revcomp_neon.c', 'src/dnax_count_mismatches_neon.c']
     neonlib = static_library('neonlib', neonfiles,
         include_directories: incdir,
         pic: true,
@@ -121,13 +121,13 @@ libdna = library('dna', ['include/dna.h', genericfiles],
 
 install_headers('include/dna.h', 'include/dna.hpp', subdir: 'kloetzl')
 install_man([
-    'man/dna4_count_mismatches.3',
     'man/dna4_count_mismatches_rc.3',
     'man/dna4_fill_random.3',
     'man/dna4_pack_2bits.3',
     'man/dna4_revcomp.3',
     'man/dna4_unpack_2bits.3',
     'man/dnax_count.3',
+    'man/dnax_count_mismatches.3',
     'man/dnax_extract_dna4.3',
     'man/dnax_find_first_mismatch.3',
     'man/dnax_find_first_not_of.3',

@@ -1,0 +1,26 @@
+.TH DNAX_COUNT_MISMATCHES 3 2023-03-16 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dnax_count_mismatches \- count the number of mismatching bytes
+
+.SH SYNOPSIS
+.nf
+.B #include <kloetzl/dna.h>
+.PP
+.BI "size_t dnax_count_mismatches(const char *" begin ", const char *" end ", const char *" other ");"
+.fi
+
+.SH DESCRIPTION
+The \fBdnax_count_mismatches\fR() function efficiently compares two strings and returns the number of mismatching bytes. The first string is delimited by \fIbegin\fR and \fIend\fR (exclusive). For the second string only the start must be supplied via \fIother\fR as it is assumed to be at least as long as the former. Null bytes are not interpreted as the end of a string.
+
+.SH RETURN VALUE
+Returns the number of mismatches.
+
+.SH EXAMPLE
+.in +4
+.EX
+const char seq1[] = "ACGTACGTACGT";
+const char seq2[] = "ACGTTCGTACGA";
+size_t snps = dnax_count_mismatches(seq1, seq1 + sizeof(seq1) - 1, seq2);
+
+assert(snps == 2);

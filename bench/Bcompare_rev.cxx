@@ -319,13 +319,13 @@ revcomp_then_count_mismatches(
 	dna4_revcomp(begin, end, buffer);
 	char *buffer_end = buffer + LENGTH;
 
-	auto d = dna4_count_mismatches(buffer, buffer_end, other);
+	auto d = dnax_count_mismatches(buffer, buffer_end, other);
 
 	free(buffer);
 	return d;
 }
 
-BENCHMARK_CAPTURE(bench, dna4_count_mismatches, dna4_count_mismatches);
+BENCHMARK_CAPTURE(bench, dnax_count_mismatches, dnax_count_mismatches);
 BENCHMARK_CAPTURE(bench, dna4_count_mismatches_rc, dna4_count_mismatches_rc);
 
 #ifdef __AVX2__

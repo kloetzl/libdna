@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2022 (C) Fabian Klötzl
+ * Copyright 2018 - 2023 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -8,14 +8,14 @@
 #include "utils.h"
 
 #include <assert.h>
-#include <emmintrin.h>
+#include <immintrin.h>
 #include <string.h>
 
-typedef __m128i vec_type;
+typedef __m256i vec_type;
 
 DNA_LOCAL
 size_t
-dna4_count_mismatches_sse2(
+dnax_count_mismatches_avx2(
 	const char *begin, const char *end, const char *other)
 {
 	assert(begin != NULL);
@@ -24,6 +24,7 @@ dna4_count_mismatches_sse2(
 	assert(begin <= end);
 
 	size_t mismatches = 0;
+	size_t offset = 0;
 	size_t length = end - begin;
 
 	const size_t vec_bytes = sizeof(vec_type);
@@ -37,9 +38,9 @@ dna4_count_mismatches_sse2(
 		memcpy(&begin_chunk, begin + vec_offset * vec_bytes, vec_bytes);
 		memcpy(&other_chunk, other + vec_offset * vec_bytes, vec_bytes);
 
-		vec_type comp = _mm_cmpeq_epi8(begin_chunk, other_chunk);
+		vec_type comp = _mm256_cmpeq_epi8(begin_chunk, other_chunk);
 
-		unsigned int vmask = _mm_movemask_epi8(comp);
+		unsigned int vmask = _mm256_movemask_epi8(comp);
 		equal += __builtin_popcount(vmask);
 
 		vec_offset++;
@@ -47,15 +48,15 @@ dna4_count_mismatches_sse2(
 		memcpy(&begin_chunk, begin + vec_offset * vec_bytes, vec_bytes);
 		memcpy(&other_chunk, other + vec_offset * vec_bytes, vec_bytes);
 
-		comp = _mm_cmpeq_epi8(begin_chunk, other_chunk);
+		comp = _mm256_cmpeq_epi8(begin_chunk, other_chunk);
 
-		vmask = _mm_movemask_epi8(comp);
+		vmask = _mm256_movemask_epi8(comp);
 		equal += __builtin_popcount(vmask);
 	}
 
 	mismatches = vec_offset * vec_bytes - equal;
 
-	size_t offset = vec_offset * vec_bytes;
+	offset += vec_offset * vec_bytes;
 
 	for (; offset < length; offset++) {
 		if (begin[offset] != other[offset]) {

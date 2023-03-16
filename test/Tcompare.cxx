@@ -14,7 +14,7 @@ TEST_CASE("Some simple checks")
 	const auto subject = "AACGTACGT"s;
 	const auto query = "AACGTACCT"s;
 
-	size_t mismatches = dna4_count_mismatches(
+	size_t mismatches = dnax_count_mismatches(
 		dna::begin(subject), dna::end(subject), dna::begin(query));
 	REQUIRE(mismatches == 1);
 
@@ -26,7 +26,7 @@ TEST_CASE("Some simple checks")
 		dnax_revcomp_table, dna::begin(query), dna::end(query),
 		dna::begin(rquery));
 
-	size_t rcmismatches = dna4_count_mismatches(
+	size_t rcmismatches = dnax_count_mismatches(
 		dna::begin(rsubject), dna::end(rsubject), dna::begin(rquery));
 	REQUIRE(rcmismatches == 1);
 }
@@ -40,10 +40,10 @@ TEST_CASE("Long strings")
 	const auto longsubject = repeat(subject, multiplier);
 	const auto longquery = repeat(query, multiplier);
 
-	size_t mismatches = dna4::count_mismatches(longsubject, longquery);
+	size_t mismatches = dnax::count_mismatches(longsubject, longquery);
 	REQUIRE(mismatches == (1 * multiplier));
 
-	mismatches = dna4_count_mismatches(
+	mismatches = dnax_count_mismatches(
 		dna::begin(longsubject), dna::end(longsubject), dna::begin(longquery));
 	REQUIRE(mismatches == (1 * multiplier));
 }
@@ -54,11 +54,11 @@ TEST_CASE("Test positions")
 	auto strB = strA;
 
 	for (size_t i = 0; i < 123; i++) {
-		REQUIRE(dna4::count_mismatches(strA, strB) == i);
+		REQUIRE(dnax::count_mismatches(strA, strB) == i);
 		strB[i] = 'C';
 	}
 
-	REQUIRE(dna4::count_mismatches(strA, strB) == 123);
+	REQUIRE(dnax::count_mismatches(strA, strB) == 123);
 }
 
 #ifdef EXPOSE_INTERNALS
@@ -75,12 +75,12 @@ template <function_type fn> struct functor {
 	}
 };
 
-using count_mismatches_functor_generic = functor<dna4_count_mismatches_generic>;
+using count_mismatches_functor_generic = functor<dnax_count_mismatches_generic>;
 
 #ifdef __x86_64
-using count_mismatches_functor_sse2 = functor<dna4_count_mismatches_sse2>;
-using count_mismatches_functor_avx2 = functor<dna4_count_mismatches_avx2>;
-using count_mismatches_functor_avx512 = functor<dna4_count_mismatches_avx512>;
+using count_mismatches_functor_sse2 = functor<dnax_count_mismatches_sse2>;
+using count_mismatches_functor_avx2 = functor<dnax_count_mismatches_avx2>;
+using count_mismatches_functor_avx512 = functor<dnax_count_mismatches_avx512>;
 #endif
 
 using MyTypes = std::tuple<

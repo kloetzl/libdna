@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2021 - 2022 (C) Fabian Klötzl
+ * Copyright 2021 - 2023 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -16,7 +16,7 @@
 
 DNA_PUBLIC
 size_t
-dna4_count_mismatches(const char *begin, const char *end, const char *other)
+dnax_count_mismatches(const char *begin, const char *end, const char *other)
 {
 	size_t substitutions = 0;
 	size_t length = end - begin;
