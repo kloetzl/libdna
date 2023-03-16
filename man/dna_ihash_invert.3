@@ -1,0 +1,26 @@
+.TH DNA_IHASH_INVERT 3 2023-03-16 "LIBDNA" "LIBDNA"
+
+.SH NAME
+dna_ihash_invert \- invert a hash function
+
+.SH SYNOPSIS
+.nf
+.B #include <kloetzl/dna.h>
+.PP
+.BI "uint64_t dna_ihash_invert(uint64_t " data ");"
+.fi
+
+.SH DESCRIPTION
+
+Invert a hash value previously created with \fBdna_ihash\fR(). This restores the data stored therein.
+
+.SH EXAMPLE
+.in +4
+.EX
+uint64_t data = 1729;
+uint64_t key  = dna_ihash(data);
+uint64_t recovered = dna_ihash_invert(key);
+assert(data == recovered);
+
+.SH SEE ALSO
+.BR dna_ihash (3)

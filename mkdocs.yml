@@ -15,6 +15,8 @@ nav:
   - Generating random sequences: 'random.md'
   - Visual Representation: 'drunken.md'
 - Functions:
+  - dna_ihash: 'dna_ihash.3.md'
+  - dna_ihash_invert: 'dna_ihash_invert.3.md'
   - dna4_count_mismatches_rc: 'dna4_count_mismatches_rc.3.md'
   - dna4_fill_random: 'dna4_fill_random.3.md'
   - dna4_pack_2bits: 'dna4_pack_2bits.3.md'

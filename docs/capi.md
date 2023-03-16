@@ -12,7 +12,7 @@ Every symbol exported by this library starts with `dna`. The following utility f
 
 * dna_version - returns the version of the library
 * [dna_ihash](dna_ihash.3.md)
-* dna_ihash_invert
+* [dna_ihash_invert](dna_ihash_invert.3.md)
 
 ## DNA4
 
