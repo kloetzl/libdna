@@ -6,9 +6,17 @@
 
 Most functions expect a `begin` and an `end` pointer. These are to make the half-open interval of DNA sequence to work on. Instead of relying on null-termination of strings, using an end-pointer enables better SIMD and working only on subsequences of strings. As genomes are long, you should avoid calling `strlen` too often and store the length with the data in one place anyway.
 
+## DNA
+
+Every symbol exported by this library starts with `dna`. The following utility functions do not work on strings but are still useful in a bioinformatics context.
+
+* dna_version - returns the version of the library
+* [dna_ihash](dna_ihash.3.md)
+* dna_ihash_invert
+
 ## DNA4
 
-Every symbol exported by this library starts with `dna`. Functions beginning with `dna4_` work on the letters `ACGT` exclusively. All other characters (lower case, null bytes, `U`) may trigger arbitrary behavior.
+Functions beginning with `dna4_` work on the letters `ACGT` exclusively. All other characters (lower case, null bytes, `U`) may trigger arbitrary behavior.
 
 * [dna4_count_mismatches_rc](dna4_count_mismatches_rc.3.md)
 * [dna4_fill_random](dna4_fill_random.3.md)

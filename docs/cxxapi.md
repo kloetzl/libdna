@@ -4,7 +4,7 @@
 #include <kloetzl/dna.hpp>
 ```
 
-The C++17 API is a thin wrapper around the C functions. While the old functions are still available, it sorts them into namespaces and provides more convenient versions. Below are the prototypes of these functions. The `dna` namespace further provides a few utility functions for handling strings.
+The C++17 API is a thin wrapper around the C functions. While the old functions are still available, the wrapper sorts them into namespaces and provides more convenient interfaces. Below are the prototypes of these functions. The `dna` namespace further provides a few utility functions for handling strings.
 
 ## DNA
 
@@ -26,7 +26,6 @@ namespace dna
 ```C++
 namespace dna4
 {
-	size_t count_mismatches(std::string_view s1, std::string_view s2);
 	size_t count_mismatches_rc(std::string_view s1, std::string_view s2);
 	std::string random(size_t length, uint32_t seed);
 	std::string revcomp(std::string_view str);
@@ -40,6 +39,7 @@ namespace dna4
 ```C++
 namespace dnax
 {
+	size_t count_mismatches(std::string_view s1, std::string_view s2);
 	auto pack_4bits(std::string_view str);
 	auto unpack_4bits(const std::vector<unsigned char> &vec);
 	std::string revcomp(const char *table, std::string_view str);

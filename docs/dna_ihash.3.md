@@ -9,7 +9,7 @@ LIBDNA, 2022-09-11
 
 ## Description
 
-Traditionally, a hash table contains hashes and the associated values. If the table is huge, and the values are small, storing both hash and value can incur a memory overhead. The **dna_ihash**() invertible hash function provides a solution to this. If the hash is invertible it can be used to hold the hashed value, or at least parts thereof.
+Traditionally, a hash table contains hashes and the associated values. If the table is huge and the values are small, storing both hash and value can incur a memory overhead. The **dna_ihash**() invertible hash function provides a solution to this. If the hash is invertible it can be used to hold the hashed value, or at least parts thereof.
 
 Note that, as **dna_ihash**() is invertible by design, it is not safe for cryptography. Further, it is trivial to create prefix-collisions.
 
