@@ -126,6 +126,8 @@ install_man([
     'man/dna4_pack_2bits.3',
     'man/dna4_revcomp.3',
     'man/dna4_unpack_2bits.3',
+    'man/dna_ihash.3',
+    'man/dna_ihash_invert.3',
     'man/dnax_count.3',
     'man/dnax_count_mismatches.3',
     'man/dnax_extract_dna4.3',
