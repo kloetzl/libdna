@@ -201,8 +201,7 @@ TEST_CASE("Simple hash verification")
 TEST_CASE("Example from dna_ihash_invert manpage")
 {
 	uint64_t data = 1729;
-	uint64_t key  = dna_ihash(data);
+	uint64_t key = dna_ihash(data);
 	uint64_t recovered = dna_ihash_invert(key);
 	REQUIRE(data == recovered);
 }
-
