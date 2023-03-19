@@ -15,11 +15,11 @@ CFLAGS=-O2
 .PHONY: format clean
 
 exportedsymbols: builddir/libdna.${LIBSUFFIX}
-	nm $^ | awk '$$2 ~ /R|T/' > $@
+	nm $^ | awk '$$2 ~ /R|T|i/' > $@
 
 format:
 	clang-format -i src/*.h src/*.c include/*.h include/*.hpp
-	clang-format -i bench/*.cxx
+	clang-format -i bench/*.cxx bench/*.h
 	clang-format -i test/*.cxx test/*.h
 	clang-format -i rttest/*.c rttest/*.cxx
 	clang-format -i examples/*.c examples/*.cxx
@@ -35,6 +35,9 @@ builddir_wbench:
 
 drunken: examples/drunken.o
 	cc $^ -o $@ -Lbuilddir -ldna -lmurmurhash
+
+validate-source: exportedsymbols
+	python3 meta/validate-source.py . > $@
 
 clean: 
 	$(RM) exportedsymbols drunken examples/drunken.o

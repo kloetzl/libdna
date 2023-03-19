@@ -1,6 +1,24 @@
 name: Build and Test
 on: [push]
 jobs:
+  Validate-Format:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - 'src'
+          - 'include'
+          - 'bench'
+          - 'test'
+          - 'rttest'
+          - 'examples'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check code format against formatting rules
+      uses: jidicula/clang-format-action@v4.11.0
+      with:
+        clang-format-version: '15'
+        check-path: ${{ matrix.path }}
   Plain-Build:
     runs-on: ubuntu-latest
     steps:
