@@ -24,8 +24,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v1
+      - name: Build Project
+        run: |
+          sudo apt install meson
+          make -f Makefile.maintainer builddir
+          cd builddir
+          meson compile
       - name: Check source for avoidable mistakes
         run: |
+          make -f Makefile.maintainer exportedsymbols
           python3 meta/validate-source.py .
   Plain-Build:
     runs-on: ubuntu-latest
