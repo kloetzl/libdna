@@ -13,8 +13,8 @@ override = {
 }
 
 
-def dnaSymbols(symbols, rx=re.compile(r"^dna[4x]?_\w+$")):
-	return symbols.__class__(symbol for symbol in symbols if rx.match(symbol) is not None)
+def dnaSymbols(symbols, rx=re.compile(r"^_?(dna[4x]?_\w+)$")):
+	return symbols.__class__(rx.match(symbol)[1] for symbol in symbols if rx.match(symbol) is not None)
 
 
 def loadExportedSymbols(filename):
