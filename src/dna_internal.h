@@ -2,10 +2,13 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2019 - 2022 © Fabian Klötzl
+ * Copyright 2019 - 2023 © Fabian Klötzl
  */
 
 #include "config.h"
+
+#include <inttypes.h>
+#include <stddef.h>
 
 #ifdef NDEBUG
 #undef EXPOSE_INTERNALS

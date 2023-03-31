@@ -6,6 +6,7 @@
 RT*
 exportedsymbols
 bench2/revcomp
+validate-source
 
 # meson files
 subprojects/Catch2-*
