@@ -73,4 +73,12 @@ dna4_revcomp(const char *begin, const char *end, char *dest)
 	return dna4_revcomp_fnptr(begin, end, dest);
 }
 
+DNA_LOCAL
+DNA_CONSTRUCTOR
+void
+dna4_revcomp_init(void)
+{
+	dna4_revcomp_fnptr = dna4_revcomp_select();
+}
+
 #endif
