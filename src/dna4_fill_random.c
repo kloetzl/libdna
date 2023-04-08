@@ -83,9 +83,9 @@ dna4_fill_random_generic(char *dest, char *end, uint32_t seed)
 
 #if !defined(__x86_64)
 DNA_PUBLIC
-char *
-dna4_fill_random(const char *begin, const char *end, char *dest)
+void
+dna4_fill_random(char *begin, char *end, uint32_t seed)
 {
-	return dna4_fill_random_generic(begin, end, dest);
+	dna4_fill_random_generic(begin, end, seed);
 }
 #endif
