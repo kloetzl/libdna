@@ -248,10 +248,11 @@ if get_option('with-benchmarks')
 
     plainbench = [
         'Bcompare',
-        'Bcompare_wg',
         'Bcompare_rev',
+        'Bcompare_wg',
         'Bfill_random',
         'Bmismatch',
+        'Bpack',
         'Brevcomp',
         'Bstrconstr',
         'Btranslate'
