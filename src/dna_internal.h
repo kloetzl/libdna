@@ -68,8 +68,9 @@ dna4_revcomp_fn dna4_revcomp_generic;
 dna4_revcomp_fn dna4_revcomp_sse42;
 
 // CPU specific extract
-typedef char *(
-	dnax_extract_dna4_fn)(const char *begin, const char *end, char *dest);
+typedef char *(dnax_extract_dna4_fn)(const char *begin,
+									 const char *end,
+									 char *dest);
 
 dnax_extract_dna4_fn dnax_extract_dna4_generic;
 dnax_extract_dna4_fn dnax_extract_dna4_sse42;
