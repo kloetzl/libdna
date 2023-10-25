@@ -12,7 +12,7 @@
 #endif
 
 static const size_t LENGTH = 100000;
-static const size_t K = 20;
+static const size_t K = 31;
 size_t seed = 61;
 size_t invrate;
 
@@ -128,15 +128,222 @@ printshort(const char *addr, size_t nbytes)
 	fprintf(stderr, "%s\n", buf);
 }
 
+static uint64_t
+mult_v1(const char *begin, size_t k)
+{
+	assert(begin != NULL);
+	assert(k <= 32);
+
+	uint64_t res = 0;
+
+	char dat[32];
+	memset(dat, '_', 32);
+	memcpy(dat, begin, k);
+	uint32_t ints[8] = {0};
+
+	// read bytes independent of endianess
+	for (int i = 0; i < 8; i++) {
+		uint8_t *off = (uint8_t *)dat + i * 4;
+		// ints[i] = (off[3]<<0) | (off[2]<<8) | (off[1]<<16) | (off[0]<<24);
+		ints[i] =
+			(off[3] << 24) | (off[2] << 16) | (off[1] << 8) | (off[0] << 0);
+	}
+
+	for (int i = 0; i < 8; i++) {
+		// printadj(dat + i * 4, 4);
+		ints[i] &= 0x6060606;
+		ints[i] >>= 1;
+		ints[i] ^= ints[i] >> 1;
+		ints[i] &= 0x3030303;
+		// printhex((char*)&ints[i], 4);
+		// ints[i] *= 0x1044010;
+		ints[i] *= 0x40100401;
+
+		// printhex((char*)&ints[i], 4);
+
+		uint8_t high_byte = ints[i] >> (3 * 8);
+		res |= (uint64_t)high_byte << ((7 - i) * 8);
+	}
+
+	// printf("%lx\n", res);
+
+	// uint64_t high_bit = res & 0xaaaaaaaaaaaaaaaalu;
+	// high_bit >>= 1;
+	// res ^= high_bit;
+	// printf("%lx\n", res);
+
+	res >>= (32 - k) * 2;
+	// printf("%lx\n", res);
+
+	return res;
+}
+
+static uint64_t
+mult_v1_1(const char *begin, size_t k)
+{
+	assert(begin != NULL);
+	assert(k <= 32);
+
+	uint64_t res = 0;
+
+	char dat[32];
+	memset(dat, '_', 32);
+	memcpy(dat, begin, k);
+	uint32_t ints[8] = {0};
+
+	// read bytes independent of endianess
+	for (int i = 0; i < 8; i++) {
+		uint8_t *off = (uint8_t *)dat + i * 4;
+		// ints[i] = (off[3]<<0) | (off[2]<<8) | (off[1]<<16) | (off[0]<<24);
+		ints[i] =
+			(off[3] << 24) | (off[2] << 16) | (off[1] << 8) | (off[0] << 0);
+	}
+
+	for (int i = 0; i < 8; i++) {
+		// printadj(dat + i * 4, 4);
+		ints[i] &= 0x6060606;
+		ints[i] >>= 1;
+		// printhex((char*)&ints[i], 4);
+		ints[i] *= 0x40100401;
+
+		// printhex((char*)&ints[i], 4);
+
+		uint8_t high_byte = ints[i] >> (3 * 8);
+		res |= (uint64_t)high_byte << ((7 - i) * 8);
+	}
+
+	// printf("%lx\n", res);
+
+	uint64_t high_bit = res & 0xaaaaaaaaaaaaaaaalu;
+	high_bit >>= 1;
+	res ^= high_bit;
+	// printf("%lx\n", res);
+
+	res >>= (32 - k) * 2;
+	// printf("%lx\n", res);
+
+	return res;
+}
+
+static uint64_t
+mult_v2(const char *begin, size_t k)
+{
+	assert(begin != NULL);
+	assert(k <= 32);
+
+	uint64_t res = 0;
+
+	char dat[32];
+	memset(dat, '\0', 32);
+	memcpy(dat, begin, k);
+	uint32_t ints[8] = {0};
+
+	// read bytes independently of endianess
+	for (int i = 0; i < 8; i++) {
+		uint8_t *off = (uint8_t *)dat + i * 4;
+		ints[i] =
+			(off[3] << 0) | (off[2] << 8) | (off[1] << 16) | (off[0] << 24);
+	}
+
+	for (int i = 0; i < 8; i++) {
+		ints[i] &= 0x6060606;
+		ints[i] *= 0x820820;
+
+		uint8_t high_byte = ints[i] >> (3 * 8);
+		res |= (uint64_t)high_byte << ((7 - i) * 8);
+	}
+
+	uint64_t high_bit = res & 0xaaaaaaaaaaaaaaaalu;
+	high_bit >>= 1;
+	res ^= high_bit;
+
+	res >>= (32 - k) * 2;
+
+	return res;
+}
+
+static uint64_t
+mult_v3(const char *begin, size_t k)
+{
+	assert(begin != NULL);
+	assert(k <= 32);
+
+	uint64_t res = 0;
+
+	char dat[32];
+	memset(dat, '\0', 32);
+	memcpy(dat, begin, k);
+	uint32_t ints[8] = {0};
+
+	// read bytes independently of endianess
+	for (int i = 0; i < 8; i++) {
+		uint8_t *off = (uint8_t *)dat + i * 4;
+		ints[i] =
+			(off[3] << 24) | (off[2] << 16) | (off[1] << 8) | (off[0] << 0);
+	}
+
+	for (int i = 0; i < 8; i++) {
+		ints[i] &= 0x6060606;
+		ints[i] *= 0x820820;
+
+		uint8_t high_byte = ints[i] >> (3 * 8);
+		res |= (uint64_t)high_byte << ((7 - i) * 8);
+	}
+
+	uint64_t high_bit = res & 0xaaaaaaaaaaaaaaaalu;
+	high_bit >>= 1;
+	res ^= high_bit;
+
+	res >>= (32 - k) * 2;
+
+	return res;
+}
+
 #ifdef __SSE2__
+static uint64_t
+simd_mult(const char *begin, size_t k)
+{
+	assert(begin != NULL);
+	assert(k <= 32);
+
+	uint64_t res = 0;
+
+	char dat[32];
+	memset(dat, '\0', 32);
+	memcpy(dat, begin, k);
+
+	__m256i nibblecode = _mm256_setr_epi8(
+		'0', 0, '2', 1, 3, '5', '6', 2, '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
+		'0', 0, '2', 1, 3, '5', '6', 2, '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+
+	__m256i chunk;
+	memcpy(&chunk, &dat, sizeof(chunk));
+	chunk = _mm256_shuffle_epi8(nibblecode, chunk);
+
+	// GCC likes to replace the following multiplication with shifts and adds.
+	chunk = _mm256_mullo_epi32(chunk, _mm256_set1_epi32(0x820820));
+	__m256i mask = _mm256_set_epi32(0, 4, 8, 16, 0, 4, 8, 16);
+	chunk = _mm256_shuffle_epi8(chunk, mask);
+
+	memcpy(&res, (char *)&chunk + 4, 8);
+
+	res >>= (32 - k) * 2;
+
+	return res;
+}
 #endif
 
 BENCHMARK_CAPTURE(bench_template, dna4_pack_2bits, dna4_pack_2bits);
 // BENCHMARK_CAPTURE(bench_template, dnax_pack_4bits, dnax_pack_4bits);
 BENCHMARK_CAPTURE(bench_template, pack_simple, pack_simple);
 BENCHMARK_CAPTURE(bench_template, pack_table, pack_table);
+BENCHMARK_CAPTURE(bench_template, mult_v1, mult_v1);
+BENCHMARK_CAPTURE(bench_template, mult_v1_1, mult_v1_1);
+BENCHMARK_CAPTURE(bench_template, mult_v2, mult_v2);
+BENCHMARK_CAPTURE(bench_template, mult_v3, mult_v3);
 
 #ifdef __SSE2__
+BENCHMARK_CAPTURE(bench_template, simd_mult, simd_mult);
 #endif
 
 BENCHMARK_MAIN();
