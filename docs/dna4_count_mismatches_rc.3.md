@@ -9,7 +9,7 @@ LIBDNA, 2022-03-10
 
 ## Description
 
-The **dna4\_count\_mismatches\_rev**() function efficiently compares two dna strings across strands and returns the number of mismatching bytes. The first string is delimited by _begin_ and _end_ (exclusive). For the second string only the start must be supplied via _other_ as it is assumed to be at least as long as the former. 
+The **dna4\_count\_mismatches\_rc**() function efficiently compares two dna strings across strands and returns the number of mismatching bytes. The first string is delimited by _begin_ and _end_ (exclusive). For the second string only the start must be supplied via _other_ as it is assumed to be at least as long as the former. 
 
 The result is undefined if the input strings contain characters besides
 _A_,

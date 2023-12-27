@@ -1,7 +1,5 @@
 # libdna
 
-[![Build Status](https://travis-ci.org/kloetzl/libdna.svg?branch=master)](https://travis-ci.org/kloetzl/libdna)
-[![Documentation Status](https://readthedocs.org/projects/libdna/badge/?version=latest)](https://libdna.readthedocs.io/en/latest/?badge=latest)
 
 The aim of this project is to unify functionality commonly found in bioinformatics projects working on DNA. DNA, as opposed to RNA or amino acid sequences, are very long strings. Even bacterial genomes are easily a few megabyte in size. Thus, for efficient analysis the length has to be taken into account in the design of an application. To this end, libdna contains SIMD routines highly optimised for DNA strings. For some functions the library even chooses the optimal implementation depending on the CPU at runtime.
 
@@ -45,7 +43,7 @@ int main()
 }
 ```
 
-As the wrapper relies on automatic memory management which can incur a significant runtime overhead, the underlying C functions are still available for use. Don't forget to link with `-ldna`.
+As the wrapper relies on automatic memory management, which can incur a significant runtime overhead, the underlying C functions are still available for use. Don't forget to link with `-ldna`.
 
 # Bonus
 

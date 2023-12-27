@@ -24,7 +24,7 @@ struct parser {
 };
 ```
 
-Even though not strictly necessary in this case it makes sense to wrap the `FILE` in a distinct struct. For instance, we could use it to keep track of the line number to enable better error diagnostics, later. For not let us just initialize the parser given a file path. Also any valid and non-empty FASTA has to start with a `>`.
+Even though not strictly necessary in this case it makes sense to wrap the `FILE` in a distinct struct. For instance, we could use it to keep track of the line number to enable better error diagnostics, later. For now let us just initialize the parser with given a file path. Also any valid and non-empty FASTA has to start with a `>`.
 
 ```C
 int

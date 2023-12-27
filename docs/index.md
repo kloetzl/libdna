@@ -42,7 +42,7 @@ int main()
 }
 ```
 
-As the wrapper relies on automatic memory management which can incur a significant runtime overhead, the underlying C functions are still available for use. Don't forget to link with `-ldna`.
+As the wrapper relies on automatic memory management, which can incur a significant runtime overhead, the underlying C functions are still available for use. Don't forget to link with `-ldna`.
 
 # Bonus
 

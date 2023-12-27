@@ -4,7 +4,7 @@
 #include <kloetzl/dna.h>
 ```
 
-Most functions expect a `begin` and an `end` pointer. These are to make the half-open interval of DNA sequence to work on. Instead of relying on null-termination of strings, using an end-pointer enables better SIMD and working only on subsequences of strings. As genomes are long, you should avoid calling `strlen` too often and store the length with the data in one place anyway.
+Most functions expect a `begin` and an `end` pointer. These form the half-open interval of DNA sequence to work on. Instead of relying on null-termination of strings, using an end-pointer enables better SIMD and working only on subsequences of strings. As genomes are long, you should avoid calling `strlen` too often and store the length with the data in one place anyway.
 
 ## DNA
 
