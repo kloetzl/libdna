@@ -34,7 +34,7 @@ char *
 dna4_revcomp(const char *begin, const char *end, char *dest)
 	__attribute__((ifunc("dna4_revcomp_select")));
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && 0
 
 void *
 dna4_revcomp_macho(void) __asm__("_dna4_revcomp");

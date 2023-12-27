@@ -37,7 +37,7 @@ size_t
 dnax_count_mismatches(const char *begin, const char *end, const char *other)
 	__attribute__((ifunc("dnax_count_mismatches_select")));
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && 0
 
 void *
 dnax_count_mismatches_macho(void) __asm__("_dnax_count_mismatches");

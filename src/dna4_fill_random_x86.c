@@ -34,7 +34,7 @@ void
 dna4_fill_random(char *dest, char *end, uint32_t seed)
 	__attribute__((ifunc("dna4_fill_random_select")));
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && 0
 
 void *
 dna4_fill_random_macho(void) __asm__("_dna4_fill_random");

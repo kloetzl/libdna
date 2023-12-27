@@ -32,7 +32,7 @@ char *
 dnax_extract_dna4(const char *begin, const char *end, char *dest)
 	__attribute__((ifunc("dnax_extract_dna4_select")));
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && 0
 
 void *
 dnax_extract_dna4_macho(void) __asm__("_dnax_extract_dna4");
