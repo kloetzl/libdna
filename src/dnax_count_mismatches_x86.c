@@ -30,61 +30,12 @@ dnax_count_mismatches_select(void)
 	}
 }
 
-#if CAN_IFUNC && __has_attribute(ifunc)
-
-DNA_PUBLIC
-size_t
-dnax_count_mismatches(const char *begin, const char *end, const char *other)
-	__attribute__((ifunc("dnax_count_mismatches_select")));
-
-#elif defined(__APPLE__) && 0
-
-void *
-dnax_count_mismatches_macho(void) __asm__("_dnax_count_mismatches");
-
-DNA_PUBLIC
-void *
-dnax_count_mismatches_macho(void)
-{
-	__asm__(".symbol_resolver _dnax_count_mismatches");
-	return (void *)dnax_count_mismatches_select();
-}
-
-#else
-
-// If ifunc is unavailable (for instance on macOS or hurd) we have to implement
-// the functionality ourselves. Using a function pointer is faster than a
-// boolean variable.
-
-size_t
-dnax_count_mismatches_callonce(
-	const char *begin, const char *end, const char *other);
-
-static dnax_count_mismatches_fn *dnax_count_mismatches_fnptr =
-	dnax_count_mismatches_callonce;
-
-DNA_LOCAL
-size_t
-dnax_count_mismatches_callonce(
-	const char *begin, const char *end, const char *other)
-{
-	dnax_count_mismatches_fnptr = dnax_count_mismatches_select();
-	return dnax_count_mismatches_fnptr(begin, end, other);
-}
-
-DNA_PUBLIC
-size_t
-dnax_count_mismatches(const char *begin, const char *end, const char *other)
-{
-	return dnax_count_mismatches_fnptr(begin, end, other);
-}
-
-DNA_LOCAL
-DNA_CONSTRUCTOR
-void
-dnax_count_mismatches_init(void)
-{
-	dnax_count_mismatches_fnptr = dnax_count_mismatches_select();
-}
-
-#endif
+RESOLVER(
+	size_t,
+	dnax_count_mismatches,
+	const char *,
+	begin,
+	const char *,
+	end,
+	const char *,
+	other)

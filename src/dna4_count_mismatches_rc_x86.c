@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2021 - 2022 (C) Fabian Klötzl
+ * Copyright 2021 - 2023 (C) Fabian Klötzl
  */
 
 #include "config.h"
@@ -27,61 +27,12 @@ dna4_count_mismatches_rc_select(void)
 	}
 }
 
-#if CAN_IFUNC && __has_attribute(ifunc)
-
-DNA_PUBLIC
-size_t
-dna4_count_mismatches_rc(const char *begin, const char *end, const char *other)
-	__attribute__((ifunc("dna4_count_mismatches_rc_select")));
-
-#elif defined(__APPLE__) && 0
-
-void *
-dna4_count_mismatches_rc_macho(void) __asm__("_dna4_count_mismatches_rc");
-
-DNA_PUBLIC
-void *
-dna4_count_mismatches_rc_macho(void)
-{
-	__asm__(".symbol_resolver _dna4_count_mismatches_rc");
-	return (void *)dna4_count_mismatches_rc_select();
-}
-
-#else
-
-// If ifunc is unavailable (for instance on macOS or hurd) we have to implement
-// the functionality ourselves. Using a function pointer is faster than a
-// boolean variable.
-
-size_t
-dna4_count_mismatches_rc_callonce(
-	const char *begin, const char *end, const char *other);
-
-static dna4_count_mismatches_rc_fn *dna4_count_mismatches_rc_fnptr =
-	dna4_count_mismatches_rc_callonce;
-
-DNA_LOCAL
-size_t
-dna4_count_mismatches_rc_callonce(
-	const char *begin, const char *end, const char *other)
-{
-	dna4_count_mismatches_rc_fnptr = dna4_count_mismatches_rc_select();
-	return dna4_count_mismatches_rc_fnptr(begin, end, other);
-}
-
-DNA_PUBLIC
-size_t
-dna4_count_mismatches_rc(const char *begin, const char *end, const char *other)
-{
-	return dna4_count_mismatches_rc_fnptr(begin, end, other);
-}
-
-DNA_LOCAL
-DNA_CONSTRUCTOR
-void
-dna4_count_mismatches_rc_init(void)
-{
-	dna4_count_mismatches_rc_fnptr = dna4_count_mismatches_rc_select();
-}
-
-#endif
+RESOLVER(
+	size_t,
+	dna4_count_mismatches_rc,
+	const char *,
+	begin,
+	const char *,
+	end,
+	const char *,
+	other)

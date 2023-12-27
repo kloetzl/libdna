@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2022 (C) Fabian Klötzl
+ * Copyright 2018 - 2023 (C) Fabian Klötzl
  */
 
 #include "config.h"
@@ -27,58 +27,5 @@ dna4_revcomp_select(void)
 	}
 }
 
-#if CAN_IFUNC && __has_attribute(ifunc)
-
-DNA_PUBLIC
-char *
-dna4_revcomp(const char *begin, const char *end, char *dest)
-	__attribute__((ifunc("dna4_revcomp_select")));
-
-#elif defined(__APPLE__) && 0
-
-void *
-dna4_revcomp_macho(void) __asm__("_dna4_revcomp");
-
-DNA_PUBLIC
-void *
-dna4_revcomp_macho(void)
-{
-	__asm__(".symbol_resolver _dna4_revcomp");
-	return (void *)dna4_revcomp_select();
-}
-
-#else
-
-// If ifunc is unavailable (for instance on macOS or hurd) we have to implement
-// the functionality ourselves. Using a function pointer is faster than a
-// boolean variable.
-
-char *
-dna4_revcomp_callonce(const char *begin, const char *end, char *dest);
-
-static dna4_revcomp_fn *dna4_revcomp_fnptr = dna4_revcomp_callonce;
-
-DNA_LOCAL
-char *
-dna4_revcomp_callonce(const char *begin, const char *end, char *dest)
-{
-	dna4_revcomp_fnptr = dna4_revcomp_select();
-	return dna4_revcomp_fnptr(begin, end, dest);
-}
-
-DNA_PUBLIC
-char *
-dna4_revcomp(const char *begin, const char *end, char *dest)
-{
-	return dna4_revcomp_fnptr(begin, end, dest);
-}
-
-DNA_LOCAL
-DNA_CONSTRUCTOR
-void
-dna4_revcomp_init(void)
-{
-	dna4_revcomp_fnptr = dna4_revcomp_select();
-}
-
-#endif
+RESOLVER(
+	char *, dna4_revcomp, const char *, begin, const char *, end, char *, dest)
