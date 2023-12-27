@@ -63,14 +63,14 @@ void
 dna4_fill_random_callonce(char *dest, char *end, uint32_t seed)
 {
 	dna4_fill_random_fnptr = dna4_fill_random_select();
-	return dna4_fill_random_fnptr(begin, end, dest);
+	dna4_fill_random_fnptr(dest, end, seed);
 }
 
 DNA_PUBLIC
 void
 dna4_fill_random(char *dest, char *end, uint32_t seed)
 {
-	return dna4_fill_random_fnptr(begin, end, dest);
+	dna4_fill_random_fnptr(dest, end, seed);
 }
 
 DNA_LOCAL
