@@ -17,7 +17,7 @@ jobs:
     - name: Check code format against formatting rules
       uses: jidicula/clang-format-action@v4.11.0
       with:
-        clang-format-version: '15'
+        clang-format-version: '16'
         check-path: ${{ matrix.path }}
   Validate-Source:
     runs-on: ubuntu-latest
