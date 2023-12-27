@@ -110,7 +110,7 @@ dna4_fill_random_fn dna4_fill_random_generic;
 
 #define RESOLVER(RETTYPE, NAME, ...)                                           \
 	DNA_PUBLIC                                                                 \
-	void NAME(ARG_1(__VA_ARGS__), ARG_2(__VA_ARGS__), ARG_3(__VA_ARGS__))      \
+	RETTYPE NAME(ARG_1(__VA_ARGS__), ARG_2(__VA_ARGS__), ARG_3(__VA_ARGS__))   \
 		__attribute__((ifunc(STRINGIFY(NAME) "_select")));
 
 #define RESOLVER_VOID(RETTYPE, NAME, ...) RESOLVER(RETTYPE, NAME, __VA_ARGS__)
