@@ -13,7 +13,7 @@ jobs:
           - 'rttest'
           - 'examples'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Check code format against formatting rules
       uses: jidicula/clang-format-action@v4.11.0
       with:
@@ -22,8 +22,8 @@ jobs:
   Validate-Source:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: Build Project
         run: |
           sudo apt install meson zsh
@@ -37,8 +37,8 @@ jobs:
   Plain-Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: Install meson
         run: |
           sudo apt install meson
@@ -52,8 +52,8 @@ jobs:
   With-Unit-Tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: Install meson
         run: |
           sudo apt install meson
@@ -71,8 +71,8 @@ jobs:
   Test-Install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: Install meson
         run: |
           sudo apt install meson
