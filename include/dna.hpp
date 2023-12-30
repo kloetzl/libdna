@@ -74,6 +74,32 @@ ihash_invert(uint64_t key)
 {
 	return dna_ihash_invert(key);
 }
+
+template <typename Fn>
+inline
+std::string
+make_string_for_overwrite(size_t length, Fn fn)
+{
+#if __cplusplus >= 202110L
+
+	auto ret = std::string();
+	ret.resize_and_overwrite(length, [&fn](char *buf, size_t size) {
+		auto ptr = fn(buf, buf + size);
+		return ptr - buf;
+	});
+	return ret;
+
+#else
+
+	auto ret = std::string(length, '\0');
+	auto ptr = fn(dna::begin(ret), dna::end(ret));
+	auto it = ret.begin() + (ptr - dna::begin(ret));
+	ret.erase(it, ret.end());
+	return ret;
+
+#endif
+}
+
 } // namespace dna
 
 namespace dna4
@@ -97,17 +123,20 @@ count_mismatches_rc(std::string_view s1, std::string_view s2)
 inline std::string
 random(size_t length, uint32_t seed)
 {
-	auto ret = std::string(length, '\0');
-	dna4_fill_random(dna::begin(ret), dna::end(ret), seed);
-	return ret;
+	return dna::make_string_for_overwrite(
+		length, [seed](char *dest_begin, char *dest_end) {
+			dna4_fill_random(dest_begin, dest_end, seed);
+			return dest_end;
+		});
 }
 
 inline std::string
 revcomp(std::string_view str)
 {
-	auto ret = std::string(str.size(), '\0');
-	dna4_revcomp(dna::cbegin(str), dna::cend(str), dna::begin(ret));
-	return ret;
+	return dna::make_string_for_overwrite(
+		str.size(), [str](char *dest_begin, char *) {
+			return dna4_revcomp(dna::cbegin(str), dna::cend(str), dest_begin);
+		});
 }
 
 inline uint64_t
@@ -119,9 +148,11 @@ pack_2bits(size_t k, std::string_view str)
 inline std::string
 unpack_2bits(size_t k, uint64_t packed)
 {
-	auto ret = std::string(k, '\0');
-	dna4_unpack_2bits(dna::begin(ret), k, packed);
-	return ret;
+	return dna::make_string_for_overwrite(
+		k, [packed, k](char *dest_begin, char *dest_end) {
+			dna4_unpack_2bits(dest_begin, k, packed);
+			return dest_end;
+		});
 }
 } // namespace dna4
 
@@ -149,29 +180,30 @@ pack_4bits(std::string_view str)
 inline auto
 unpack_4bits(const std::vector<unsigned char> &vec)
 {
-	auto ret = std::string(vec.size() * 2, '\0');
-	dnax_unpack_4bits(vec.data(), vec.data() + vec.size(), dna::begin(ret));
-	return ret;
+	return dna::make_string_for_overwrite(
+		vec.size() * 2, [&vec](char *dest_begin, char *dest_end) {
+			dnax_unpack_4bits(vec.data(), vec.data() + vec.size(), dest_begin);
+			return dest_end;
+		});
 }
 
 inline std::string
 revcomp(const char *table, std::string_view str)
 {
-	auto ret = std::string(str.size(), '\0');
-	auto end =
-		dnax_revcomp(table, dna::cbegin(str), dna::cend(str), dna::begin(ret));
-	ret.erase(ret.begin() + (end - dna::begin(ret)), ret.end());
-	return ret;
+	return dna::make_string_for_overwrite(
+		str.size(), [str, table](char *dest_begin, char *) {
+			return dnax_revcomp(
+				table, dna::cbegin(str), dna::cend(str), dest_begin);
+		});
 }
 
 inline std::string
 translate(std::string_view str)
 {
-	auto ret = std::string(str.size() / 3, '\0');
-	auto end =
-		dnax_translate(dna::cbegin(str), dna::cend(str), dna::begin(ret));
-	ret.erase(ret.begin() + (end - dna::begin(ret)), ret.end());
-	return ret;
+	return dna::make_string_for_overwrite(
+		str.size() / 3, [str](char *dest_begin, char *) {
+			return dnax_translate(dna::cbegin(str), dna::cend(str), dest_begin);
+		});
 }
 
 inline std::array<size_t, 256>
@@ -195,11 +227,11 @@ extract_dna4(std::string_view str)
 inline std::string
 replace(const char *table, std::string_view str)
 {
-	auto ret = std::string(str.size(), '\0');
-	auto end =
-		dnax_replace(table, dna::cbegin(str), dna::cend(str), dna::begin(ret));
-	ret.erase(ret.begin() + (end - dna::begin(ret)), ret.end());
-	return ret;
+	return dna::make_string_for_overwrite(
+		str.size(), [str, table](char *dest_begin, char *) {
+			return dnax_replace(
+				table, dna::cbegin(str), dna::cend(str), dest_begin);
+		});
 }
 
 inline std::string_view::size_type
