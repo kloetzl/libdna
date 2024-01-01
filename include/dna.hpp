@@ -76,8 +76,7 @@ ihash_invert(uint64_t key)
 }
 
 template <typename Fn>
-inline
-std::string
+inline std::string
 make_string_for_overwrite(size_t length, Fn fn)
 {
 #if __cplusplus >= 202110L
