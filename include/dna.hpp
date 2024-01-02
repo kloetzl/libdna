@@ -216,11 +216,11 @@ count(std::string_view str)
 inline std::string
 extract_dna4(std::string_view str)
 {
-	auto ret = std::string(str.size(), '\0');
-	auto end =
-		dnax_extract_dna4(dna::cbegin(str), dna::cend(str), dna::begin(ret));
-	ret.erase(ret.begin() + (end - dna::begin(ret)), ret.end());
-	return ret;
+	return dna::make_string_for_overwrite(
+		str.size(), [str](char *dest_begin, char *) {
+			return dnax_extract_dna4(
+				dna::cbegin(str), dna::cend(str), dest_begin);
+		});
 }
 
 inline std::string
