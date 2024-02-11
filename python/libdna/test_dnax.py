@@ -31,7 +31,7 @@ def test_revcomp():
 	assert revcomp(seq) == seq
 
 	seq = "ACGTacgtACGT!"
-	# assert revcomp(seq) == "ACGTacgtACGT"  # currently failing
+	assert revcomp(seq) == "ACGTacgtACGT"
 
 
 
