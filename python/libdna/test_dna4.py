@@ -1,5 +1,6 @@
 from dna4 import *
 
+
 def test_basic():
 	assert revcomp("ACGT") == "ACGT"
 	assert len(random(100)) == 100
