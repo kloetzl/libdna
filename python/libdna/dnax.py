@@ -1,4 +1,4 @@
-from collections import Counter, defaultdict
+from collections import Counter
 
 
 def count(seq: str) -> Counter[str]:
@@ -8,10 +8,12 @@ def count(seq: str) -> Counter[str]:
 def count_mismatches(seq1: str, seq2: str) -> int:
 	return sum(a != b for a, b in zip(seq1, seq2))
 
+
 _ex_in = "acgtACGTuU"
 _ex_out = "ACGTACGTTT"
 _ex_else = "QWERYIOPSDFHJKLZXVBNM"
 _ex_tab = str.maketrans(_ex_in, _ex_out, _ex_else)
+
 
 def extract_dna4(seq: str) -> str:
 	return seq.translate(_ex_tab)

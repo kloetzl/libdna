@@ -11,7 +11,7 @@ def random(length: int) -> str:
 
 def count_mismatches_rc(seq1: str, seq2: str) -> int:
 	rc = revcomp(seq2)
-	return sum(a != b for a, b in zip(seq1, seq2))
+	return sum(a != b for a, b in zip(seq1, rc))
 
 
 _str2int = {"A": 0, "C": 1, "G": 2, "T": 3}
