@@ -51,7 +51,7 @@ def replace(seq: str, from_: str, to: str) -> str:
 	return _replace(from_, to)(seq)
 
 
-_revcomp = _replace("acgtACGTuU", "tgcaTGCAaA")
+_revcomp = _replace("abcdghkmnrstuvwyABCDGHKMNRSTUVWY", "tvghcdmknysaabwrTVGHCDMKNYSAABWR")
 
 
 def revcomp(seq: str) -> str:
