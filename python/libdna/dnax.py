@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright 2024 (C) Fabian Klötzl
+
 from collections import Counter
 
 

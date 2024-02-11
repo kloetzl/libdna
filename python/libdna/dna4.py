@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright 2024 (C) Fabian Klötzl
 
 _comp = str.maketrans("ACGT", "TGCA")
 
