@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2022 (C) Fabian Klötzl
+ * Copyright 2018 - 2024 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -80,7 +80,7 @@ const char table4096[] = {
 
 // The following is almost identical to dnax_iupac_codes except for '-'.
 DNA_LOCAL
-const char nuclTo4Bits[] = {
+const signed char nuclTo4Bits[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,

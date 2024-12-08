@@ -416,7 +416,7 @@ BENCHMARK_CAPTURE(bench_template, dna4_pack_2bits, dna4_pack_2bits);
 // BENCHMARK_CAPTURE(bench_template, dnax_pack_4bits, dnax_pack_4bits);
 BENCHMARK_CAPTURE(bench_template, pack_simple, pack_simple);
 BENCHMARK_CAPTURE(bench_template, pack_table, pack_table);
-BENCHMARK_CAPTURE(bench_template, pack_twiddle, pack_twiddle);
+// BENCHMARK_CAPTURE(bench_template, pack_twiddle, pack_twiddle);
 BENCHMARK_CAPTURE(bench_template, mult_v1, mult_v1);
 BENCHMARK_CAPTURE(bench_template, mult_v1_1, mult_v1_1);
 BENCHMARK_CAPTURE(bench_template, mult_v2, mult_v2);

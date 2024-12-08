@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2019 - 2023 © Fabian Klötzl
+ * Copyright 2019 - 2024 © Fabian Klötzl
  */
 
 #include <inttypes.h>
@@ -53,7 +53,8 @@ dnax_unpack_4bits(
 	const unsigned char *begin, const unsigned char *end, char *dest);
 
 extern char *
-dnax_revcomp(const char *table, const char *begin, const char *end, char *dest);
+dnax_revcomp(
+	const signed char *table, const char *begin, const char *end, char *dest);
 
 extern char *
 dnax_translate(const char *begin, const char *end, char *dest);
@@ -65,14 +66,16 @@ extern char *
 dnax_extract_dna4(const char *begin, const char *end, char *dest);
 
 extern char *
-dnax_replace(const char *table, const char *begin, const char *end, char *dest);
+dnax_replace(
+	const signed char *table, const char *begin, const char *end, char *dest);
 
 extern char *
-dnax_find_first_not_of(const char *table, const char *begin, const char *end);
+dnax_find_first_not_of(
+	const signed char *table, const char *begin, const char *end);
 
-extern const char dnax_revcomp_table[];
-extern const char dnax_to_dna4_table[];
-extern const char dnax_iupac_codes[];
+extern const signed char dnax_revcomp_table[];
+extern const signed char dnax_to_dna4_table[];
+extern const signed char dnax_iupac_codes[];
 
 inline char *
 dnax_find_first_mismatch(const char *begin, const char *end, const char *other)
@@ -98,7 +101,7 @@ dnax_find_first_mismatch(const char *begin, const char *end, const char *other)
 }
 
 inline char *
-dnax_find_first_of(const char *table, const char *begin, const char *end)
+dnax_find_first_of(const signed char *table, const char *begin, const char *end)
 {
 	const unsigned char *ubegin = (const unsigned char *)begin;
 

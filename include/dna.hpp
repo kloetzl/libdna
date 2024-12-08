@@ -2,7 +2,7 @@
 
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2020 - 2023 © Fabian Klötzl
+ * Copyright 2020 - 2024 © Fabian Klötzl
  *
  * C++ convenience header
  */
@@ -187,7 +187,7 @@ unpack_4bits(const std::vector<unsigned char> &vec)
 }
 
 inline std::string
-revcomp(const char *table, std::string_view str)
+revcomp(const signed char *table, std::string_view str)
 {
 	return dna::make_string_for_overwrite(
 		str.size(), [str, table](char *dest_begin, char *) {
@@ -224,7 +224,7 @@ extract_dna4(std::string_view str)
 }
 
 inline std::string
-replace(const char *table, std::string_view str)
+replace(const signed char *table, std::string_view str)
 {
 	return dna::make_string_for_overwrite(
 		str.size(), [str, table](char *dest_begin, char *) {
@@ -242,14 +242,14 @@ find_first_mismatch(std::string_view s1, std::string_view s2)
 }
 
 inline std::string_view::size_type
-find_first_of(const char *table, std::string_view str)
+find_first_of(const signed char *table, std::string_view str)
 {
 	auto pos = dnax_find_first_of(table, dna::cbegin(str), dna::cend(str));
 	return pos - dna::cbegin(str);
 }
 
 inline std::string_view::size_type
-find_first_not_of(const char *table, std::string_view str)
+find_first_not_of(const signed char *table, std::string_view str)
 {
 	auto pos = dnax_find_first_not_of(table, dna::cbegin(str), dna::cend(str));
 	return pos - dna::cbegin(str);

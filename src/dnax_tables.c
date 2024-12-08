@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2021 (C) Fabian Klötzl
+ * Copyright 2021 - 2024 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -35,7 +35,7 @@ function generate_table() {
 */
 
 DNA_PUBLIC
-const char dnax_to_dna4_table[] = {
+const signed char dnax_to_dna4_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -90,7 +90,7 @@ m[nucl].toLowerCase().charCodeAt(0);
 
 // IUPAC Code see iupac(7)
 DNA_PUBLIC
-const char dnax_revcomp_table[] = {
+const signed char dnax_revcomp_table[] = {
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
 	-1, -1,  -1,  -1,  -1,  -1, -1, -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
@@ -129,7 +129,7 @@ function generate_table() {
 */
 
 DNA_PUBLIC
-const char dnax_iupac_codes[] = {
+const signed char dnax_iupac_codes[] = {
 	-1, -1, -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
 	-1, -1, -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
 	-1, -1, -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, -1,  -1, -1,  -1,  -1,
