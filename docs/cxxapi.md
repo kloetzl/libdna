@@ -18,6 +18,8 @@ namespace dna
 	const char *cbegin(std::string_view str);
 	const char *cend(std::string_view str);
 	int version();
+	uint64_t ihash(uint64_t key);
+	uint64_t ihash_invert(uint64_t key);
 }
 ```
 
