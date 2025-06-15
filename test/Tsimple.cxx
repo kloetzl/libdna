@@ -98,7 +98,7 @@ TEST_CASE("Example from dnax_replace manpage")
 	char in[] = "AaCGT";
 	char out[6] = {0};
 
-	char table[256] = {};
+	signed char table[256] = {};
 	memset(table, -1, 256);
 	table['A'] = 'a';
 	table['C'] = 'c';
@@ -136,7 +136,7 @@ TEST_CASE("Example from dnax_translate manpage")
 TEST_CASE("Example from dnax_find_first_of manpage")
 {
 	const char str[] = "ACGT-AA";
-	char table[256] = {0};
+	signed char table[256] = {0};
 	std::memset(table, -1, 256);
 	table['-'] = 2;
 
@@ -147,7 +147,7 @@ TEST_CASE("Example from dnax_find_first_of manpage")
 TEST_CASE("Example from dnax_find_first_not_of manpage")
 {
 	const char str[] = "ACGT-AA";
-	char table[256] = {0};
+	signed char table[256] = {0};
 	std::memset(table, 0, 256);
 	table['-'] = -1;
 

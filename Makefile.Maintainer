@@ -23,6 +23,7 @@ format:
 	clang-format -i test/*.cxx test/*.h
 	clang-format -i rttest/*.c rttest/*.cxx
 	clang-format -i examples/*.c examples/*.cxx
+	ruff format python/libdna
 
 builddir:
 	meson $@

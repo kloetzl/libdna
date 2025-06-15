@@ -11,7 +11,7 @@
 #include <tmmintrin.h>
 #endif
 
-static const size_t LENGTH = 100000;
+static const size_t LENGTH = 10000;
 static const size_t K = 31;
 size_t seed = 61;
 size_t invrate;
@@ -27,7 +27,7 @@ bench_template(benchmark::State &state, Pack_fn fn)
 	gen(forward, LENGTH);
 
 	for (auto _ : state) {
-		for (char *kmer = forward; kmer < forward + LENGTH - K; kmer++) {
+		for (char *kmer = forward; kmer < forward + LENGTH - K; kmer += 3) {
 			size_t pack = fn(kmer, K);
 			benchmark::DoNotOptimize(pack);
 		}
@@ -58,8 +58,8 @@ pack_simple(const char *kmer, uint64_t k)
 	return return_value;
 }
 
-static size_t
-pack_table(const char *kmer, size_t K)
+static uint64_t
+pack_table(const char *kmer, uint64_t K)
 {
 	static char table[127];
 	table['A'] = 0;
@@ -67,8 +67,8 @@ pack_table(const char *kmer, size_t K)
 	table['G'] = 2;
 	table['T'] = 3;
 
-	size_t return_value = 0;
-	size_t k = 0;
+	uint64_t return_value = 0;
+	uint64_t k = 0;
 
 	while (k < K) {
 		return_value <<= 2;
@@ -263,6 +263,85 @@ mult_v2(const char *begin, size_t k)
 }
 
 static uint64_t
+mult_v2_1(const char *begin, size_t k)
+{
+	assert(begin != NULL);
+	assert(k <= 32);
+
+	uint64_t res = 0;
+
+	char dat[32];
+	memset(dat, '\0', 32);
+	memcpy(dat, begin, k);
+	uint32_t ints[8] = {0};
+
+	// read bytes independently of endianess
+	for (int i = 0; i < 8; i++) {
+		uint8_t *off = (uint8_t *)dat + i * 4;
+		ints[i] = (off[3] << 0) | (off[2] << 8) | (off[1] << 16) |
+				  (off[0] << 24); // big endian
+								  // ints[i] =
+		// 	(off[0] << 0) | (off[1] << 8) | (off[2] << 16) | (off[3] << 24); //
+		// little endian
+	}
+
+	for (int i = 0; i < 8; i++) {
+		// ints[i] &= 0x6060606;
+		// ints[i] *= 0x820820;
+
+		// uint8_t high_byte = ints[i] >> (3 * 8);
+		// res |= (uint64_t)high_byte << ((7 - i) * 8);
+		uint64_t high_byte = _pext_u32(ints[i], 0x6060606);
+		res |= high_byte << (i * 8);
+	}
+
+	uint64_t high_bit = res & 0xaaaaaaaaaaaaaaaalu;
+	high_bit >>= 1;
+	res ^= high_bit;
+
+	res >>= (32 - k) * 2;
+
+	return res;
+}
+
+static uint64_t
+mult_v2_2(const char *begin, size_t k)
+{
+	assert(begin != NULL);
+	assert(k <= 32);
+
+	uint64_t res = 0;
+
+	char dat[32];
+	memset(dat, '\0', 32);
+	memcpy(dat, begin, k);
+	uint64_t ints[4] = {0};
+
+	// read bytes independently of endianess
+	for (int i = 0; i < 4; i++) {
+		uint8_t *off = (uint8_t *)dat + i * 8;
+		ints[i] = (off[7] << 0) | (off[6] << 8) | (off[5] << 16) |
+				  (off[4] << 24) | (off[3] << 32) | (off[2] << 40) |
+				  (off[1] << 48) | (off[0] << 56);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		uint64_t high_byte = _pext_u64(ints[i], 0x606060606060606);
+		// res |= high_byte << (i*16);
+		res |= high_byte;
+		res <<= 16;
+	}
+
+	uint64_t high_bit = res & 0xaaaaaaaaaaaaaaaalu;
+	high_bit >>= 1;
+	res ^= high_bit;
+
+	res >>= (32 - k) * 2;
+
+	return res;
+}
+
+static uint64_t
 mult_v3(const char *begin, size_t k)
 {
 	assert(begin != NULL);
@@ -337,9 +416,12 @@ BENCHMARK_CAPTURE(bench_template, dna4_pack_2bits, dna4_pack_2bits);
 // BENCHMARK_CAPTURE(bench_template, dnax_pack_4bits, dnax_pack_4bits);
 BENCHMARK_CAPTURE(bench_template, pack_simple, pack_simple);
 BENCHMARK_CAPTURE(bench_template, pack_table, pack_table);
+// BENCHMARK_CAPTURE(bench_template, pack_twiddle, pack_twiddle);
 BENCHMARK_CAPTURE(bench_template, mult_v1, mult_v1);
 BENCHMARK_CAPTURE(bench_template, mult_v1_1, mult_v1_1);
 BENCHMARK_CAPTURE(bench_template, mult_v2, mult_v2);
+BENCHMARK_CAPTURE(bench_template, mult_v2_1, mult_v2_1);
+BENCHMARK_CAPTURE(bench_template, mult_v2_2, mult_v2_2);
 BENCHMARK_CAPTURE(bench_template, mult_v3, mult_v3);
 
 #ifdef __SSE2__

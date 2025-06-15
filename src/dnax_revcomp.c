@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2021 (C) Fabian Klötzl
+ * Copyright 2018 - 2024 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -11,7 +11,10 @@
 DNA_PUBLIC
 char *
 dnax_revcomp(
-	const char *restrict table, const char *begin, const char *end, char *dest)
+	const signed char *restrict table,
+	const char *begin,
+	const char *end,
+	char *dest)
 {
 	assert(table != NULL);
 	assert(begin != NULL);

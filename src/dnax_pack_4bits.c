@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: MIT
- * Copyright 2018 - 2020 (C) Fabian Klötzl
+ * Copyright 2018 - 2024 (C) Fabian Klötzl
  */
 
 #include "dna.h"
@@ -45,7 +45,7 @@ function generate_table() {
 
 */
 
-const char dnax_pack_4bits_table[] = {
+const signed char dnax_pack_4bits_table[] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, 0,  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,

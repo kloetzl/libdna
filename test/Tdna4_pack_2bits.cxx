@@ -19,6 +19,14 @@ TEST_CASE("Basic packing (2bits) checks")
 	REQUIRE(dna4::pack_2bits(1, "C") == 1);
 	REQUIRE(dna4::pack_2bits(1, "G") == 2);
 	REQUIRE(dna4::pack_2bits(1, "T") == 3);
+
+	REQUIRE(dna4::pack_2bits(1, "AAAA") == 0);
+	REQUIRE(dna4::pack_2bits(2, "AAAA") == 0);
+	REQUIRE(dna4::pack_2bits(3, "AAAA") == 0);
+	REQUIRE(dna4::pack_2bits(4, "AAAA") == 0);
+	REQUIRE(dna4::pack_2bits(5, "CAAAA") == 1 << (2 * 4));
+	REQUIRE(dna4::pack_2bits(1, "GAAAA") == 2);
+	REQUIRE(dna4::pack_2bits(1, "TAAAA") == 3);
 }
 
 TEST_CASE("Manpage examples")

@@ -842,7 +842,7 @@ BENCHMARK(dnax_replace);
 static void
 bwa_encode(char *begin, char *end)
 {
-	static /*constexpr*/ char table[127];
+	static /*constexpr*/ signed char table[127];
 	memset(table, 4, sizeof(table));
 	table['A'] = 0;
 	table['C'] = 1;
