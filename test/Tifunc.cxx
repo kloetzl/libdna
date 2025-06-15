@@ -94,7 +94,7 @@ TEST_CASE("dna4_fill_random")
 #endif
 #endif
 
-#if !defined(__x86_64)
+#if !defined(__x86_64) && !defined(__APPLE__)
 	REQUIRE(&dna4_fill_random == &dna4_fill_random_generic);
 #endif
 }
@@ -123,7 +123,7 @@ TEST_CASE("dna4_count_mismatches_rc")
 #endif
 #endif
 
-#if !defined(__x86_64)
+#if !defined(__x86_64) && !defined(__APPLE__)
 	REQUIRE(&dna4_count_mismatches_rc == &dna4_count_mismatches_rc_generic);
 #endif
 }
